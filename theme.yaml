@@ -1,0 +1,207 @@
+loadingIndicatorStyle:
+  type: CIRCULAR
+  color:
+    value: "4285932335"
+  diameter: 50
+defaultTypography:
+  primaryFontFamily: Outfit
+  secondaryFontFamily: Readex Pro
+  displaySmall:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 36
+      mostRecentInputValue: 36
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w600
+  headlineMedium:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 24
+      mostRecentInputValue: 24
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  headlineSmall:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 24
+      mostRecentInputValue: 24
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w500
+  titleMedium:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 18
+      mostRecentInputValue: 18
+    colorValue:
+      inputValue:
+        themeColor: INFO
+      mostRecentInputValue:
+        themeColor: INFO
+    fontWeightValue:
+      inputValue: w400
+  titleSmall:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    colorValue:
+      inputValue:
+        themeColor: INFO
+      mostRecentInputValue:
+        themeColor: INFO
+    fontWeightValue:
+      inputValue: w500
+  bodyMedium:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 14
+      mostRecentInputValue: 14
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  bodySmall:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 12
+      mostRecentInputValue: 12
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  displayLarge:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 64
+      mostRecentInputValue: 64
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  displayMedium:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 44
+      mostRecentInputValue: 44
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  headlineLarge:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 32
+      mostRecentInputValue: 32
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w600
+  titleLarge:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 22
+      mostRecentInputValue: 22
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w500
+  labelLarge:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    colorValue:
+      inputValue:
+        themeColor: SECONDARY_TEXT
+      mostRecentInputValue:
+        themeColor: SECONDARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  labelMedium:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 14
+      mostRecentInputValue: 14
+    colorValue:
+      inputValue:
+        themeColor: SECONDARY_TEXT
+      mostRecentInputValue:
+        themeColor: SECONDARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  labelSmall:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 12
+      mostRecentInputValue: 12
+    colorValue:
+      inputValue:
+        themeColor: SECONDARY_TEXT
+      mostRecentInputValue:
+        themeColor: SECONDARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+  bodyLarge:
+    fontFamily: Open Sans
+    isCustomFont: false
+    fontSizeValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    fontWeightValue:
+      inputValue: w400
+breakPoints:
+  small: 479
+  medium: 767
+  large: 991

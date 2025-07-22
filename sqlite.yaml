@@ -1,0 +1,361 @@
+enabled: true
+databaseInfo:
+  databaseName: bdleitorptb
+initializationConfig:
+  databaseFilePath: projects/leitorptbhmg-sxp4s7/assets/9z84sqdblvnd/bd_leitorptb.db
+readQueries:
+  - identifier:
+      name: Busca Classe JMC
+      key: onm23
+    query: select classe from classejmc where classe is not null
+    outputColumns:
+      - identifier:
+          name: classe
+          key: 408q2s
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Busca Operacao JMC
+      key: 787qi
+    query: select operacao from operacaojmc where operacao is not null
+    outputColumns:
+      - identifier:
+          name: operacao
+          key: 408q2s
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Busca Ultima Caixa JMC
+      key: lx2zb
+    query: SELECT * FROM conferenciajmc ORDER BY caixa DESC LIMIT 1
+    outputColumns:
+      - identifier:
+          name: caixa
+          key: x7rror
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Busca Classe ALTRIA
+      key: ponr1
+    query: select classe from classealtria where classe is not null
+    outputColumns:
+      - identifier:
+          name: classe
+          key: 408q2s
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Busca Operacao ALTRIA
+      key: gh3rt
+    query: select operacao from operacaoaltria where operacao is not null
+    outputColumns:
+      - identifier:
+          name: operacao
+          key: 408q2s
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Busca Ultima Caixa ALTRIA
+      key: qy7gq
+    query: SELECT caixa FROM conferenciaALTRIA ORDER BY id DESC LIMIT 1
+    outputColumns:
+      - identifier:
+          name: caixa
+          key: x7rror
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+updateQueries:
+  - identifier:
+      name: InsertConferencia JMC
+      key: mmgdi
+    query: "INSERT INTO conferenciaJMC (\n                               cliente,\n                               caixa,\n                               data,\n                               classe,\n                               operacao,\n                               localconferencia,\n                               ladoA,\n                               codigo1a,\n                               codigo2a,\n                               codigo3a,\n                               ladoB,\n                               codigo1b,\n                               codigo2b,\n                               codigo3b\n                           )\n                           VALUES (\n                               \"$cliente\",\n                               $caixa,\n                               \"$data\",\n                               \"$classe\",\n                               \"$operacao\",\n                               \"$localconferencia\",\n                               \"$ladoA\",\n                               \"$codigo1a\",\n                               \"$codigo2a\",\n                               \"$codigo3a\",\n                               \"$ladoB\",\n                               \"$codigo1b\",\n                               \"$codigo2b\",\n                               \"$codigo3b\"\n                           );\n"
+    variables:
+      - identifier:
+          name: ladoA
+          key: kj4vhb
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: cliente
+          key: ir84i7
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: caixa
+          key: ss7whq
+        type:
+          dataType:
+            scalarType: Integer
+            nonNullable: false
+      - identifier:
+          name: data
+          key: xd54n0
+        type:
+          dataType:
+            scalarType: DateTime
+            nonNullable: false
+      - identifier:
+          name: classe
+          key: ydp4ki
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: localconferencia
+          key: 90tz4z
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo1a
+          key: 3qb2e9
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo2a
+          key: xtwr0y
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo3a
+          key: dx16p3
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo1b
+          key: 0si3gu
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo2b
+          key: dwliom
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo3b
+          key: 1mkm2i
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: ladoB
+          key: syqm4z
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: operacao
+          key: fpod6x
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Classe JMC
+      key: gz9au
+    query: "insert into classejmc (classe)\nvalues ('${classe}')"
+    variables:
+      - identifier:
+          name: classe
+          key: nsabj7
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Operacao JMC
+      key: rytub
+    query: "insert into operacaojmc  (operacao)\nvalues ('${operacao}')"
+    variables:
+      - identifier:
+          name: operacao
+          key: asb9mm
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Classe ALTRIA
+      key: 4aaqm
+    query: "insert into classealtria (classe)\nvalues ('${classe}')"
+    variables:
+      - identifier:
+          name: classe
+          key: nsabj7
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: Operacao ALTRIA
+      key: zduw6
+    query: "insert into operacaoaltria  (operacao)\nvalues ('${operacao}')"
+    variables:
+      - identifier:
+          name: operacao
+          key: asb9mm
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+  - identifier:
+      name: InsertConferencia ALTRIA
+      key: 6sdvq
+    query: "INSERT INTO conferenciaALTRIA (\n                                  cliente,\n                                  caixa,\n                                  data,\n                                  classe,\n                                  operacao,\n                                  localconferencia,\n                                  ladoA,\n                                  codigo1a,\n                                  codigo2a,\n                                  codigo3a,\n                                  codigo4a,\n                                  codigo5a,\n                                  ladoB,\n                                  codigo1b,\n                                  codigo2b,\n                                  codigo3b,\n                                  codigo4b,\n                                  codigo5b\n                              )\n                              VALUES (\n                                  \"$cliente\",\n                                  $caixa,\n                                  \"$data\",\n                                  \"$classe\",\n                                  \"$operacao\",\n                                  \"$localconferencia\",\n                                  \"$ladoA\",\n                                  \"$codigo1a\",\n                                  \"$codigo2a\",\n                                  \"$codigo3a\",\n                                  \"$codigo4a\",\n                                  \"$codigo5a\",\n                                  \"$ladoB\",\n                                  \"$codigo1b\",\n                                  \"$codigo2b\",\n                                  \"$codigo3b\",\n                                  \"$codigo4b\",\n                                  \"$codigo5b\"\n                              );\n"
+    variables:
+      - identifier:
+          name: ladoA
+          key: kj4vhb
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: cliente
+          key: ir84i7
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: caixa
+          key: ss7whq
+        type:
+          dataType:
+            scalarType: Integer
+            nonNullable: false
+      - identifier:
+          name: data
+          key: xd54n0
+        type:
+          dataType:
+            scalarType: DateTime
+            nonNullable: false
+      - identifier:
+          name: classe
+          key: ydp4ki
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: localconferencia
+          key: 90tz4z
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo1a
+          key: 3qb2e9
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo2a
+          key: xtwr0y
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo3a
+          key: dx16p3
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo1b
+          key: 0si3gu
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo2b
+          key: dwliom
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo3b
+          key: 1mkm2i
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: ladoB
+          key: syqm4z
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo4a
+          key: qa2dvc
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo5a
+          key: ln4nlk
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo4b
+          key: fmemj8
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: codigo5b
+          key: obizue
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false
+      - identifier:
+          name: operacao
+          key: 9e1enx
+        type:
+          dataType:
+            scalarType: String
+            nonNullable: false

@@ -1,0 +1,14 @@
+name: leitorptb
+appSettings:
+  downloadUnusedAssets: true
+  advancedSettings:
+    canvasKitSettings: {}
+routingSettings:
+  enableRouting: true
+  pagesAreSubroutesOfRoot: false
+initialPageKeyRef:
+  key: Scaffold_5u1hoc1d
+allAppNames:
+  appNames:
+    PROD:
+      displayName: Leitor PTB
