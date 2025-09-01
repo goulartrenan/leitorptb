@@ -1,0 +1,12 @@
+key: Row_pziyuaxc
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 1
+  expanded:
+    expandedType: FLEXIBLE

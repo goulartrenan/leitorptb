@@ -1,0 +1,31 @@
+key: Icon_5xnpw2fi
+type: Icon
+props:
+  icon:
+    sizeValue:
+      inputValue: 25
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    iconDataValue:
+      inputValue:
+        codePoint: 62566
+        family: FontAwesomeSolid
+        package: font_awesome_flutter
+        matchTextDirection: false
+        packageIcon:
+          fontAwesome: box
+        name: box
+  padding:
+    leftValue:
+      inputValue: 5
+    topValue:
+      inputValue: 20
+    bottomValue:
+      inputValue: 10
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+valueKey: {}

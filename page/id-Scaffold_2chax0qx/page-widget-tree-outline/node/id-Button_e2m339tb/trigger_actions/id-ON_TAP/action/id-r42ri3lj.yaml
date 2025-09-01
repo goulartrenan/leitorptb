@@ -1,0 +1,41 @@
+database:
+  apiCall:
+    endpointIdentifier:
+      name: "Adicionar Dados Conferencia "
+      key: 4yi76
+    variables:
+      - variableIdentifier:
+          name: dadosJMC
+          key: bulgalnz
+        variable:
+          source: LOCAL_STATE
+          baseVariable:
+            localState:
+              fieldIdentifier:
+                name: jmcinsert
+                key: 5kxse
+              stateVariableType: WIDGET_CLASS_STATE
+          operations:
+            - listMapOperation:
+                listMapVariable:
+                  source: LIST_MAP
+                  baseVariable:
+                    listMap:
+                      containingParentReturnParameter:
+                        identifier:
+                          name: jmcinsert
+                          key: 5kxse
+                        dataType:
+                          listType:
+                            scalarType: DataStruct
+                          subType:
+                            dataStructIdentifier:
+                              name: cadastrojmc
+                              key: xt3os
+                  operations:
+                    - dataStructToJson: {}
+          nodeKeyRef:
+            key: Scaffold_2chax0qx
+outputVariableName: apiResultqak
+key: r42ri3lj
+nonBlocking: false

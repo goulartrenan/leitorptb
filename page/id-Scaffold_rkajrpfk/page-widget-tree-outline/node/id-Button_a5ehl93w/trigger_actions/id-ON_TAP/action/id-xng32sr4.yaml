@@ -1,0 +1,6 @@
+key: xng32sr4
+resetFormField:
+  widgetType: TextField
+  nodeKeyPaths:
+    - keyPath:
+        - key: TextField_le2tun9l

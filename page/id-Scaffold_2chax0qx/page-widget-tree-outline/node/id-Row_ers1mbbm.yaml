@@ -1,0 +1,5 @@
+key: Row_ers1mbbm
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around

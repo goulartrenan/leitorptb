@@ -1,0 +1,25 @@
+navigate:
+  allowBack: true
+  passedParameters:
+    parameterPasses:
+      tz4qdr:
+        paramIdentifier:
+          name: jmc
+          key: tz4qdr
+        inputValue: {}
+      fnl8fv:
+        paramIdentifier:
+          name: ladoA
+          key: fnl8fv
+        inputValue: {}
+      ickdq9:
+        paramIdentifier:
+          name: ladoB
+          key: ickdq9
+        inputValue: {}
+    widgetClassNodeKeyRef:
+      key: Scaffold_2chax0qx
+  isNavigateBack: false
+  pageNodeKeyRef:
+    key: Scaffold_2chax0qx
+key: xfafxcfv

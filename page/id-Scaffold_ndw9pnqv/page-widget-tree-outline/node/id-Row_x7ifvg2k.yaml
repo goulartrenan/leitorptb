@@ -1,0 +1,18 @@
+key: Row_x7ifvg2k
+type: Row
+props:
+  row:
+    listSpacing: {}
+  padding:
+    topValue:
+      inputValue: 5
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

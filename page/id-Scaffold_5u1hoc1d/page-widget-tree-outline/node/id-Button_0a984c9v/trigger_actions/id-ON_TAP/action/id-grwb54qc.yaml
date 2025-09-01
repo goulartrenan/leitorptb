@@ -1,0 +1,84 @@
+key: grwb54qc
+disableAction:
+  actionNode:
+    key: fk0e2phy
+    conditionActions:
+      falseAction:
+        key: tz4kyf8a
+        terminate: {}
+      trueActions:
+        - condition:
+            confirmationDialogResponse: {}
+          trueAction:
+            key: t0sre9qz
+            action:
+              outputVariableName: apiResult9uv
+              key: abtpp1q5
+              disableAction:
+                actionNode:
+                  key: t0sre9qz
+                  action:
+                    database:
+                      apiCall:
+                        endpointIdentifier:
+                          name: "Adicionar Dados Conferencia "
+                          key: 4yi76
+                        variables:
+                          - variableIdentifier:
+                              name: codigo1a
+                              key: vrhsfmyf
+                          - variableIdentifier:
+                              name: codigo1b
+                              key: klaz1ttu
+                          - variableIdentifier:
+                              name: codigo2a
+                              key: p72jfp47
+                          - variableIdentifier:
+                              name: codigo2b
+                              key: 15co11oo
+                          - variableIdentifier:
+                              name: codigo3a
+                              key: ff3szh0w
+                          - variableIdentifier:
+                              name: codigo3b
+                              key: buko5ag5
+                          - variableIdentifier:
+                              name: lado
+                              key: 1yea1aje
+                          - variableIdentifier:
+                              name: cliente
+                              key: fsnphwlw
+                          - variableIdentifier:
+                              name: caixa
+                              key: 099qpmco
+                          - variableIdentifier:
+                              name: data
+                              key: bc3gfzpu
+                          - variableIdentifier:
+                              name: classe
+                              key: k6esojue
+                          - variableIdentifier:
+                              name: local
+                              key: o4c1aa63
+                          - variableIdentifier:
+                              name: operacao
+                              key: ixk01tva
+                            inputValue: {}
+                          - variableIdentifier:
+                              name: codigo4a
+                              key: g8m5v19k
+                          - variableIdentifier:
+                              name: codigo5a
+                              key: 85z0p2f9
+                          - variableIdentifier:
+                              name: codigo5b
+                              key: q6x78oc2
+                          - variableIdentifier:
+                              name: codigo4b
+                              key: gt30whtz
+                    outputVariableName: apiResult9uv
+                    key: abtpp1q5
+                    nonBlocking: false
+              nonBlocking: false
+      hasMultiConditions: false
+      key: yrxgupuk

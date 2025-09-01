@@ -1,0 +1,65 @@
+key: Button_004qubz6
+type: Button
+props:
+  button:
+    text:
+      fontFamily: Open Sans
+      themeStyle: TITLE_SMALL
+      isCustomFont: false
+      translationIdentifier:
+        key: 7lbmob5e
+      textValue:
+        inputValue: Inicio
+      fontSizeValue:
+        inputValue: 12
+      colorValue:
+        inputValue:
+          value: "4294967295"
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 110
+      height:
+        pixelsValue:
+          inputValue: 40
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4279713589"
+    iconValue:
+      inputValue:
+        iconDataValue:
+          inputValue:
+            codePoint: 58137
+            family: MaterialIcons
+            matchTextDirection: false
+            name: home_filled
+  padding:
+    leftValue:
+      inputValue: 35
+    topValue:
+      inputValue: 0
+  alignment:
+    xValue:
+      inputValue: -1
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+name: home
+valueKey: {}

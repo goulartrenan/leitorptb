@@ -1,0 +1,25 @@
+snackBar:
+  textMessage:
+    inputValue:
+      serializedValue: Registro Salvo com Sucesso!
+  textStyle:
+    themeStyle: TITLE_MEDIUM
+    variableColor:
+      inputValue:
+        color:
+          themeColor: SECONDARY_BACKGROUND
+    fontSizeValue:
+      inputValue: 20
+    fontWeightValue:
+      inputValue: w700
+  durationMillis: 2000
+  subAction:
+    action:
+      navigate:
+        allowBack: true
+  shouldHidePreviousSnackbar: false
+  backgroundColor:
+    inputValue:
+      color:
+        value: "4279713589"
+key: b2pvknv3

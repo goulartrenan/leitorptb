@@ -1,0 +1,13 @@
+key: Row_too0nva7
+type: Row
+props:
+  row:
+    listSpacing: {}
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

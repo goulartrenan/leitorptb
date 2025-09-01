@@ -1,0 +1,15 @@
+alertDialog:
+  confirmDialog:
+    title:
+      inputValue:
+        serializedValue: Salvando
+    message:
+      inputValue:
+        serializedValue: Deseja salvar o registro?
+    dismissText:
+      inputValue:
+        serializedValue: Cancelar
+    confirmText:
+      inputValue:
+        serializedValue: Confirmar
+key: 1450wj6y

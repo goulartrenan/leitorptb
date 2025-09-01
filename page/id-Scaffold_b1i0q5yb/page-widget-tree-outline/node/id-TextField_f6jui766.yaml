@@ -1,0 +1,125 @@
+key: TextField_f6jui766
+type: TextField
+props:
+  padding:
+    type: FF_PADDING_ONLY
+    allValue:
+      inputValue: 0
+  textField:
+    textStyle:
+      fontFamily: Open Sans
+      themeStyle: HEADLINE_MEDIUM
+      isCustomFont: false
+      fontSizeValue:
+        inputValue: 20
+      colorValue:
+        inputValue:
+          themeColor: SECONDARY_TEXT
+      fontWeightValue:
+        inputValue: w500
+    inputDecoration:
+      inputBorderType: outline
+      borderRadius:
+        type: FF_BORDER_RADIUS_ALL
+        topLeftValue:
+          inputValue: 12
+          mostRecentInputValue: 12
+        topRightValue:
+          inputValue: 12
+          mostRecentInputValue: 12
+        allValue:
+          inputValue: 6
+      contentPadding:
+        leftValue:
+          inputValue: 16
+        topValue:
+          inputValue: 10
+        rightValue:
+          inputValue: 16
+        bottomValue:
+          inputValue: 10
+      hintStyle:
+        fontFamily: Open Sans
+        themeStyle: LABEL_MEDIUM
+        isCustomFont: false
+        fontSizeValue:
+          inputValue: 14
+          mostRecentInputValue: 14
+        colorValue:
+          inputValue:
+            value: "4284508805"
+          mostRecentInputValue:
+            value: "4284508805"
+        fontWeightValue:
+          inputValue: w500
+      labelStyle:
+        fontFamily: Open Sans
+        themeStyle: HEADLINE_MEDIUM
+        isCustomFont: false
+        fontSizeValue:
+          inputValue: 20
+        colorValue:
+          inputValue:
+            themeColor: SECONDARY_TEXT
+        fontWeightValue:
+          inputValue: w500
+      labelText:
+        translationIdentifier:
+          key: fe3q81tt
+        textValue:
+          inputValue: Cadastre a classe...
+      errorTextStyle:
+        fontFamily: Figtree
+        themeStyle: BODY_MEDIUM
+        fontSizeValue:
+          inputValue: 12
+          mostRecentInputValue: 12
+        colorValue:
+          inputValue:
+            value: "4294924643"
+          mostRecentInputValue:
+            value: "4294924643"
+        fontWeightValue:
+          inputValue: w600
+      borderColorValue:
+        inputValue:
+          value: "4279713589"
+      filledValue:
+        inputValue: true
+        mostRecentInputValue: true
+      fillColorValue:
+        inputValue:
+          value: "4294967295"
+        mostRecentInputValue:
+          value: "4294967295"
+      borderWidthValue:
+        inputValue: 1
+      errorBorderColorValue:
+        inputValue:
+          value: "4294924643"
+        mostRecentInputValue:
+          value: "4294924643"
+      focusBorderColorValue:
+        inputValue:
+          value: "4279713589"
+    passwordField: false
+    showClearButton: true
+    capitalization: WORDS
+    maxLinesValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    autofocusValue:
+      inputValue: true
+      mostRecentInputValue: true
+    cursorColorValue:
+      inputValue:
+        value: "4279713589"
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: classealtria
+parameterValues: {}
+valueKey: {}

@@ -1,0 +1,10 @@
+key: Row_kxneihki
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+  padding:
+    topValue:
+      inputValue: 50
+  expanded:
+    expandedType: EXPANDED

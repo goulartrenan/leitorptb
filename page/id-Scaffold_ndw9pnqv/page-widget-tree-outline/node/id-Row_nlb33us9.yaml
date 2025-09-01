@@ -1,0 +1,5 @@
+key: Row_nlb33us9
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around

@@ -1,0 +1,17 @@
+key: Text_xqw344yc
+type: Text
+props:
+  text:
+    themeStyle: HEADLINE_MEDIUM
+    translationIdentifier:
+      key: ymfc5kt5
+    textValue:
+      inputValue: Menus JMC
+    fontSizeValue:
+      inputValue: 22
+      mostRecentInputValue: 22
+    colorValue:
+      inputValue:
+        value: "4294967295"
+      mostRecentInputValue:
+        value: "4294967295"

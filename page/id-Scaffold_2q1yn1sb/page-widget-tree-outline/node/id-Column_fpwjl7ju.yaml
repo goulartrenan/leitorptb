@@ -1,0 +1,8 @@
+key: Column_fpwjl7ju
+type: Column
+props:
+  column:
+    scrollable: true
+    primary: true
+    minSizeValue:
+      inputValue: true

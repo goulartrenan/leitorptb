@@ -1,0 +1,22 @@
+key: Container_f4h6i5yb
+type: Container
+props:
+  container:
+    dimensions: {}
+    boxDecoration:
+      boxShadow: {}
+      image: {}
+    maxDimensions:
+      width:
+        pixelsValue:
+          inputValue: 570
+          mostRecentInputValue: 570
+    minDimensions: {}
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+name: max-width
+parameterValues: {}
+valueKey: {}

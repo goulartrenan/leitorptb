@@ -1,0 +1,6 @@
+rootAction:
+  key: nra1gr99
+  action:
+    key: 45gl9zcx
+trigger:
+  triggerType: ON_TAP

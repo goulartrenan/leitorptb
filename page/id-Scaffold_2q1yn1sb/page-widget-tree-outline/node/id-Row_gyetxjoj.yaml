@@ -1,0 +1,18 @@
+key: Row_gyetxjoj
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+    minSizeValue:
+      inputValue: false
+  padding:
+    type: FF_PADDING_ALL
+    allValue:
+      inputValue: 24
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: -1
+  expanded:
+    expandedType: FLEXIBLE

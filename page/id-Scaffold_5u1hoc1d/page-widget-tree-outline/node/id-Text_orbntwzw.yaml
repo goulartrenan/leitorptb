@@ -1,0 +1,52 @@
+key: Text_orbntwzw
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: 698grwxq
+    underline: false
+    selectable: false
+    textValue:
+      variable:
+        source: LOCAL_STATE
+        baseVariable:
+          localState:
+            fieldIdentifier:
+              name: horas
+              key: o7qii
+            stateVariableType: WIDGET_CLASS_STATE
+        operations:
+          - dateTimeFormat:
+              format: d/M/y
+              isCustom: false
+        nodeKeyRef:
+          key: Scaffold_5u1hoc1d
+    fontSizeValue:
+      inputValue: 20
+    colorValue:
+      inputValue:
+        value: "4285932335"
+    italicValue:
+      inputValue: false
+    fontWeightValue:
+      inputValue: w800
+    textAlignValue:
+      inputValue: ALIGN_CENTER
+  padding:
+    bottomValue:
+      inputValue: 0
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+valueKey: {}

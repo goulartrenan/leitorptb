@@ -1,0 +1,16 @@
+key: Text_8xyrj4dw
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: HEADLINE_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: epvwcqo8
+    textValue:
+      inputValue: ALTRIA
+    fontSizeValue:
+      inputValue: 30
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_BACKGROUND

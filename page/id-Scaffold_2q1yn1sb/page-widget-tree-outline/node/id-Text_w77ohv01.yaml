@@ -1,0 +1,32 @@
+key: Text_w77ohv01
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: 8ciun4qp
+    selectable: false
+    textValue:
+      inputValue: "Clique no que deseja fazer:"
+    fontSizeValue:
+      inputValue: 20
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+    textAlignValue:
+      inputValue: ALIGN_CENTER
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+valueKey: {}

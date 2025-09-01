@@ -1,0 +1,12 @@
+key: Form_pleel1i4
+type: Form
+props:
+  expanded:
+    expandedType: FLEXIBLE
+  form:
+    validations:
+      - isRequired: true
+        dropDown: {}
+        nodeKeyRef:
+          key: DropDown_9vyscia4
+    autovalidateMode: ALWAYS

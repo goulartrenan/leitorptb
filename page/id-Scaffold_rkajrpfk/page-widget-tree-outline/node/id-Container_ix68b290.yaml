@@ -1,0 +1,24 @@
+key: Container_ix68b290
+type: Container
+props:
+  container:
+    dimensions: {}
+    boxDecoration:
+      boxShadow: {}
+      image: {}
+    maxDimensions:
+      width:
+        pixelsValue:
+          inputValue: 770
+          mostRecentInputValue: 770
+    minDimensions: {}
+  responsiveVisibility:
+    tabletLandscapeHidden: true
+    desktopHidden: true
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+name: max-width
+parameterValues: {}
+valueKey: {}

@@ -1,0 +1,23 @@
+key: AppBar_g8e852b0
+type: AppBar
+props:
+  appBar:
+    height:
+      pixelsValue:
+        inputValue: 40
+    templateType: LARGE_HEADER
+    titleInFlexibleSpaceBar: false
+    defaultBackButtonValue:
+      inputValue: false
+      mostRecentInputValue: false
+    backgroundColorValue:
+      inputValue:
+        value: "4285932335"
+      mostRecentInputValue:
+        value: "4285932335"
+    elevationValue:
+      inputValue: 1
+    centerTitleValue:
+      inputValue: false
+      mostRecentInputValue: false
+name: JMC

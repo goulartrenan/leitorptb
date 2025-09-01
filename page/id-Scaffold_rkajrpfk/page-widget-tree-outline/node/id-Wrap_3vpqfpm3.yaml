@@ -1,0 +1,35 @@
+key: Wrap_3vpqfpm3
+type: Wrap
+props:
+  padding:
+    leftValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    topValue:
+      inputValue: 12
+      mostRecentInputValue: 12
+    rightValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    bottomValue:
+      inputValue: 12
+  wrap:
+    childAlignment: wrap_start
+    crossAxisAlignment: wrap_cross_start
+    direction: FF_AXIS_HORIZONTAL
+    runAlignment: wrap_center
+    verticalDirection: FF_VERTICAL_DIRECTION_DOWN
+    clipBehavior: FF_CLIP_NONE
+    spacingValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    runSpacingValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+parameterValues: {}
+valueKey: {}

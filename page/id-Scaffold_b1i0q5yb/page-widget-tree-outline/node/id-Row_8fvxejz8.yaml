@@ -1,0 +1,24 @@
+key: Row_8fvxejz8
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around
+    crossAxisAlignment: cross_axis_center
+    listSpacing: {}
+  padding:
+    type: FF_PADDING_ONLY
+    topValue:
+      inputValue: 0
+    allValue:
+      inputValue: 0
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 1
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+valueKey: {}

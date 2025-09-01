@@ -1,0 +1,18 @@
+key: Column_0tpzy91z
+type: Column
+props:
+  column:
+    scrollable: true
+    primary: true
+    listSpacing: {}
+  expanded:
+    expandedType: EXPANDED
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: scrolling_Column
+parameterValues: {}
+valueKey: {}

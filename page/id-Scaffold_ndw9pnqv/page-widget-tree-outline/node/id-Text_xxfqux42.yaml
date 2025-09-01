@@ -1,0 +1,17 @@
+key: Text_xxfqux42
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: z23ulrp8
+    selectable: false
+    textValue:
+      inputValue: "\"Caixas lidas\""
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    textAlignValue:
+      inputValue: ALIGN_JUSTIFY
+  expanded:
+    expandedType: FLEXIBLE

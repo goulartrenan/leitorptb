@@ -1,0 +1,29 @@
+name: altria_page
+description: ""
+params:
+  gi3hdd:
+    identifier:
+      name: altria
+      key: gi3hdd
+    dataType:
+      scalarType: String
+      nonNullable: false
+  qzpgup:
+    identifier:
+      name: ladoA
+      key: qzpgup
+    dataType:
+      scalarType: String
+      nonNullable: false
+  mc90pj:
+    identifier:
+      name: ladoB
+      key: mc90pj
+    dataType:
+      scalarType: String
+      nonNullable: false
+node:
+  key: Scaffold_ndw9pnqv
+pageRouteSettings:
+  routePath: altria_page
+classModel: {}

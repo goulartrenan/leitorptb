@@ -1,0 +1,15 @@
+key: Row_0lktwdlq
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around
+    scrollable: false
+    minSizeValue:
+      inputValue: false
+  alignment:
+    xValue:
+      inputValue: -1
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE

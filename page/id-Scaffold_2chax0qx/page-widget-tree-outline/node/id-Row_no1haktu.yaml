@@ -1,0 +1,16 @@
+key: Row_no1haktu
+type: Row
+props:
+  row:
+    listSpacing: {}
+  padding: {}
+  expanded:
+    expandedType: EXPANDED
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

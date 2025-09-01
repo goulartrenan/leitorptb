@@ -1,0 +1,90 @@
+key: TextField_mq439c8t
+type: TextField
+props:
+  padding:
+    leftValue:
+      inputValue: 5
+      mostRecentInputValue: 5
+    rightValue:
+      inputValue: 5
+    bottomValue:
+      inputValue: 0
+  expanded:
+    expandedType: UNEXPANDED
+  textField:
+    textStyle:
+      fontFamily: Open Sans
+      themeStyle: BODY_MEDIUM
+      isCustomFont: false
+    inputDecoration:
+      inputBorderType: outline
+      borderRadius:
+        type: FF_BORDER_RADIUS_ALL
+        allValue:
+          inputValue: 8
+      hintStyle:
+        themeStyle: LABEL_MEDIUM
+      labelStyle:
+        fontFamily: Open Sans
+        themeStyle: LABEL_MEDIUM
+        isCustomFont: false
+      hintText:
+        translationIdentifier:
+          key: cd5nr3zc
+        textValue:
+          inputValue: Leia o QRCode
+      borderColorValue:
+        inputValue:
+          value: "4279713589"
+      filledValue:
+        inputValue: true
+        mostRecentInputValue: true
+      fillColorValue:
+        inputValue:
+          themeColor: SECONDARY_BACKGROUND
+        mostRecentInputValue:
+          themeColor: SECONDARY_BACKGROUND
+      borderWidthValue:
+        inputValue: 1
+        mostRecentInputValue: 1
+      denseValue:
+        inputValue: true
+        mostRecentInputValue: true
+      errorBorderColorValue:
+        inputValue:
+          themeColor: ERROR
+        mostRecentInputValue:
+          themeColor: ERROR
+      focusBorderColorValue:
+        inputValue:
+          value: "4279713589"
+    passwordField: false
+    showClearButton: true
+    width:
+      pixelsValue:
+        inputValue: 100
+    maxLinesValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    autofocusValue:
+      inputValue: true
+    cursorColorValue:
+      inputValue:
+        themeColor: PRIMARY_TEXT
+      mostRecentInputValue:
+        themeColor: PRIMARY_TEXT
+    trailingIconValue:
+      inputValue:
+        sizeValue:
+          inputValue: 20
+        colorValue:
+          inputValue:
+            value: "4279713589"
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+name: codigo4_b
+parameterValues: {}
+valueKey: {}

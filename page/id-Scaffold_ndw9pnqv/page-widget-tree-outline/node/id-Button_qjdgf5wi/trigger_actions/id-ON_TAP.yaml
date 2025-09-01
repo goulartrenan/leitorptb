@@ -1,0 +1,92 @@
+rootAction:
+  key: soxkbacw
+  action:
+    key: aitpkxov
+  followUpAction:
+    key: fkcl7xs6
+    action:
+      key: l3cg6xlg
+    followUpAction:
+      key: t8or5s53
+      action:
+        key: 8h0ixpxh
+      followUpAction:
+        key: zc88i0rj
+        action:
+          key: gyvoa0w8
+        followUpAction:
+          key: 1qqkrcs1
+          action:
+            key: 3d4dmhl8
+          followUpAction:
+            key: os5s3abe
+            action:
+              key: a0op3u2n
+            followUpAction:
+              key: yx5bvr65
+              action:
+                key: 7829sz18
+              followUpAction:
+                key: rox9fzn4
+                action:
+                  key: 3ultx9kd
+                followUpAction:
+                  key: 1cgskgwh
+                  action:
+                    key: rysg71jh
+                  followUpAction:
+                    key: 2v4r39sq
+                    action:
+                      key: nwkil516
+                    followUpAction:
+                      key: e4pqhvhe
+                      action:
+                        key: edsl5w4z
+                      followUpAction:
+                        key: 106aolhs
+                        action:
+                          key: t1q0f8nj
+                        followUpAction:
+                          key: q1s6hwcs
+                          action:
+                            key: sezydxci
+                          followUpAction:
+                            key: kpkr3ov7
+                            action:
+                              key: 1450wj6y
+                            followUpAction:
+                              key: ask8umwg
+                              conditionActions:
+                                falseAction:
+                                  key: bdkpqw9f
+                                  action:
+                                    key: 3locugqu
+                                  followUpAction:
+                                    key: zqz9dgb3
+                                    terminate: {}
+                                trueActions:
+                                  - condition:
+                                      confirmationDialogResponse: {}
+                                    trueAction:
+                                      key: yzz7m5h7
+                                      action:
+                                        key: uiej2zkt
+                                      followUpAction:
+                                        key: tzwvd2jk
+                                        action:
+                                          key: b2pvknv3
+                                        followUpAction:
+                                          key: iq9xnkg6
+                                          action:
+                                            key: nqpbyw1e
+                                          followUpAction:
+                                            key: vu2y5urs
+                                            action:
+                                              key: 4216gkkr
+                                            followUpAction:
+                                              key: or92toel
+                                              terminate: {}
+                                hasMultiConditions: false
+                                key: z6ymuwcx
+trigger:
+  triggerType: ON_TAP

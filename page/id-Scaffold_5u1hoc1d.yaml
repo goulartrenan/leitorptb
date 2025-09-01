@@ -1,0 +1,12 @@
+name: HomePage
+params: {}
+node:
+  key: Scaffold_5u1hoc1d
+classModel:
+  stateFields:
+    - parameter:
+        identifier:
+          name: horas
+          key: o7qii
+        dataType:
+          scalarType: DateTime

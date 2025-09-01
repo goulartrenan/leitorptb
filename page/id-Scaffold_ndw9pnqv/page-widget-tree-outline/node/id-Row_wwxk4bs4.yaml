@@ -1,0 +1,7 @@
+key: Row_wwxk4bs4
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+  expanded:
+    expandedType: FLEXIBLE

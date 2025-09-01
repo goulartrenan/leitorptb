@@ -1,0 +1,21 @@
+rootAction:
+  key: 41ip17jh
+  action:
+    key: tiwd2ind
+  followUpAction:
+    key: ei1tl5jx
+    conditionActions:
+      falseAction:
+        key: 8egupa29
+        terminate: {}
+      trueActions:
+        - condition:
+            confirmationDialogResponse: {}
+          trueAction:
+            key: 1o9ci3ek
+            action:
+              key: lej7e8u8
+      hasMultiConditions: false
+      key: pzcho0r0
+trigger:
+  triggerType: ON_TAP

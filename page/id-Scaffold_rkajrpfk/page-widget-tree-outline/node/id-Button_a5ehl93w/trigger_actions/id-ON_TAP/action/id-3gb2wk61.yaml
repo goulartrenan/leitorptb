@@ -1,0 +1,23 @@
+snackBar:
+  textMessage:
+    inputValue:
+      serializedValue: Cadastro Realizado Com Sucesso!
+  textStyle:
+    themeStyle: TITLE_MEDIUM
+    variableColor:
+      inputValue:
+        color:
+          themeColor: SECONDARY_BACKGROUND
+    fontWeightValue:
+      inputValue: w800
+  durationMillis: 4000
+  subAction:
+    action:
+      navigate:
+        allowBack: true
+  shouldHidePreviousSnackbar: false
+  backgroundColor:
+    inputValue:
+      color:
+        value: "4279713589"
+key: 3gb2wk61

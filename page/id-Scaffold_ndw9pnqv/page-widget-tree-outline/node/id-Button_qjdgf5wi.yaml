@@ -1,0 +1,62 @@
+key: Button_qjdgf5wi
+type: Button
+props:
+  button:
+    text:
+      themeStyle: LABEL_LARGE
+      isCustomFont: false
+      translationIdentifier:
+        key: klqrd3q3
+      textValue:
+        inputValue: Gravar
+      colorValue:
+        inputValue:
+          themeColor: INFO
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 110
+      height:
+        pixelsValue:
+          inputValue: 40
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4285932335"
+    iconValue:
+      inputValue:
+        iconDataValue:
+          inputValue:
+            codePoint: 58737
+            family: MaterialIcons
+            matchTextDirection: true
+            name: send
+  padding:
+    leftValue:
+      inputValue: 0
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+themeWidgetInfo: {}
+valueKey: {}
+featurePresence:
+  hasTextShadows: true

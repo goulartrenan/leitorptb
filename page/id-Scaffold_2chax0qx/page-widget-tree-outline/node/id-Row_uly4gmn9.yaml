@@ -1,0 +1,16 @@
+key: Row_uly4gmn9
+type: Row
+props:
+  row:
+    listSpacing: {}
+  padding:
+    topValue:
+      inputValue: 5
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

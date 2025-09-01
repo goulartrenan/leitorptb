@@ -1,0 +1,296 @@
+database:
+  sqliteQueryCall:
+    queryIdentifier:
+      key: 6sdvq
+    variables:
+      - variableIdentifier:
+          key: ir84i7
+        value:
+          variable:
+            source: WIDGET_CLASS_PARAMETER
+            baseVariable:
+              widgetClass:
+                paramIdentifier:
+                  name: altria
+                  key: gi3hdd
+            nodeKeyRef:
+              key: Scaffold_ndw9pnqv
+      - variableIdentifier:
+          key: kj4vhb
+        value:
+          variable:
+            source: WIDGET_CLASS_PARAMETER
+            baseVariable:
+              widgetClass:
+                paramIdentifier:
+                  name: ladoA
+                  key: qzpgup
+            nodeKeyRef:
+              key: Scaffold_ndw9pnqv
+      - variableIdentifier:
+          key: ss7whq
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_mdcfflxt
+      - variableIdentifier:
+          key: xd54n0
+        value:
+          variable:
+            source: GLOBAL_PROPERTIES
+            baseVariable:
+              globalProperties:
+                property: CURRENT_TIMESTAMP
+      - variableIdentifier:
+          key: ydp4ki
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: DropDown_4c1ei9as
+      - variableIdentifier:
+          key: 90tz4z
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: DropDown_9vyscia4
+      - variableIdentifier:
+          key: 9e1enx
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: DropDown_n6zxxux8
+      - variableIdentifier:
+          key: 3qb2e9
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_fyj8yral
+      - variableIdentifier:
+          key: xtwr0y
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_cgmyv4ed
+      - variableIdentifier:
+          key: dx16p3
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_v4xekyil
+      - variableIdentifier:
+          key: qa2dvc
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_vdnk66em
+      - variableIdentifier:
+          key: ln4nlk
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_uymvhoex
+      - variableIdentifier:
+          key: 0si3gu
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_4p6d3xgz
+      - variableIdentifier:
+          key: dwliom
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_6m0io413
+      - variableIdentifier:
+          key: 1mkm2i
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_m80dvaze
+      - variableIdentifier:
+          key: fmemj8
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_mq439c8t
+      - variableIdentifier:
+          key: obizue
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_jid686oz
+      - variableIdentifier:
+          key: syqm4z
+        value:
+          variable:
+            source: WIDGET_CLASS_PARAMETER
+            baseVariable:
+              widgetClass:
+                paramIdentifier:
+                  name: ladoB
+                  key: mc90pj
+            nodeKeyRef:
+              key: Scaffold_ndw9pnqv
+    isRead: false
+key: uiej2zkt

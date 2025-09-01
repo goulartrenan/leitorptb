@@ -1,0 +1,23 @@
+key: Text_ur4ipqi3
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: jz8kssgd
+    selectable: false
+    textValue:
+      inputValue: "\"Vol Salvo\""
+    colorValue:
+      inputValue:
+        value: "4279713589"
+  padding:
+    leftValue:
+      inputValue: 20
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE

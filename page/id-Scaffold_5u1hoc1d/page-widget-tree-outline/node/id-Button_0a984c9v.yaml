@@ -1,0 +1,72 @@
+key: Button_0a984c9v
+type: Button
+props:
+  button:
+    text:
+      themeStyle: TITLE_SMALL
+      translationIdentifier:
+        key: zvqvl362
+      shadows:
+        - color:
+            inputValue:
+              color:
+                themeColor: SECONDARY_TEXT
+          dx:
+            inputValue:
+              serializedValue: "2"
+          dy:
+            inputValue:
+              serializedValue: "2"
+          blurRadius:
+            inputValue:
+              serializedValue: "4"
+      textValue:
+        inputValue: Sincronizar
+      fontSizeValue:
+        inputValue: 20
+      colorValue:
+        inputValue:
+          value: "4294967295"
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 150
+      height:
+        pixelsValue:
+          inputValue: 60
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4285932335"
+    iconValue:
+      inputValue:
+        sizeValue:
+          inputValue: 20
+        iconDataValue:
+          inputValue:
+            codePoint: 57640
+            family: MaterialIcons
+            matchTextDirection: true
+            name: call_made
+  padding:
+    type: FF_PADDING_ALL
+    allValue:
+      inputValue: 24
+  expanded:
+    expandedType: FLEXIBLE
+  opacity:
+    opacityValue:
+      inputValue: 0
+name: Sincronizar
+featurePresence:
+  hasTextShadows: true

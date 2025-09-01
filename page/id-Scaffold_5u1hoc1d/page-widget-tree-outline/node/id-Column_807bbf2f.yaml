@@ -1,0 +1,23 @@
+key: Column_807bbf2f
+type: Column
+props:
+  column:
+    mainAxisAlignment: main_axis_start
+    scrollable: true
+    primary: true
+    listSpacing: {}
+    minSizeValue:
+      inputValue: true
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: -1
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

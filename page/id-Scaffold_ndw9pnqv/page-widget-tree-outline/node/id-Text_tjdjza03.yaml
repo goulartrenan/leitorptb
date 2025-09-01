@@ -1,0 +1,46 @@
+key: Text_tjdjza03
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: BODY_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: qdpnv9hs
+    selectable: false
+    textValue:
+      inputValue: "Lado A "
+    fontSizeValue:
+      inputValue: 20
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+    textAlignValue:
+      inputValue: ALIGN_START
+  padding:
+    leftValue:
+      inputValue: 5
+      mostRecentInputValue: 5
+    topValue:
+      inputValue: 20
+    bottomValue:
+      inputValue: 10
+      mostRecentInputValue: 10
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: UNEXPANDED
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: lado_a
+parameterValues: {}
+valueKey: {}

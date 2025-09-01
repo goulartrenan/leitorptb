@@ -1,0 +1,6 @@
+identifier:
+  name: buscaOperacaoJMC
+  key: ayqhs
+returnParameter:
+  dataType:
+    scalarType: String

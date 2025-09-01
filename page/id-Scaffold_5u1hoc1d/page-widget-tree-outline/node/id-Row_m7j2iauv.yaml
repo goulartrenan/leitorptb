@@ -1,0 +1,16 @@
+key: Row_m7j2iauv
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+    crossAxisAlignment: cross_axis_center
+  padding:
+    topValue:
+      inputValue: 60
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE

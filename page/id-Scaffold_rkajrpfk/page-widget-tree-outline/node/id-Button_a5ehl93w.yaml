@@ -1,0 +1,87 @@
+key: Button_a5ehl93w
+type: Button
+props:
+  button:
+    text:
+      fontFamily: Open Sans
+      themeStyle: TITLE_SMALL
+      isCustomFont: false
+      translationIdentifier:
+        key: lso9l6y3
+      textValue:
+        inputValue: Salvar
+      fontSizeValue:
+        inputValue: 16
+        mostRecentInputValue: 16
+      colorValue:
+        inputValue:
+          themeColor: SECONDARY_BACKGROUND
+      fontWeightValue:
+        inputValue: w500
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+        mostRecentInputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 24
+        mostRecentInputValue: 24
+      rightValue:
+        inputValue: 24
+        mostRecentInputValue: 24
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: Infinity
+          mostRecentInputValue: Infinity
+      height:
+        pixelsValue:
+          inputValue: 48
+          mostRecentInputValue: 48
+    elevationValue:
+      inputValue: 3
+      mostRecentInputValue: 3
+    fillColorValue:
+      inputValue:
+        value: "4285932335"
+    borderColorValue:
+      inputValue:
+        value: "0"
+      mostRecentInputValue:
+        value: "0"
+    borderWidthValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    iconValue:
+      inputValue:
+        sizeValue:
+          inputValue: 20
+        iconDataValue:
+          inputValue:
+            codePoint: 58704
+            family: MaterialIcons
+            matchTextDirection: false
+            name: save
+  padding:
+    leftValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    topValue:
+      inputValue: 12
+      mostRecentInputValue: 12
+    rightValue:
+      inputValue: 16
+      mostRecentInputValue: 16
+    bottomValue:
+      inputValue: 12
+      mostRecentInputValue: 12
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: salvar_operacao
+parameterValues: {}
+valueKey: {}

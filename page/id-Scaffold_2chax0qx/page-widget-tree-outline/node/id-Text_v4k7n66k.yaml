@@ -1,0 +1,44 @@
+key: Text_v4k7n66k
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: BODY_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: ho2b31w3
+    selectable: false
+    textValue:
+      inputValue: Lado B
+    fontSizeValue:
+      inputValue: 20
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+    textAlignValue:
+      inputValue: ALIGN_START
+  padding:
+    leftValue:
+      inputValue: 5
+      mostRecentInputValue: 5
+    topValue:
+      inputValue: 20
+    bottomValue:
+      inputValue: 10
+      mostRecentInputValue: 10
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: lado_b
+parameterValues: {}
+valueKey: {}

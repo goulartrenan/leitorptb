@@ -1,0 +1,31 @@
+key: Container_jyixg5r3
+type: Container
+props:
+  container:
+    dimensions: {}
+    boxDecoration:
+      boxShadow: {}
+      image: {}
+    maxDimensions:
+      width:
+        pixelsValue:
+          inputValue: 1270
+          mostRecentInputValue: 1270
+    minDimensions: {}
+  alignment:
+    xValue:
+      inputValue: 0
+      mostRecentInputValue: 0
+    yValue:
+      inputValue: -1
+      mostRecentInputValue: -1
+  expanded:
+    expandedType: UNEXPANDED
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+name: max-width
+parameterValues: {}
+valueKey: {}

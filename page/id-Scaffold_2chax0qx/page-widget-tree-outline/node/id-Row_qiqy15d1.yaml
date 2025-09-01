@@ -1,0 +1,8 @@
+key: Row_qiqy15d1
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around
+  padding:
+    topValue:
+      inputValue: 0

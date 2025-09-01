@@ -1,0 +1,10 @@
+key: Form_hescm42u
+type: Form
+props:
+  form:
+    validations:
+      - isRequired: true
+        dropDown: {}
+        nodeKeyRef:
+          key: DropDown_0bgxqa1y
+    autovalidateMode: ALWAYS

@@ -1,0 +1,23 @@
+key: Text_8i4vduoa
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: ko34pp5r
+    selectable: false
+    textValue:
+      inputValue: "\"Caixas Lidas\""
+    colorValue:
+      inputValue:
+        value: "4279713589"
+  padding:
+    leftValue:
+      inputValue: 20
+  alignment:
+    xValue:
+      inputValue: -1
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: FLEXIBLE

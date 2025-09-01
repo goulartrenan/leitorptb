@@ -1,0 +1,35 @@
+key: Text_i4jwfsz6
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: BODY_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: fyz31djp
+    selectable: false
+    textValue:
+      inputValue: "Codigo 3:"
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+  padding:
+    leftValue:
+      inputValue: 5
+      mostRecentInputValue: 5
+    topValue:
+      inputValue: 10
+      mostRecentInputValue: 10
+    bottomValue:
+      inputValue: 10
+      mostRecentInputValue: 10
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

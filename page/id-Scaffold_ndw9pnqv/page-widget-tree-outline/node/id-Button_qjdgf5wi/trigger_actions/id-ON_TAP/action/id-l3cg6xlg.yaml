@@ -1,0 +1,541 @@
+key: l3cg6xlg
+disableAction:
+  actionNode:
+    key: fkcl7xs6
+    action:
+      validateFormAction:
+        formNodeKeyPath:
+          keyPath:
+            - key: Form_5dkxwexh
+      key: l3cg6xlg
+    followUpAction:
+      key: t8or5s53
+      action:
+        validateFormAction:
+          formNodeKeyPath:
+            keyPath:
+              - key: Form_pleel1i4
+        key: 8h0ixpxh
+      followUpAction:
+        key: zc88i0rj
+        action:
+          validateFormAction:
+            formNodeKeyPath:
+              keyPath:
+                - key: Form_sl9g967z
+          key: gyvoa0w8
+        followUpAction:
+          key: 1qqkrcs1
+          action:
+            validateFormAction:
+              formNodeKeyPath:
+                keyPath:
+                  - key: Form_1imdvfzf
+            key: 3d4dmhl8
+          followUpAction:
+            key: os5s3abe
+            action:
+              validateFormAction:
+                formNodeKeyPath:
+                  keyPath:
+                    - key: Form_vlke6jzg
+              key: a0op3u2n
+            followUpAction:
+              key: yx5bvr65
+              action:
+                validateFormAction:
+                  formNodeKeyPath:
+                    keyPath:
+                      - key: Form_zjqcfbpu
+                key: 7829sz18
+              followUpAction:
+                key: rox9fzn4
+                action:
+                  validateFormAction:
+                    formNodeKeyPath:
+                      keyPath:
+                        - key: Form_kcg74j9u
+                  key: 3ultx9kd
+                followUpAction:
+                  key: 1cgskgwh
+                  action:
+                    validateFormAction:
+                      formNodeKeyPath:
+                        keyPath:
+                          - key: Form_8b5v8e39
+                    key: rysg71jh
+                  followUpAction:
+                    key: 2v4r39sq
+                    action:
+                      validateFormAction:
+                        formNodeKeyPath:
+                          keyPath:
+                            - key: Form_4cxbpdkj
+                      key: nwkil516
+                    followUpAction:
+                      key: e4pqhvhe
+                      action:
+                        validateFormAction:
+                          formNodeKeyPath:
+                            keyPath:
+                              - key: Form_iqyp5rya
+                        key: edsl5w4z
+                      followUpAction:
+                        key: 106aolhs
+                        action:
+                          validateFormAction:
+                            formNodeKeyPath:
+                              keyPath:
+                                - key: Form_5omsnsrv
+                          key: t1q0f8nj
+                        followUpAction:
+                          key: q1s6hwcs
+                          action:
+                            validateFormAction:
+                              formNodeKeyPath:
+                                keyPath:
+                                  - key: Form_z4qgh98a
+                            key: sezydxci
+                          followUpAction:
+                            key: kpkr3ov7
+                            action:
+                              alertDialog:
+                                confirmDialog:
+                                  title:
+                                    inputValue:
+                                      serializedValue: Salvando
+                                  message:
+                                    inputValue:
+                                      serializedValue: Deseja salvar o registro?
+                                  dismissText:
+                                    inputValue:
+                                      serializedValue: Cancelar
+                                  confirmText:
+                                    inputValue:
+                                      serializedValue: Confirmar
+                              key: 1450wj6y
+                            followUpAction:
+                              key: ask8umwg
+                              conditionActions:
+                                falseAction:
+                                  key: bdkpqw9f
+                                  action:
+                                    snackBar:
+                                      textMessage:
+                                        inputValue:
+                                          serializedValue: Cancelado!
+                                      textStyle:
+                                        fontFamily: Open Sans
+                                        isCustomFont: false
+                                        variableColor:
+                                          inputValue:
+                                            color:
+                                              themeColor: SECONDARY_BACKGROUND
+                                        fontWeightValue:
+                                          inputValue: w700
+                                      durationMillis: 4000
+                                      subAction:
+                                        action:
+                                          navigate:
+                                            allowBack: true
+                                      shouldHidePreviousSnackbar: false
+                                      backgroundColor:
+                                        inputValue:
+                                          color:
+                                            value: "4279713589"
+                                    key: 3locugqu
+                                  followUpAction:
+                                    key: zqz9dgb3
+                                    terminate: {}
+                                trueActions:
+                                  - condition:
+                                      confirmationDialogResponse: {}
+                                    trueAction:
+                                      key: yzz7m5h7
+                                      action:
+                                        database:
+                                          sqliteQueryCall:
+                                            queryIdentifier:
+                                              key: 6sdvq
+                                            variables:
+                                              - variableIdentifier:
+                                                  key: ir84i7
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_CLASS_PARAMETER
+                                                    baseVariable:
+                                                      widgetClass:
+                                                        paramIdentifier:
+                                                          name: altria
+                                                          key: gi3hdd
+                                                    nodeKeyRef:
+                                                      key: Scaffold_ndw9pnqv
+                                              - variableIdentifier:
+                                                  key: kj4vhb
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_CLASS_PARAMETER
+                                                    baseVariable:
+                                                      widgetClass:
+                                                        paramIdentifier:
+                                                          name: ladoA
+                                                          key: qzpgup
+                                                    nodeKeyRef:
+                                                      key: Scaffold_ndw9pnqv
+                                              - variableIdentifier:
+                                                  key: ss7whq
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_mdcfflxt
+                                              - variableIdentifier:
+                                                  key: xd54n0
+                                                value:
+                                                  variable:
+                                                    source: GLOBAL_PROPERTIES
+                                                    baseVariable:
+                                                      globalProperties:
+                                                        property: CURRENT_TIMESTAMP
+                                              - variableIdentifier:
+                                                  key: ydp4ki
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: DropDown_4c1ei9as
+                                              - variableIdentifier:
+                                                  key: 90tz4z
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: DropDown_9vyscia4
+                                              - variableIdentifier:
+                                                  key: 9e1enx
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: DropDown_n6zxxux8
+                                              - variableIdentifier:
+                                                  key: 3qb2e9
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_fyj8yral
+                                              - variableIdentifier:
+                                                  key: xtwr0y
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_cgmyv4ed
+                                              - variableIdentifier:
+                                                  key: dx16p3
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_v4xekyil
+                                              - variableIdentifier:
+                                                  key: qa2dvc
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_vdnk66em
+                                              - variableIdentifier:
+                                                  key: ln4nlk
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_uymvhoex
+                                              - variableIdentifier:
+                                                  key: 0si3gu
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_4p6d3xgz
+                                              - variableIdentifier:
+                                                  key: dwliom
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_6m0io413
+                                              - variableIdentifier:
+                                                  key: 1mkm2i
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_m80dvaze
+                                              - variableIdentifier:
+                                                  key: fmemj8
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_mq439c8t
+                                              - variableIdentifier:
+                                                  key: obizue
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_STATE
+                                                    baseVariable:
+                                                      widgetState:
+                                                        returnParameter:
+                                                          allowedDestinationTypes:
+                                                            - Integer
+                                                            - Double
+                                                            - Boolean
+                                                            - ImagePath
+                                                            - VideoPath
+                                                            - AudioPath
+                                                          dataType:
+                                                            scalarType: String
+                                                    nodeKeyRef:
+                                                      key: TextField_jid686oz
+                                              - variableIdentifier:
+                                                  key: syqm4z
+                                                value:
+                                                  variable:
+                                                    source: WIDGET_CLASS_PARAMETER
+                                                    baseVariable:
+                                                      widgetClass:
+                                                        paramIdentifier:
+                                                          name: ladoB
+                                                          key: mc90pj
+                                                    nodeKeyRef:
+                                                      key: Scaffold_ndw9pnqv
+                                            isRead: false
+                                        key: uiej2zkt
+                                      followUpAction:
+                                        key: tzwvd2jk
+                                        action:
+                                          snackBar:
+                                            textMessage:
+                                              inputValue:
+                                                serializedValue: Registro Salvo com Sucesso!
+                                            textStyle:
+                                              themeStyle: TITLE_MEDIUM
+                                              variableColor:
+                                                inputValue:
+                                                  color:
+                                                    themeColor: SECONDARY_BACKGROUND
+                                              fontSizeValue:
+                                                inputValue: 20
+                                              fontWeightValue:
+                                                inputValue: w700
+                                            durationMillis: 2000
+                                            subAction:
+                                              action:
+                                                navigate:
+                                                  allowBack: true
+                                            shouldHidePreviousSnackbar: false
+                                            backgroundColor:
+                                              inputValue:
+                                                color:
+                                                  value: "4279713589"
+                                          key: b2pvknv3
+                                        followUpAction:
+                                          key: iq9xnkg6
+                                          action:
+                                            clearTextFieldAction:
+                                              nodeKeyPaths:
+                                                - keyPath:
+                                                    - key: TextField_mdcfflxt
+                                                - keyPath:
+                                                    - key: TextField_fyj8yral
+                                                - keyPath:
+                                                    - key: TextField_cgmyv4ed
+                                                - keyPath:
+                                                    - key: TextField_v4xekyil
+                                                - keyPath:
+                                                    - key: TextField_4p6d3xgz
+                                                - keyPath:
+                                                    - key: TextField_6m0io413
+                                                - keyPath:
+                                                    - key: TextField_m80dvaze
+                                                - keyPath:
+                                                    - key: TextField_vdnk66em
+                                                - keyPath:
+                                                    - key: TextField_uymvhoex
+                                                - keyPath:
+                                                    - key: TextField_mq439c8t
+                                                - keyPath:
+                                                    - key: TextField_jid686oz
+                                            key: nqpbyw1e
+                                          followUpAction:
+                                            key: vu2y5urs
+                                            action:
+                                              key: 4216gkkr
+                                              resetFormField:
+                                                widgetType: TextField
+                                                nodeKeyPaths:
+                                                  - keyPath:
+                                                      - key: TextField_mdcfflxt
+                                                  - keyPath:
+                                                      - key: TextField_fyj8yral
+                                                  - keyPath:
+                                                      - key: TextField_cgmyv4ed
+                                                  - keyPath:
+                                                      - key: TextField_v4xekyil
+                                                  - keyPath:
+                                                      - key: TextField_vdnk66em
+                                                  - keyPath:
+                                                      - key: TextField_uymvhoex
+                                                  - keyPath:
+                                                      - key: TextField_4p6d3xgz
+                                                  - keyPath:
+                                                      - key: TextField_6m0io413
+                                                  - keyPath:
+                                                      - key: TextField_m80dvaze
+                                                  - keyPath:
+                                                      - key: TextField_mq439c8t
+                                                  - keyPath:
+                                                      - key: TextField_jid686oz
+                                            followUpAction:
+                                              key: or92toel
+                                              terminate: {}
+                                hasMultiConditions: false
+                                key: z6ymuwcx

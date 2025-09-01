@@ -1,0 +1,32 @@
+key: Image_rxjzhe4m
+type: Image
+props:
+  image:
+    type: FF_IMAGE_TYPE_ASSET
+    fit: FF_BOX_FIT_FIT_HEIGHT
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 330
+      height:
+        pixelsValue:
+          inputValue: 81.38888888888886
+          mostRecentInputValue: 120
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+        mostRecentInputValue: 8
+    hasDarkModeAsset: false
+    cacheFadeDuration: 500
+    pathValue:
+      inputValue: projects/leitorptbhmg-sxp4s7/assets/rd9v1ixdtxm0/logo_horizontal_colorido.png
+      mostRecentInputValue: projects/leitorptbhmg-sxp4s7/assets/rd9v1ixdtxm0/logo_horizontal_colorido.png
+    format: FF_IMAGE_FORMAT_AUTO
+  padding:
+    topValue:
+      inputValue: 10
+    bottomValue:
+      inputValue: 20
+  expanded:
+    expandedType: FLEXIBLE

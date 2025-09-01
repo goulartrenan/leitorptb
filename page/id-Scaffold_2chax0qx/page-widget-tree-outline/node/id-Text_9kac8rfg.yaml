@@ -1,0 +1,15 @@
+key: Text_9kac8rfg
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: jza9rwqz
+    selectable: false
+    textValue:
+      inputValue: Contador
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700

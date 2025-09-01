@@ -1,0 +1,41 @@
+name: jmc_page
+description: ""
+params:
+  tz4qdr:
+    identifier:
+      name: jmc
+      key: tz4qdr
+    dataType:
+      scalarType: String
+      nonNullable: true
+  fnl8fv:
+    identifier:
+      name: ladoA
+      key: fnl8fv
+    dataType:
+      scalarType: String
+      nonNullable: true
+  ickdq9:
+    identifier:
+      name: ladoB
+      key: ickdq9
+    dataType:
+      scalarType: String
+      nonNullable: true
+node:
+  key: Scaffold_2chax0qx
+pageRouteSettings:
+  routePath: jmc_page
+classModel:
+  stateFields:
+    - parameter:
+        identifier:
+          name: jmcinsert
+          key: 5kxse
+        dataType:
+          listType:
+            scalarType: DataStruct
+          subType:
+            dataStructIdentifier:
+              name: jmcinsertdatabase
+              key: iap9y

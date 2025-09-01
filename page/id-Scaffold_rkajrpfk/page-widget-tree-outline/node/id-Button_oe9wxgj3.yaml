@@ -1,0 +1,51 @@
+key: Button_oe9wxgj3
+type: Button
+props:
+  button:
+    text:
+      themeStyle: TITLE_SMALL
+      translationIdentifier:
+        key: ebcszqrv
+      textValue:
+        inputValue: Inicio
+      fontSizeValue:
+        inputValue: 12
+      colorValue:
+        inputValue:
+          value: "4294967295"
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 100
+      height:
+        pixelsValue:
+          inputValue: 40
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4279713589"
+    iconValue:
+      inputValue:
+        iconDataValue:
+          inputValue:
+            codePoint: 58137
+            family: MaterialIcons
+            matchTextDirection: false
+            name: home_filled
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+name: Inicio
+valueKey: {}

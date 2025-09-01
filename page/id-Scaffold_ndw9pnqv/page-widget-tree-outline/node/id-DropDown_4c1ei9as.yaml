@@ -1,0 +1,121 @@
+key: DropDown_4c1ei9as
+type: DropDown
+props:
+  padding:
+    type: FF_PADDING_ALL
+    allValue:
+      inputValue: 6
+  expanded:
+    expandedType: FLEXIBLE
+  dropDown:
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 170
+      height:
+        pixelsValue:
+          inputValue: 40
+    textStyle:
+      themeStyle: BODY_MEDIUM
+    margin:
+      leftValue:
+        inputValue: 12
+      rightValue:
+        inputValue: 12
+    hintText:
+      translationIdentifier:
+        key: lckv02k5
+      textValue:
+        inputValue: Defina a classe
+    optionsHasKeyValues: false
+    valueType:
+      dataType:
+        scalarType: String
+    isSearchable: true
+    searchHintText:
+      themeStyle: LABEL_MEDIUM
+      translationIdentifier:
+        key: uhuo9h0g
+      textValue:
+        inputValue: Buscar
+    fixPosition: true
+    searchTextStyle:
+      themeStyle: BODY_MEDIUM
+    label:
+      themeStyle: LABEL_MEDIUM
+    fillColorValue:
+      inputValue:
+        themeColor: SECONDARY_BACKGROUND
+    elevationValue:
+      inputValue: 2
+    borderRadiusValue:
+      inputValue: 8
+    borderColorValue:
+      inputValue:
+        value: "4279713589"
+    borderWidthValue:
+      inputValue: 0
+    hidesUnderlineValue:
+      inputValue: true
+    iconValue:
+      inputValue:
+        sizeValue:
+          inputValue: 24
+        colorValue:
+          inputValue:
+            themeColor: SECONDARY_TEXT
+        iconDataValue:
+          inputValue:
+            codePoint: 63531
+            family: MaterialIcons
+            matchTextDirection: false
+            name: keyboard_arrow_down_rounded
+    initialOptionKeyValue:
+      values:
+        - serializedValue: ""
+    optionsLabels:
+      variable:
+        source: SQLITE_QUERY
+        baseVariable:
+          sqlite: {}
+        operations:
+          - listMapOperation:
+              listMapVariable:
+                source: LIST_MAP
+                defaultValue:
+                  serializedValue: "-"
+                baseVariable:
+                  listMap:
+                    containingParentReturnParameter:
+                      dataType:
+                        listType:
+                          scalarType: SQLiteRow
+                        subType:
+                          sqliteQueryIdentifier:
+                            key: onm23
+                operations:
+                  - accessSqliteRowColumn:
+                      columnIdentifier:
+                        name: classe
+                        key: 408q2s
+        nodeKeyRef:
+          key: DropDown_4c1ei9as
+    optionsValues: {}
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+name: classebd
+databaseRequest:
+  returnParameter:
+    dataType:
+      listType:
+        scalarType: SQLiteRow
+      subType:
+        sqliteQueryIdentifier:
+          key: ponr1
+  sqlite:
+    queryIdentifier:
+      key: ponr1
+valueKey: {}

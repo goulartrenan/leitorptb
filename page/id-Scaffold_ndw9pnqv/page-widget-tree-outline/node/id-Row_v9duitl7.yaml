@@ -1,0 +1,23 @@
+key: Row_v9duitl7
+type: Row
+props:
+  row:
+    scrollable: false
+    listSpacing: {}
+  padding:
+    type: FF_PADDING_ONLY
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: UNEXPANDED
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

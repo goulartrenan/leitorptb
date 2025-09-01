@@ -1,0 +1,36 @@
+key: Text_zlsi2uxe
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: HEADLINE_LARGE
+    isCustomFont: false
+    translationIdentifier:
+      key: b4w2tmrt
+    selectable: false
+    textValue:
+      inputValue: "Selecione o cliente:"
+    fontSizeValue:
+      inputValue: 22
+    fontWeightValue:
+      inputValue: w700
+  padding:
+    bottomValue:
+      inputValue: 25
+  alignment:
+    xValue:
+      inputValue: 0
+      mostRecentInputValue: 0
+    yValue:
+      inputValue: 0
+      mostRecentInputValue: 0
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

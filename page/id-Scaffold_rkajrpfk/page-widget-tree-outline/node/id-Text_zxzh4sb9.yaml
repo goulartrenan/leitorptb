@@ -1,0 +1,26 @@
+key: Text_zxzh4sb9
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: LABEL_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: zk945ok4
+    selectable: false
+    textValue:
+      inputValue: Cadastro JMC
+    fontSizeValue:
+      inputValue: 30
+    colorValue:
+      inputValue:
+        themeColor: SECONDARY_BACKGROUND
+    fontWeightValue:
+      inputValue: w500
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+parameterValues: {}
+valueKey: {}

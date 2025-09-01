@@ -1,0 +1,12 @@
+key: Form_pgxkhn72
+type: Form
+props:
+  padding: {}
+  responsiveVisibility: {}
+  form: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+parameterValues: {}
+valueKey: {}

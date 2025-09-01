@@ -1,0 +1,10 @@
+rootAction:
+  key: j7ntnz27
+  action:
+    key: 74v699b5
+  followUpAction:
+    key: s2rg6kw0
+    action:
+      key: dwpkc511
+trigger:
+  triggerType: ON_INIT_STATE

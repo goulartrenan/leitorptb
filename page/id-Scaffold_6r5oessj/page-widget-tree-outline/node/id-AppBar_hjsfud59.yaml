@@ -1,0 +1,18 @@
+key: AppBar_hjsfud59
+type: AppBar
+props:
+  appBar:
+    height:
+      pixelsValue:
+        inputValue: 40
+    templateType: LARGE_HEADER
+    titleInFlexibleSpaceBar: false
+    defaultBackButtonValue:
+      inputValue: false
+    backgroundColorValue:
+      inputValue:
+        value: "4285932335"
+    elevationValue:
+      inputValue: 2
+    centerTitleValue:
+      inputValue: false

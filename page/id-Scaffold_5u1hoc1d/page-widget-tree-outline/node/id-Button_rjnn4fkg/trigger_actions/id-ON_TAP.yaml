@@ -1,0 +1,6 @@
+rootAction:
+  key: 6zdzz9tk
+  action:
+    key: dbsqrbuz
+trigger:
+  triggerType: ON_TAP

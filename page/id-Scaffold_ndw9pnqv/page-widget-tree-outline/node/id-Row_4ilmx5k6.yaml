@@ -1,0 +1,9 @@
+key: Row_4ilmx5k6
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_evenly
+    minSizeValue:
+      inputValue: false
+  expanded:
+    expandedType: FLEXIBLE

@@ -1,0 +1,16 @@
+key: Row_rzlix2sj
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_center
+    listSpacing: {}
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+parameterValues: {}
+valueKey: {}

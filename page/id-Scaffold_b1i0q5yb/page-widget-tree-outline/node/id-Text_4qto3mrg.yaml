@@ -1,0 +1,27 @@
+key: Text_4qto3mrg
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    autoSize: false
+    translationIdentifier:
+      key: 1296w1ba
+    selectable: false
+    textValue:
+      inputValue: Classe
+    fontSizeValue:
+      inputValue: 18
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+    textAlignValue:
+      inputValue: ALIGN_START
+  alignment:
+    xValue:
+      inputValue: -1
+    yValue:
+      inputValue: 0
+  expanded:
+    expandedType: UNEXPANDED

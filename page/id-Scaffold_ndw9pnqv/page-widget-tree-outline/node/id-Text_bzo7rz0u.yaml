@@ -1,0 +1,18 @@
+key: Text_bzo7rz0u
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    translationIdentifier:
+      key: gk181u3p
+    selectable: false
+    textValue:
+      inputValue: Contador
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+  expanded:
+    expandedType: FLEXIBLE
+name: Contador

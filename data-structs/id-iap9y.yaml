@@ -1,0 +1,95 @@
+identifier:
+  name: jmcinsertdatabase
+  key: iap9y
+fields:
+  - identifier:
+      name: codigo1_a
+      key: noovc
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: codigo1_b
+      key: cvnf9
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: codigo2_a
+      key: 1inpz
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: codigo2_b
+      key: 3iwvf
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: codigo3_a
+      key: y191n
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: codigo3_b
+      key: 6zso7
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: ladoA
+      key: yv5f9
+    defaultValue:
+      serializedValue: ladoA
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: cliente
+      key: 5u1ui
+    defaultValue:
+      serializedValue: JMC
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: nrcaixa
+      key: ppo5r
+    dataType:
+      scalarType: Integer
+    description: ""
+  - identifier:
+      name: data
+      key: 7hhv8
+    dataType:
+      scalarType: DateTime
+    description: ""
+  - identifier:
+      name: classebd
+      key: 5wmcr
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: local
+      key: mm9z6
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: operacaobd
+      key: vj32f
+    dataType:
+      scalarType: String
+    description: ""
+  - identifier:
+      name: ladoB
+      key: 53j3f
+    defaultValue:
+      serializedValue: ladoB
+    dataType:
+      scalarType: String
+    description: ""
+description: ""

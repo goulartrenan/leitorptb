@@ -1,0 +1,25 @@
+key: Text_54j34ual
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    autoSize: false
+    translationIdentifier:
+      key: ppsrk1qr
+    selectable: false
+    textValue:
+      inputValue: Classe
+    fontSizeValue:
+      inputValue: 18
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w700
+    textAlignValue:
+      inputValue: ALIGN_START
+  alignment:
+    xValue:
+      inputValue: -1
+    yValue:
+      inputValue: 0

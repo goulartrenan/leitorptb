@@ -1,0 +1,16 @@
+key: Text_k5d64ipf
+type: Text
+props:
+  text:
+    fontFamily: Open Sans
+    themeStyle: HEADLINE_MEDIUM
+    isCustomFont: false
+    translationIdentifier:
+      key: g4d836ph
+    textValue:
+      inputValue: JMC
+    fontSizeValue:
+      inputValue: 30
+    colorValue:
+      inputValue:
+        themeColor: PRIMARY_BACKGROUND

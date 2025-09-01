@@ -1,0 +1,26 @@
+database:
+  sqliteQueryCall:
+    queryIdentifier:
+      key: gz9au
+    variables:
+      - variableIdentifier:
+          key: nsabj7
+        value:
+          variable:
+            source: WIDGET_STATE
+            baseVariable:
+              widgetState:
+                returnParameter:
+                  allowedDestinationTypes:
+                    - Integer
+                    - Double
+                    - Boolean
+                    - ImagePath
+                    - VideoPath
+                    - AudioPath
+                  dataType:
+                    scalarType: String
+            nodeKeyRef:
+              key: TextField_qzilkupc
+    isRead: false
+key: ibr2bsdw

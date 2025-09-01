@@ -1,0 +1,24 @@
+snackBar:
+  textMessage:
+    inputValue:
+      serializedValue: Cancelado!
+  textStyle:
+    fontFamily: Open Sans
+    isCustomFont: false
+    variableColor:
+      inputValue:
+        color:
+          themeColor: SECONDARY_BACKGROUND
+    fontWeightValue:
+      inputValue: w700
+  durationMillis: 4000
+  subAction:
+    action:
+      navigate:
+        allowBack: true
+  shouldHidePreviousSnackbar: false
+  backgroundColor:
+    inputValue:
+      color:
+        value: "4279713589"
+key: 3locugqu

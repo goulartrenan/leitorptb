@@ -1,0 +1,22 @@
+key: Form_ji6nakw9
+type: Form
+props:
+  padding:
+    type: FF_PADDING_ALL
+    allValue:
+      inputValue: 6
+  expanded:
+    expandedType: EXPANDED
+  form:
+    validations:
+      - isRequired: true
+        dropDown:
+          onValidationError:
+            performActionOnError: false
+        nodeKeyRef:
+          key: DropDown_crjrnh7k
+      - isRequired: true
+        dropDown: {}
+        nodeKeyRef:
+          key: DropDown_yfrxzxnm
+    autovalidateMode: ALWAYS

@@ -1,0 +1,6 @@
+identifier:
+  name: buscaClasseJMC
+  key: 4ck20
+returnParameter:
+  dataType:
+    scalarType: String

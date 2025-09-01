@@ -1,0 +1,8 @@
+key: Column_ua8893cn
+type: Column
+props:
+  column:
+    scrollable: true
+    primary: false
+    listSpacing:
+      applyStartEndSpace: true

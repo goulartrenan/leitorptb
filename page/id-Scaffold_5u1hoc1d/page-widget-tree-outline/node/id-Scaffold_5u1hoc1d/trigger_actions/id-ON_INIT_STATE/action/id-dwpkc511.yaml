@@ -1,0 +1,13 @@
+localStateUpdate:
+  updates:
+    - fieldIdentifier:
+        key: o7qii
+      setValue:
+        variable:
+          source: GLOBAL_PROPERTIES
+          baseVariable:
+            globalProperties:
+              property: CURRENT_TIMESTAMP
+  updateType: WIDGET
+  stateVariableType: WIDGET_CLASS_STATE
+key: dwpkc511

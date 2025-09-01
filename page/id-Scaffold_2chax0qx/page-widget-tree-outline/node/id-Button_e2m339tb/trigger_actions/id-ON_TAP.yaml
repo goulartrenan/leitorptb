@@ -1,0 +1,103 @@
+rootAction:
+  key: qzlopm86
+  action:
+    key: kw9es1z1
+  followUpAction:
+    key: v3gddmxj
+    action:
+      key: 9pa7v171
+    followUpAction:
+      key: irclsrek
+      action:
+        key: ritp5680
+      followUpAction:
+        key: 2ovizzco
+        action:
+          key: pqwdshok
+        followUpAction:
+          key: irxforq1
+          action:
+            key: 2dhdplk7
+          followUpAction:
+            key: 6dt0katp
+            action:
+              key: sugq08ee
+            followUpAction:
+              key: mwjxzjl6
+              action:
+                key: ky85zbvb
+              followUpAction:
+                key: 56cm57ab
+                action:
+                  key: 523npnqf
+                followUpAction:
+                  key: 7qd381jd
+                  action:
+                    key: jby6ebyh
+                  followUpAction:
+                    key: ufh893hn
+                    action:
+                      key: htym2y3i
+                    followUpAction:
+                      key: gv0efepf
+                      conditionActions:
+                        falseAction:
+                          key: nbu0s3dw
+                          action:
+                            key: 3ez2colm
+                          followUpAction:
+                            key: szvhj4cv
+                            terminate: {}
+                        trueActions:
+                          - condition:
+                              confirmationDialogResponse: {}
+                            trueAction:
+                              key: vdf1jj4g
+                              action:
+                                key: 4gw7u7ps
+                              followUpAction:
+                                key: 7606g0y9
+                                action:
+                                  key: dy045oor
+                                followUpAction:
+                                  key: phrrx26k
+                                  action:
+                                    key: ei3ewk8s
+                                  followUpAction:
+                                    key: 6yycymf9
+                                    conditionActions:
+                                      falseAction:
+                                        key: mnhhs326
+                                        terminate: {}
+                                      trueActions:
+                                        - condition:
+                                            confirmationDialogResponse: {}
+                                          trueAction:
+                                            key: c0aydyyf
+                                            action:
+                                              key: r42ri3lj
+                                      hasMultiConditions: false
+                                      key: yrxgupuk
+                                    followUpAction:
+                                      key: j9z77f2z
+                                      action:
+                                        key: sbadlgbr
+                                      followUpAction:
+                                        key: fs92b5ym
+                                        action:
+                                          key: 0v0cbmkz
+                                        followUpAction:
+                                          key: wtn61hwx
+                                          action:
+                                            key: pfk71pbo
+                                          followUpAction:
+                                            key: 30tlzw5i
+                                            action:
+                                              key: unzlays8
+                                            followUpAction:
+                                              key: c87nkpfx
+                                              terminate: {}
+                        hasMultiConditions: false
+                        key: z6ymuwcx
+trigger:
+  triggerType: ON_TAP

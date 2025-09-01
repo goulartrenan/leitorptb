@@ -1,0 +1,26 @@
+key: 4216gkkr
+resetFormField:
+  widgetType: TextField
+  nodeKeyPaths:
+    - keyPath:
+        - key: TextField_mdcfflxt
+    - keyPath:
+        - key: TextField_fyj8yral
+    - keyPath:
+        - key: TextField_cgmyv4ed
+    - keyPath:
+        - key: TextField_v4xekyil
+    - keyPath:
+        - key: TextField_vdnk66em
+    - keyPath:
+        - key: TextField_uymvhoex
+    - keyPath:
+        - key: TextField_4p6d3xgz
+    - keyPath:
+        - key: TextField_6m0io413
+    - keyPath:
+        - key: TextField_m80dvaze
+    - keyPath:
+        - key: TextField_mq439c8t
+    - keyPath:
+        - key: TextField_jid686oz

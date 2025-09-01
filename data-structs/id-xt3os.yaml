@@ -1,0 +1,18 @@
+identifier:
+  name: cadastrojmc
+  key: xt3os
+fields:
+  - identifier:
+      name: classejmc
+      key: nwide
+    defaultValue:
+      serializedValue: "-"
+    dataType:
+      scalarType: String
+  - identifier:
+      name: operacaojmc
+      key: iayd3
+    defaultValue:
+      serializedValue: "-"
+    dataType:
+      scalarType: String

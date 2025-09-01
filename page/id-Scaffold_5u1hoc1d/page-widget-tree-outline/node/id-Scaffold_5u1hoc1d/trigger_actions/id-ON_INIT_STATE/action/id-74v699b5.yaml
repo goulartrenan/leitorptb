@@ -1,0 +1,5 @@
+key: 74v699b5
+startPeriodic:
+  durationMillis: 1000
+  startImmediately: true
+  periodicTimerName: instantTimer

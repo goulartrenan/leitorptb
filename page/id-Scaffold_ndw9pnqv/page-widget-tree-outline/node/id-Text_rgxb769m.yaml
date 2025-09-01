@@ -1,0 +1,48 @@
+key: Text_rgxb769m
+type: Text
+props:
+  text:
+    themeStyle: BODY_MEDIUM
+    autoSize: false
+    translationIdentifier:
+      key: vs5e1n1z
+    selectable: false
+    textValue:
+      inputValue: "\"Vol salvo\""
+    fontSizeValue:
+      inputValue: 14
+    colorValue:
+      inputValue:
+        value: "4279713589"
+    fontWeightValue:
+      inputValue: w400
+    textAlignValue:
+      inputValue: ALIGN_START
+  padding:
+    leftValue:
+      inputValue: 20
+  alignment:
+    xValue:
+      inputValue: 0
+    yValue:
+      inputValue: -1
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+name: ultimo_vol
+databaseRequest:
+  returnParameter:
+    dataType:
+      listType:
+        scalarType: SQLiteRow
+      subType:
+        sqliteQueryIdentifier:
+          key: lx2zb
+  sqlite:
+    queryIdentifier:
+      key: lx2zb
+valueKey: {}

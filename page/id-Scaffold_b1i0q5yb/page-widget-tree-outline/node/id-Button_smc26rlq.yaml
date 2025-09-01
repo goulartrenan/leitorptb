@@ -1,0 +1,47 @@
+key: Button_smc26rlq
+type: Button
+props:
+  button:
+    text:
+      themeStyle: TITLE_SMALL
+      translationIdentifier:
+        key: pb3javwf
+      textValue:
+        inputValue: Voltar
+      fontSizeValue:
+        inputValue: 12
+      colorValue:
+        inputValue:
+          value: "4294967295"
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 100
+      height:
+        pixelsValue:
+          inputValue: 40
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4279713589"
+    iconValue:
+      inputValue:
+        iconDataValue:
+          inputValue:
+            codePoint: 57694
+            family: MaterialIcons
+            matchTextDirection: true
+            name: chevron_left
+  padding:
+    type: FF_PADDING_ALL
+name: Voltar

@@ -1,0 +1,62 @@
+key: Button_e7c6s87l
+type: Button
+props:
+  button:
+    text:
+      themeStyle: TITLE_SMALL
+      translationIdentifier:
+        key: tah0qjjb
+      shadows:
+        - color:
+            inputValue:
+              color:
+                themeColor: SECONDARY_TEXT
+          dx:
+            inputValue:
+              serializedValue: "2"
+          dy:
+            inputValue:
+              serializedValue: "2"
+          blurRadius:
+            inputValue:
+              serializedValue: "4"
+      textValue:
+        inputValue: Leitura
+      colorValue:
+        inputValue:
+          value: "4294967295"
+    borderRadius:
+      type: FF_BORDER_RADIUS_ALL
+      allValue:
+        inputValue: 8
+    innerPadding:
+      leftValue:
+        inputValue: 16
+      rightValue:
+        inputValue: 16
+    dimensions:
+      width:
+        pixelsValue:
+          inputValue: 120
+      height:
+        pixelsValue:
+          inputValue: 40
+    elevationValue:
+      inputValue: 0
+    fillColorValue:
+      inputValue:
+        value: "4279713589"
+    iconValue:
+      inputValue:
+        sizeValue:
+          inputValue: 20
+        iconDataValue:
+          inputValue:
+            codePoint: 58614
+            family: MaterialIcons
+            matchTextDirection: false
+            name: qr_code_2
+  expanded:
+    expandedType: FLEXIBLE
+featurePresence:
+  hasTextShadows: true

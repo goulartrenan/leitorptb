@@ -1,0 +1,21 @@
+node:
+  key: Scaffold_5u1hoc1d
+  appBar:
+    key: AppBar_4qy10np6
+  body:
+    key: Column_807bbf2f
+    children:
+      - key: Image_rxjzhe4m
+      - key: Row_pziyuaxc
+        children:
+          - key: Text_zlsi2uxe
+      - key: Row_otalfsbq
+        children:
+          - key: Button_rjnn4fkg
+          - key: Button_io5th1zl
+      - key: Row_m7j2iauv
+        children:
+          - key: Button_0a984c9v
+      - key: Row_kxneihki
+        children:
+          - key: Text_orbntwzw

@@ -1,0 +1,57 @@
+key: Scaffold_b1i0q5yb
+type: Scaffold
+props:
+  scaffold:
+    safeArea: true
+    navBarItem:
+      navIcon:
+        sizeValue:
+          inputValue: 24
+          mostRecentInputValue: 24
+        colorValue:
+          inputValue:
+            value: "4288585374"
+          mostRecentInputValue:
+            value: "4288585374"
+        iconDataValue:
+          inputValue:
+            codePoint: 61703
+            family: MaterialIcons
+            matchTextDirection: false
+            name: home_outlined
+      navActiveIcon:
+        sizeValue:
+          inputValue: 24
+          mostRecentInputValue: 24
+        colorValue:
+          inputValue:
+            value: "4285489647"
+          mostRecentInputValue:
+            value: "4285489647"
+        iconDataValue:
+          inputValue:
+            codePoint: 58136
+            family: MaterialIcons
+            matchTextDirection: false
+            name: home
+      show: false
+      differentActiveIcon: false
+      label:
+        translationIdentifier:
+          key: x9lzjkze
+        textValue:
+          inputValue: Home
+          mostRecentInputValue: Home
+    hideKeyboardOnTap: true
+    backgroundColorValue:
+      inputValue:
+        value: "4294967295"
+      mostRecentInputValue:
+        value: "4294967295"
+  opacity:
+    opacityValue:
+      inputValue: 1
+      mostRecentInputValue: 1
+    animatedOpacity: {}
+name: CadastroALTRIA
+parameterValues: {}

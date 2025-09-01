@@ -1,0 +1,6 @@
+key: ex6kw29i
+resetFormField:
+  widgetType: TextField
+  nodeKeyPaths:
+    - keyPath:
+        - key: TextField_f6jui766

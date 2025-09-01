@@ -1,0 +1,17 @@
+identifier:
+  name: "Adicionar Dados Conferencia "
+  key: 4yi76
+url: http://192.168.0.158:5000/api/conferencia
+callType: POST
+variables:
+  - identifier:
+      name: dadosJMC
+      key: bulgalnz
+    type: JSON
+    isList: true
+bodyType: JSON
+body: <dadosJMC>
+headers:
+  - content-type:application/json
+endpointSettings:
+  escapeVariablesInRequestBody: true

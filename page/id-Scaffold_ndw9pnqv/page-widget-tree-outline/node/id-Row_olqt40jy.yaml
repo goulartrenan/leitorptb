@@ -1,0 +1,14 @@
+key: Row_olqt40jy
+type: Row
+props:
+  row:
+    mainAxisAlignment: main_axis_space_around
+    listSpacing: {}
+  expanded:
+    expandedType: FLEXIBLE
+  responsiveVisibility: {}
+  opacity:
+    opacityValue:
+      inputValue: 1
+    animatedOpacity: {}
+valueKey: {}

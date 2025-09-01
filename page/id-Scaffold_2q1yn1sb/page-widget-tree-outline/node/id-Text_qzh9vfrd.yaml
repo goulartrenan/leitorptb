@@ -1,0 +1,17 @@
+key: Text_qzh9vfrd
+type: Text
+props:
+  text:
+    themeStyle: HEADLINE_MEDIUM
+    translationIdentifier:
+      key: i23e02iy
+    textValue:
+      inputValue: Menus ALTRIA
+    fontSizeValue:
+      inputValue: 22
+      mostRecentInputValue: 22
+    colorValue:
+      inputValue:
+        value: "4294967295"
+      mostRecentInputValue:
+        value: "4294967295"
