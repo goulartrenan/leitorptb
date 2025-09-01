@@ -1,0 +1,56 @@
+# Flutter/Dart build artifacts
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+*.dart.js
+*.js.deps
+*.js.map
+*.dill
+*.tmp
+*.log
+
+# Android
+android/app/debug/
+android/app/release/
+*.apk
+*.ap_
+*.dex
+*.class
+*.so
+*.jar
+*.keystore
+
+# iOS
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/build/
+*.xcuserstate
+
+# macOS
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Pods/
+macos/build/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# IDEs
+.idea/
+*.iml
+
+# Others
+*.swp
+*.swo
+*.DS_Store
