@@ -37,6 +37,7 @@ class FlutterFlowDropDown<T> extends StatefulWidget {
     this.labelText,
     this.labelTextStyle,
     this.optionsHasValueKeys = false,
+    String? value,
   }) : assert(
           isMultiSelect
               ? (controller == null &&
@@ -343,7 +344,7 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                   expands: true,
                   maxLines: null,
                   controller: _textEditingController,
-                  cursorColor: widget.searchCursorColor,
+                  cursorColor: Color(0xFF173F35),
                   style: widget.searchTextStyle,
                   decoration: InputDecoration(
                     isDense: true,
@@ -354,8 +355,10 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
                     hintText: widget.searchHintText,
                     hintStyle: widget.searchHintTextStyle,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF173F35),
+                        )),
                   ),
                 ),
               ),

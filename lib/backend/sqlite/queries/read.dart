@@ -115,3 +115,66 @@ class BuscaUltimaCaixaALTRIARow extends SqliteRow {
 }
 
 /// END BUSCA ULTIMA CAIXA ALTRIA
+
+/// BEGIN BUSCA LOTE ROMANEIO ALTRIA
+Future<List<BuscaLoteRomenioAltria>> performBuscaLoteRomenioAltria(
+  Database database,
+) {
+  final query = '''
+SELECT LoteRomaneio FROM loteRomaneio ORDER BY id 
+''';
+  return _readQuery(database, query, (d) => BuscaLoteRomenioAltria(d));
+}
+
+class BuscaLoteRomenioAltria extends SqliteRow {
+  BuscaLoteRomenioAltria(Map<String, dynamic> data) : super(data);
+
+  String? get loteRomaneio => data['LoteRomaneio'] as String?;
+}
+
+class BuscaLoteEmbarqueSTP extends SqliteRow {
+  BuscaLoteEmbarqueSTP(Map<String, dynamic> data) : super(data);
+
+  String? get loteEmbarque => data['loteEmbarqueSTP'] as String?;
+}
+
+/// END BUSCA LOTE ROMANEIO ALTRIA
+
+/// BEGIN BUSCA OPERAÇÃO ROMANEIO ALTRIA
+Future<List<BuscaOperacaoRomenioAltria>> performBuscaOperacaoRomenioAltria(
+  Database database,
+) {
+  final query = '''
+SELECT OperacaoRomaneio FROM operacaoRomaneio ORDER BY id 
+''';
+  return _readQuery(database, query, (d) => BuscaOperacaoRomenioAltria(d));
+}
+
+class BuscaOperacaoRomenioAltria extends SqliteRow {
+  BuscaOperacaoRomenioAltria(Map<String, dynamic> data) : super(data);
+
+  String? get operacaoRomaneio => data['OperacaoRomaneio'] as String?;
+}
+
+/// END BUSCA OPERAÇÃO ROMANEIO ALTRIA
+
+/// /// BEGIN BUSCA CLASSE ROMANEIO ALTRIA
+Future<List<BuscaClasseRomenioAltria>> performBuscaClasseRomenioAltria(
+  Database database,
+) {
+  final query = '''
+SELECT NomeClasse,CodigoClasse,Observacao,QtdeCaixa FROM classeRomaneio 
+''';
+  return _readQuery(database, query, (d) => BuscaClasseRomenioAltria(d));
+}
+
+class BuscaClasseRomenioAltria extends SqliteRow {
+  BuscaClasseRomenioAltria(Map<String, dynamic> data) : super(data);
+
+  String? get nomeClasse => data['NomeClasse'] as String?;
+  int? get codigoClasse => data['CodigoClasse'] as int?;
+  String? get observacao => data['Observacao'] as String?;
+  int? get qtdeCaixa => data['QtdeCaixa'] as int?;
+}
+
+/// END BUSCA CLASSE ROMANEIO ALTRIA

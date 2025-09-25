@@ -11,7 +11,7 @@ import '/flutter_flow/form_field_controller.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 import 'altria_page_model.dart';
 //import 'package:flutter/services.dart';
 export 'altria_page_model.dart';
@@ -55,6 +55,8 @@ class AltriaPageWidget extends StatefulWidget {
 
 class _AltriaPageWidgetState extends State<AltriaPageWidget> {
   late AltriaPageModel _model;
+
+  bool _isSending = false;
 
   int? ultimaCaixa;
 
@@ -147,7 +149,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
             backgroundColor: Color(0xFF76232F),
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
             title: Text(
               'ALTRIA',
               style: FlutterFlowTheme.of(context).headlineMedium.override(
@@ -718,44 +720,65 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                   children: [
                     Form(
                       key: _model.formKey9,
-                      autovalidateMode: AutovalidateMode.always,
+                      autovalidateMode: AutovalidateMode.disabled,
                       child: Align(
                         alignment: AlignmentDirectional(-1.0, 0.0),
                         child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
                               5.0, 0.0, 0.0, 0.0),
-                          child: FlutterFlowDropDown<String>(
-                            controller: _model.localValueController ??=
-                                FormFieldController<String>(null),
-                            options: ['Produção', 'Embarque'],
-                            onChanged: (val) =>
-                                safeSetState(() => _model.localValue = val),
-                            width: 180.0,
-                            height: 40.0,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Open Sans',
-                                  letterSpacing: 0.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FlutterFlowDropDown<String>(
+                                controller: _model.localValueController ??=
+                                    FormFieldController<String>(null),
+                                options: ['Produção', 'Embarque'],
+                                onChanged: (val) {
+                                  safeSetState(() {
+                                    _model.localValue = val;
+                                  });
+                                },
+                                width: 180.0,
+                                height: 40.0,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Open Sans',
+                                      letterSpacing: 0.0,
+                                    ),
+                                hintText: 'Selecione o Local',
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 24.0,
                                 ),
-                            hintText: 'Selecione o Local',
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24.0,
-                            ),
-                            fillColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            elevation: 2.0,
-                            borderColor: Color(0xFF173F35),
-                            borderWidth: 0.0,
-                            borderRadius: 8.0,
-                            margin: EdgeInsetsDirectional.fromSTEB(
-                                12.0, 0.0, 12.0, 0.0),
-                            hidesUnderline: true,
-                            isOverButton: false,
-                            isSearchable: false,
-                            isMultiSelect: false,
+                                fillColor: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                elevation: 2.0,
+                                borderColor:
+                                    const Color(0xFF173F35), // ✅ borda fixa
+                                borderWidth: 1.0,
+                                borderRadius: 8.0,
+                                margin: const EdgeInsetsDirectional.fromSTEB(
+                                    12.0, 0.0, 12.0, 0.0),
+                                hidesUnderline: true,
+                                isOverButton: false,
+                                isSearchable: false,
+                                isMultiSelect: false,
+                              ),
+                              if ((_model.localValue == null ||
+                                  _model.localValue!.isEmpty))
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 12.0, top: 4.0),
+                                  child: Text(
+                                    'Campo obrigatório',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 12.0),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
@@ -2176,402 +2199,552 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 10.0),
                           child: Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: FFButtonWidget(
-                              onPressed: () async {
-                                if (_model.formKey6.currentState == null ||
-                                    !_model.formKey6.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey9.currentState == null ||
-                                    !_model.formKey9.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.localValue == null) {
-                                  return;
-                                }
-                                if (_model.formKey10.currentState == null ||
-                                    !_model.formKey10.currentState!
-                                        .validate()) {
-                                  return;
-                                }
-                                if (_model.formKey1.currentState == null ||
-                                    !_model.formKey1.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey11.currentState == null ||
-                                    !_model.formKey11.currentState!
-                                        .validate()) {
-                                  return;
-                                }
-                                if (_model.formKey13.currentState == null ||
-                                    !_model.formKey13.currentState!
-                                        .validate()) {
-                                  return;
-                                }
-                                if (_model.formKey8.currentState == null ||
-                                    !_model.formKey8.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey5.currentState == null ||
-                                    !_model.formKey5.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey2.currentState == null ||
-                                    !_model.formKey2.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey7.currentState == null ||
-                                    !_model.formKey7.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey3.currentState == null ||
-                                    !_model.formKey3.currentState!.validate()) {
-                                  return;
-                                }
-                                if (_model.formKey12.currentState == null ||
-                                    !_model.formKey12.currentState!
-                                        .validate()) {
-                                  return;
-                                }
-                                var confirmDialogResponse = await showDialog<
-                                        bool>(
-                                      context: context,
-                                      builder: (alertDialogContext) {
-                                        return AlertDialog(
-                                          title: Text(
-                                            'Salvando',
-                                            style: TextStyle(
-                                              color: Color(0xFF173F35),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          content: Text(
-                                            'Deseja salvar o registro?',
-                                            style: TextStyle(
-                                              color: Color(0xFF173F35),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    WidgetStatePropertyAll(
-                                                        Color(0xFF76232F)),
-                                                foregroundColor:
-                                                    WidgetStatePropertyAll(
-                                                        Colors.white),
-                                                padding: WidgetStatePropertyAll(
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 10)),
-                                              ),
-                                              onPressed: () => Navigator.pop(
-                                                  alertDialogContext, false),
-                                              child: Text('Cancelar'),
-                                            ),
-                                            TextButton(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    WidgetStatePropertyAll(
-                                                        Color(0xFF173F35)),
-                                                foregroundColor:
-                                                    WidgetStatePropertyAll(
-                                                        Colors.white),
-                                                padding: WidgetStatePropertyAll(
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 10)),
-                                              ),
-                                              onPressed: () => Navigator.pop(
-                                                  alertDialogContext, true),
-                                              child: Text('Confirmar'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ) ??
-                                    false;
-                                print('Confirmação: $confirmDialogResponse');
-                                if (confirmDialogResponse) {
-                                  final numeroCaixa = int.tryParse(
-                                      _model.nrcaixaTextController?.text ?? '');
-                                  final operacao = _model.operacaobdValue ?? '';
-                                  final classe = _model.classebdValue ?? '';
-                                  final localconferencia =
-                                      _model.localValue ?? '';
+                              alignment: AlignmentDirectional(0.0, 0.0),
+                              child: FFButtonWidget(
+                                onPressed: () async {
+                                  if (_isSending) return;
+                                  setState(() => _isSending = true);
+                                  try {
+                                    // Validações básicas
+                                    final numeroCaixa = int.tryParse(
+                                        _model.nrcaixaTextController?.text ??
+                                            '');
+                                    final operacao =
+                                        _model.operacaobdValue ?? '';
+                                    final classe = _model.classebdValue ?? '';
+                                    final local = _model.localValue ?? '';
+                                    final cod1a = int.tryParse(
+                                        _model.codigo1ATextController?.text ??
+                                            '');
+                                    final cod2a = int.tryParse(
+                                        _model.codigo2ATextController?.text ??
+                                            '');
+                                    final cod1b = int.tryParse(
+                                        _model.codigo1BTextController?.text ??
+                                            '');
+                                    final cod2b = int.tryParse(
+                                        _model.codigo2BTextController?.text ??
+                                            '');
+                                    final cod3a = int.tryParse(
+                                        _model.codigo3ATextController?.text ??
+                                            '');
+                                    final cod3b = int.tryParse(
+                                        _model.codigo3BTextController?.text ??
+                                            '');
+                                    final cod4a = int.tryParse(
+                                        _model.codigo4ATextController?.text ??
+                                            '');
+                                    final cod4b = int.tryParse(
+                                        _model.codigo4BTextController?.text ??
+                                            '');
+                                    final cod5a = int.tryParse(
+                                        _model.codigo5ATextController?.text ??
+                                            '');
+                                    final cod5b = int.tryParse(
+                                        _model.codigo5ATextController?.text ??
+                                            '');
 
-                                  print('numeroCaixa: $numeroCaixa');
-                                  print('operacao: "$operacao"');
-                                  print('classe: "$classe"');
-                                  print(
-                                      'localconferencia: "$localconferencia"');
-
-                                  if (numeroCaixa == null ||
-                                      operacao.trim().isEmpty ||
-                                      classe.trim().isEmpty ||
-                                      localconferencia.trim().isEmpty) {
-                                    ScaffoldMessenger.of(context)
-                                        .clearSnackBars();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            '⚠️ Verifique os dados no início da tela.'),
-                                        backgroundColor: Colors.orange,
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  final existe = await SQLiteManager.instance
-                                      .existeCaixaRegistradaALTRIA(
-                                    caixa: numeroCaixa,
-                                    operacao: operacao,
-                                    classe: classe,
-                                  );
-
-                                  if (existe) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            '⚠️ Esta caixa já foi lida para esta operação e classe.'),
-                                        backgroundColor: Colors.orange,
-                                      ),
-                                    );
-                                    return;
-                                  }
-                                  // ✅ Prossegue com a gravação se não existir
-                                  await SQLiteManager.instance
-                                      .insertConferenciaALTRIA(
-                                    cliente: widget.altria,
-                                    ladoA: widget.ladoA,
-                                    caixa: int.tryParse(
-                                        _model.nrcaixaTextController.text),
-                                    data: getCurrentTimestamp,
-                                    classe: _model.classebdValue,
-                                    localconferencia: _model.localValue,
-                                    operacao: _model.operacaobdValue,
-                                    codigo1a:
-                                        _model.codigo1ATextController.text,
-                                    codigo2a:
-                                        _model.codigo2ATextController.text,
-                                    codigo3a:
-                                        _model.codigo3ATextController.text,
-                                    codigo4a:
-                                        _model.codigo4ATextController.text,
-                                    codigo5a:
-                                        _model.codigo5ATextController.text,
-                                    codigo1b:
-                                        _model.codigo1BTextController.text,
-                                    codigo2b:
-                                        _model.codigo2BTextController.text,
-                                    codigo3b:
-                                        _model.codigo3BTextController.text,
-                                    codigo4b:
-                                        _model.codigo4BTextController.text,
-                                    codigo5b:
-                                        _model.codigo5BTextController.text,
-                                    ladoB: widget.ladoB,
-                                  );
-
-                                  carregarUltimaCaixa();
-                                  carregarTotalCaixas();
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('✅ Registro salvo com sucesso!'),
-                                      backgroundColor: Color(0xFF173F35),
-                                    ),
-                                  );
-
-                                  // 1. Abre o diálogo de confirmação
-                                  final confirmDialogResponse =
-                                      await showDialog<bool>(
-                                            context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    'Realizar a sincronização?'),
-                                                content: Text(
-                                                    'Deseja enviar os registros atuais?'),
-                                                actions: [
-                                                  TextButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          WidgetStatePropertyAll(
-                                                              Color(
-                                                                  0xFF76232F)),
-                                                      foregroundColor:
-                                                          WidgetStatePropertyAll(
-                                                              Colors.white),
-                                                      padding:
-                                                          WidgetStatePropertyAll(
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          16,
-                                                                      vertical:
-                                                                          10)),
-                                                    ),
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext,
-                                                            false),
-                                                    child: Text('Cancelar'),
-                                                  ),
-                                                  TextButton(
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          WidgetStatePropertyAll(
-                                                              Color(
-                                                                  0xFF173F35)),
-                                                      foregroundColor:
-                                                          WidgetStatePropertyAll(
-                                                              Colors.white),
-                                                      padding:
-                                                          WidgetStatePropertyAll(
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          16,
-                                                                      vertical:
-                                                                          10)),
-                                                    ),
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext,
-                                                            true),
-                                                    child: Text('Enviar'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ) ??
-                                          false;
-                                  _model.altriainsert = await SQLiteManager
-                                      .instance
-                                      .buscarConferenciasALTRIA();
-
-                                  // print(
-                                  //     '📦 Total de registros encontrados: ${_model.altriainsert.length}');
-                                  // print(
-                                  //     '📤 JSON a ser enviado: ${_model.altriainsert.map((e) => e.toMap()).toList()}');
-
-                                  // 2. Se o usuário confirmar, envia os dados
-                                  if (confirmDialogResponse) {
-                                    _model.apiResultqak =
-                                        await AdicionarDadosConferenciaCall
-                                            .call(
-                                      dadosJMCJson: _model.altriainsert
-                                          .map((e) => e.toMap())
-                                          .toList(),
-                                    );
-
-                                    // 3. Valida o resultado da API
-                                    if ((_model.apiResultqak?.succeeded ??
-                                        false)) {
+                                    if (numeroCaixa == null ||
+                                        operacao.trim().isEmpty ||
+                                        classe.trim().isEmpty ||
+                                        local.trim().isEmpty ||
+                                        cod1a == null ||
+                                        cod2a == null ||
+                                        cod1b == null ||
+                                        cod2b == null ||
+                                        cod3a == null ||
+                                        cod3b == null ||
+                                        cod4a == null ||
+                                        cod4b == null ||
+                                        cod5a == null ||
+                                        cod5b == null) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                              '✅ Dados enviados com sucesso!'),
-                                          backgroundColor: Color(0xFF173F35),
+                                              '⚠️ Preencha todos os campos obrigatórios!'),
+                                          backgroundColor: Colors.yellow[700],
                                         ),
                                       );
-
-                                      // 4. Limpa a tabela local (JMC)
-                                      //   await SQLiteManager.instance
-                                      //       .limparConferenciasALTRIA();
-                                      // } else {
-                                      // ScaffoldMessenger.of(context).showSnackBar(
-                                      //   SnackBar(
-                                      //     content: Text(
-                                      //         '❌ Falha ao enviar dados. Código: ${_model.apiResultqak?.statusCode ?? "?"}'),
-                                      //     backgroundColor: Color(0xFF76232F),
-                                      //   ),
-                                      // );
+                                      return;
                                     }
-                                  } else {
-                                    // Se cancelado, pode logar ou ignorar
-                                    print('🔁 Envio cancelado pelo usuário.');
-                                    setState(() {});
-                                  }
-
-                                  safeSetState(() {
-                                    _model.nrcaixaTextController?.clear();
-                                    _model.codigo1ATextController?.clear();
-                                    _model.codigo2ATextController?.clear();
-                                    _model.codigo3ATextController?.clear();
-                                    _model.codigo1BTextController?.clear();
-                                    _model.codigo2BTextController?.clear();
-                                    _model.codigo3BTextController?.clear();
-                                    _model.codigo4ATextController?.clear();
-                                    _model.codigo5ATextController?.clear();
-                                    _model.codigo4BTextController?.clear();
-                                    _model.codigo5BTextController?.clear();
-                                    _model.nrcaixaFocusNode?.requestFocus();
-                                  });
-                                  safeSetState(() {
-                                    _model.nrcaixaTextController?.clear();
-                                    _model.codigo1ATextController?.clear();
-                                    _model.codigo2ATextController?.clear();
-                                    _model.codigo3ATextController?.clear();
-                                    _model.codigo4ATextController?.clear();
-                                    _model.codigo5ATextController?.clear();
-                                    _model.codigo1BTextController?.clear();
-                                    _model.codigo2BTextController?.clear();
-                                    _model.codigo3BTextController?.clear();
-                                    _model.codigo4BTextController?.clear();
-                                    _model.codigo5BTextController?.clear();
-                                    _model.nrcaixaFocusNode?.requestFocus();
-                                  });
-                                  return;
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Cancelado!',
-                                        style: GoogleFonts.getFont(
-                                          'Open Sans',
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          fontWeight: FontWeight.bold,
+                                    // Verifica duplicidade local (ALTRIA)
+                                    final existe = await SQLiteManager.instance
+                                        .existeCaixaRegistradaALTRIA(
+                                      caixa: numeroCaixa,
+                                      operacao: operacao,
+                                      classe: classe,
+                                    );
+                                    if (existe) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              '⚠️ Esta caixa já foi lida para esta operação e classe.'),
+                                          backgroundColor: Colors.orange,
                                         ),
-                                      ),
-                                      duration: Duration(milliseconds: 4000),
-                                      backgroundColor: Color(0xFF173F35),
-                                    ),
-                                  );
-                                  return;
-                                }
-                              },
-                              text: 'Gravar',
-                              icon: Icon(
-                                Icons.send,
-                                size: 15.0,
+                                      );
+                                      return;
+                                    }
+                                    await SQLiteManager.instance
+                                        .insertConferenciaALTRIA(
+                                      caixa: numeroCaixa,
+                                      classe: classe,
+                                      localconferencia: local,
+                                      ladoA: widget.ladoA,
+                                      cliente: widget.altria,
+                                      data: getCurrentTimestamp,
+                                      codigo1a:
+                                          _model.codigo1ATextController?.text,
+                                      codigo2a:
+                                          _model.codigo2ATextController?.text,
+                                      codigo3a:
+                                          _model.codigo3ATextController?.text,
+                                      codigo4a:
+                                          _model.codigo4ATextController?.text,
+                                      codigo5a:
+                                          _model.codigo5ATextController?.text,
+                                      codigo1b:
+                                          _model.codigo1BTextController?.text,
+                                      codigo2b:
+                                          _model.codigo2BTextController?.text,
+                                      codigo3b:
+                                          _model.codigo3BTextController?.text,
+                                      codigo4b:
+                                          _model.codigo4BTextController?.text,
+                                      codigo5b:
+                                          _model.codigo5BTextController?.text,
+                                      ladoB: widget.ladoB,
+                                      operacao: operacao,
+                                    );
+
+                                    carregarUltimaCaixa();
+                                    carregarTotalCaixas();
+
+                                    // Recarrega e envia
+                                    final registrosLocais = await SQLiteManager
+                                        .instance
+                                        .buscarConferenciasALTRIA();
+
+                                    final apiResult =
+                                        await AdicionarDadosConferenciaCall
+                                            .call(
+                                      dadosJMCJson: registrosLocais
+                                          .map((e) => e.toMap())
+                                          .toList(),
+                                    );
+
+                                    if ((apiResult.succeeded)) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                '✅ Dados gravados e enviados com sucesso!'),
+                                            backgroundColor: Color(0xFF173F35)),
+                                      );
+                                      // await SQLiteManager.instance.limparConferenciasALTRIA(); // opcional
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                '❌ Falha ao enviar dados. Código: ${apiResult.statusCode}'),
+                                            backgroundColor: Color(0xFF76232F)),
+                                      );
+                                    }
+
+                                    // Limpa campos e posiciona cursor na caixa
+                                    setState(() {
+                                      _model.codigo1ATextController?.clear();
+                                      _model.codigo2ATextController?.clear();
+                                      _model.codigo3ATextController?.clear();
+                                      _model.codigo4ATextController?.clear();
+                                      _model.codigo5ATextController?.clear();
+                                      _model.codigo1BTextController?.clear();
+                                      _model.codigo2BTextController?.clear();
+                                      _model.codigo3BTextController?.clear();
+                                      _model.codigo4BTextController?.clear();
+                                      _model.codigo5BTextController?.clear();
+                                      _model.nrcaixaTextController?.clear();
+                                    });
+                                    _model.nrcaixaFocusNode?.requestFocus();
+                                    carregarUltimaCaixa();
+                                    carregarTotalCaixas();
+                                  } catch (e, st) {
+                                    debugPrint(
+                                        'Erro ao salvar/enviar ALTRIA: $e\n$st');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text('Erro inesperado: $e'),
+                                          backgroundColor: Colors.red),
+                                    );
+                                  } finally {
+                                    setState(() => _isSending = false);
+                                  }
+                                },
+                                text: 'Salvar',
+                                iconData: Icons.save,
+                                options: FFButtonOptions(
+                                  height: 40,
+                                  width: 110,
+                                  color: const Color(0xFF76232F),
+                                  iconSize: 16,
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  elevation: 4,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              )
+                              // FFButtonWidget(
+                              //   onPressed: () async {
+                              //     if (_model.formKey6.currentState == null ||
+                              //         !_model.formKey6.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey9.currentState == null ||
+                              //         !_model.formKey9.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.localValue == null) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey10.currentState == null ||
+                              //         !_model.formKey10.currentState!
+                              //             .validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey1.currentState == null ||
+                              //         !_model.formKey1.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey11.currentState == null ||
+                              //         !_model.formKey11.currentState!
+                              //             .validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey13.currentState == null ||
+                              //         !_model.formKey13.currentState!
+                              //             .validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey8.currentState == null ||
+                              //         !_model.formKey8.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey5.currentState == null ||
+                              //         !_model.formKey5.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey2.currentState == null ||
+                              //         !_model.formKey2.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey7.currentState == null ||
+                              //         !_model.formKey7.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey3.currentState == null ||
+                              //         !_model.formKey3.currentState!.validate()) {
+                              //       return;
+                              //     }
+                              //     if (_model.formKey12.currentState == null ||
+                              //         !_model.formKey12.currentState!
+                              //             .validate()) {
+                              //       return;
+                              //     }
+                              //     var confirmDialogResponse = await showDialog<
+                              //             bool>(
+                              //           context: context,
+                              //           builder: (alertDialogContext) {
+                              //             return AlertDialog(
+                              //               title: Text(
+                              //                 'Salvando',
+                              //                 style: TextStyle(
+                              //                   color: Color(0xFF173F35),
+                              //                   fontWeight: FontWeight.bold,
+                              //                 ),
+                              //               ),
+                              //               content: Text(
+                              //                 'Deseja salvar o registro?',
+                              //                 style: TextStyle(
+                              //                   color: Color(0xFF173F35),
+                              //                   fontWeight: FontWeight.bold,
+                              //                 ),
+                              //               ),
+                              //               actions: [
+                              //                 TextButton(
+                              //                   style: ButtonStyle(
+                              //                     backgroundColor:
+                              //                         WidgetStatePropertyAll(
+                              //                             Color(0xFF76232F)),
+                              //                     foregroundColor:
+                              //                         WidgetStatePropertyAll(
+                              //                             Colors.white),
+                              //                     padding: WidgetStatePropertyAll(
+                              //                         EdgeInsets.symmetric(
+                              //                             horizontal: 16,
+                              //                             vertical: 10)),
+                              //                   ),
+                              //                   onPressed: () => Navigator.pop(
+                              //                       alertDialogContext, false),
+                              //                   child: Text('Cancelar'),
+                              //                 ),
+                              //                 TextButton(
+                              //                   style: ButtonStyle(
+                              //                     backgroundColor:
+                              //                         WidgetStatePropertyAll(
+                              //                             Color(0xFF173F35)),
+                              //                     foregroundColor:
+                              //                         WidgetStatePropertyAll(
+                              //                             Colors.white),
+                              //                     padding: WidgetStatePropertyAll(
+                              //                         EdgeInsets.symmetric(
+                              //                             horizontal: 16,
+                              //                             vertical: 10)),
+                              //                   ),
+                              //                   onPressed: () => Navigator.pop(
+                              //                       alertDialogContext, true),
+                              //                   child: Text('Confirmar'),
+                              //                 ),],);},) ??false;
+                              //     print('Confirmação: $confirmDialogResponse');
+                              //     if (confirmDialogResponse) {
+                              //       final numeroCaixa = int.tryParse( _model.nrcaixaTextController?.text ?? '');
+                              //       final operacao = _model.operacaobdValue ?? '';
+                              //       final classe = _model.classebdValue ?? '';
+                              //       final localconferencia = _model.localValue ?? '';
+                              //       print('numeroCaixa: $numeroCaixa');
+                              //       print('operacao: "$operacao"');
+                              //       print('classe: "$classe"');
+                              //       print('localconferencia: "$localconferencia"');
+                              //       if (numeroCaixa == null ||
+                              //           operacao.trim().isEmpty ||
+                              //           classe.trim().isEmpty ||
+                              //           localconferencia.trim().isEmpty) {
+                              //         ScaffoldMessenger.of(context).clearSnackBars();
+                              //         ScaffoldMessenger.of(context).showSnackBar(
+                              //           SnackBar(
+                              //             content: Text(
+                              //                 '⚠️ Verifique os dados no início da tela.'),
+                              //             backgroundColor: Colors.orange,
+                              //           ),
+                              //         );
+                              //         return;
+                              //       }
+
+                              //       final existe = await SQLiteManager.instance
+                              //           .existeCaixaRegistradaALTRIA(
+                              //         caixa: numeroCaixa,
+                              //         operacao: operacao,
+                              //         classe: classe,
+                              //       );
+
+                              //       if (existe) {
+                              //         ScaffoldMessenger.of(context).showSnackBar(
+                              //           SnackBar(
+                              //             content: Text(
+                              //                 '⚠️ Esta caixa já foi lida para esta operação e classe.'),
+                              //             backgroundColor: Colors.orange,
+                              //           ),
+                              //         );
+                              //         return;
+                              //       }
+                              //       await SQLiteManager.instance.insertConferenciaALTRIA(
+                              //         cliente: widget.altria,
+                              //         ladoA: widget.ladoA,
+                              //         caixa: int.tryParse(_model.nrcaixaTextController.text),
+                              //         data: getCurrentTimestamp,
+                              //         classe: _model.classebdValue,
+                              //         localconferencia: _model.localValue,
+                              //         operacao: _model.operacaobdValue,
+                              //         codigo1a: _model.codigo1ATextController.text,
+                              //         codigo2a:_model.codigo2ATextController.text,
+                              //         codigo3a:_model.codigo3ATextController.text,
+                              //         codigo4a:_model.codigo4ATextController.text,
+                              //         codigo5a:_model.codigo5ATextController.text,
+                              //         codigo1b:_model.codigo1BTextController.text,
+                              //         codigo2b:_model.codigo2BTextController.text,
+                              //         codigo3b:_model.codigo3BTextController.text,
+                              //         codigo4b:_model.codigo4BTextController.text,
+                              //         codigo5b:_model.codigo5BTextController.text,
+                              //         ladoB: widget.ladoB,
+                              //       );
+                              //       carregarUltimaCaixa();
+                              //       carregarTotalCaixas();
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           content:
+                              //               Text('✅ Registro salvo com sucesso!'),
+                              //           backgroundColor: Color(0xFF173F35),
+                              //         ),
+                              //       );
+
+                              //       final confirmDialogResponse =
+                              //           await showDialog<bool>(
+                              //                 context: context,
+                              //                 builder: (alertDialogContext) {
+                              //                   return AlertDialog(
+                              //                     title: Text(
+                              //                         'Realizar a sincronização?'),
+                              //                     content: Text(
+                              //                         'Deseja enviar os registros atuais?'),
+                              //                     actions: [
+                              //                       TextButton(
+                              //                         style: ButtonStyle(
+                              //                           backgroundColor:
+                              //                               WidgetStatePropertyAll(
+                              //                                   Color(
+                              //                                       0xFF76232F)),
+                              //                           foregroundColor:
+                              //                               WidgetStatePropertyAll(
+                              //                                   Colors.white),
+                              //                           padding:
+                              //                               WidgetStatePropertyAll(
+                              //                                   EdgeInsets
+                              //                                       .symmetric(
+                              //                                           horizontal:
+                              //                                               16,
+                              //                                           vertical:
+                              //                                               10)),
+                              //                         ),
+                              //                         onPressed: () =>
+                              //                             Navigator.pop(
+                              //                                 alertDialogContext,
+                              //                                 false),
+                              //                         child: Text('Cancelar'),
+                              //                       ),
+                              //                       TextButton(
+                              //                         style: ButtonStyle(
+                              //                           backgroundColor:
+                              //                               WidgetStatePropertyAll(
+                              //                                   Color(
+                              //                                       0xFF173F35)),
+                              //                           foregroundColor:
+                              //                               WidgetStatePropertyAll(
+                              //                                   Colors.white),
+                              //                           padding:
+                              //                               WidgetStatePropertyAll(
+                              //                                   EdgeInsets
+                              //                                       .symmetric(
+                              //                                           horizontal:
+                              //                                               16,
+                              //                                           vertical:
+                              //                                               10)),
+                              //                         ),
+                              //                         onPressed: () =>
+                              //                             Navigator.pop(
+                              //                                 alertDialogContext,
+                              //                                 true),
+                              //                         child: Text('Enviar'),
+                              //                       ),
+                              //                     ],
+                              //                   );
+                              //                 },
+                              //               ) ??
+                              //               false;
+                              //       _model.altriainsert = await SQLiteManager
+                              //           .instance
+                              //           .buscarConferenciasALTRIA();
+                              //       if (confirmDialogResponse) {
+                              //         _model.apiResultqak =
+                              //             await AdicionarDadosConferenciaCall
+                              //                 .call(
+                              //           dadosJMCJson: _model.altriainsert
+                              //               .map((e) => e.toMap())
+                              //               .toList(),
+                              //         );
+
+                              //         // 3. Valida o resultado da API
+                              //         if ((_model.apiResultqak?.succeeded ??
+                              //             false)) {
+                              //           ScaffoldMessenger.of(context)
+                              //               .showSnackBar(
+                              //             SnackBar(
+                              //               content: Text(
+                              //                   '✅ Dados enviados com sucesso!'),
+                              //               backgroundColor: Color(0xFF173F35),
+                              //             ),
+                              //           );
+                              //         }
+                              //       } else {
+                              //         print('🔁 Envio cancelado pelo usuário.');
+                              //         setState(() {});
+                              //       }
+
+                              //       safeSetState(() {
+                              //         _model.nrcaixaTextController?.clear();
+                              //         _model.codigo1ATextController?.clear();
+                              //         _model.codigo2ATextController?.clear();
+                              //         _model.codigo3ATextController?.clear();
+                              //         _model.codigo1BTextController?.clear();
+                              //         _model.codigo2BTextController?.clear();
+                              //         _model.codigo3BTextController?.clear();
+                              //         _model.codigo4ATextController?.clear();
+                              //         _model.codigo5ATextController?.clear();
+                              //         _model.codigo4BTextController?.clear();
+                              //         _model.codigo5BTextController?.clear();
+                              //         _model.nrcaixaFocusNode?.requestFocus();
+                              //       });
+                              //       safeSetState(() {
+                              //         _model.nrcaixaTextController?.clear();
+                              //         _model.codigo1ATextController?.clear();
+                              //         _model.codigo2ATextController?.clear();
+                              //         _model.codigo3ATextController?.clear();
+                              //         _model.codigo4ATextController?.clear();
+                              //         _model.codigo5ATextController?.clear();
+                              //         _model.codigo1BTextController?.clear();
+                              //         _model.codigo2BTextController?.clear();
+                              //         _model.codigo3BTextController?.clear();
+                              //         _model.codigo4BTextController?.clear();
+                              //         _model.codigo5BTextController?.clear();
+                              //         _model.nrcaixaFocusNode?.requestFocus();
+                              //       });
+                              //       return;
+                              //     } else {
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           content: Text(
+                              //             'Cancelado!',
+                              //             style: GoogleFonts.getFont(
+                              //               'Open Sans',
+                              //               color: FlutterFlowTheme.of(context)
+                              //                   .secondaryBackground,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //           duration: Duration(milliseconds: 4000),
+                              //           backgroundColor: Color(0xFF173F35),
+                              //         ),
+                              //       );
+                              //       return;
+                              //     }
+                              //   },
+                              //   text: 'Gravar',
+                              //   icon: Icon(
+                              //     Icons.send,
+                              //     size: 15.0,
+                              //   ),
+                              //   options: FFButtonOptions(
+                              //     width: 110.0,
+                              //     height: 40.0,
+                              //     padding: EdgeInsetsDirectional.fromSTEB(
+                              //         16.0, 0.0, 16.0, 0.0),
+                              //     iconPadding: EdgeInsetsDirectional.fromSTEB(
+                              //         0.0, 0.0, 0.0, 0.0),
+                              //     color: Color(0xFF76232F),
+                              //     textStyle: FlutterFlowTheme.of(context)
+                              //         .labelLarge
+                              //         .override(
+                              //           fontFamily: 'Open Sans',
+                              //           color: FlutterFlowTheme.of(context).info,
+                              //           letterSpacing: 0.0,
+                              //         ),
+                              //     elevation: 10.0,
+                              //     borderRadius: BorderRadius.circular(8.0),
+                              //   ),
+                              // ),
                               ),
-                              options: FFButtonOptions(
-                                width: 110.0,
-                                height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    16.0, 0.0, 16.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
-                                color: Color(0xFF76232F),
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .labelLarge
-                                    .override(
-                                      fontFamily: 'Open Sans',
-                                      color: FlutterFlowTheme.of(context).info,
-                                      letterSpacing: 0.0,
-                                    ),
-                                elevation: 10.0,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                       Flexible(

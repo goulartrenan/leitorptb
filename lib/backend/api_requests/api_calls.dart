@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+//import 'package:flutter/src/widgets/editable_text.dart';
 import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
@@ -30,6 +31,40 @@ class AdicionarDadosConferenciaCall {
   }
 }
 
+class BuscarLotesEmbarqueCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'Buscar Lotes Embarque',
+      apiUrl: 'http://192.168.0.159:5000/api/lote-embarque',
+      callType: ApiCallType.GET,
+      headers: {
+        'content-type': 'application/json',
+      },
+      params: {},
+      returnBody: true,
+      cache: false,
+      isStreamingApi: false,
+    );
+  }
+}
+
+class BuscarClassesProducaoCall {
+  static Future<ApiCallResponse> call() async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'Buscar Classes de Produção',
+      apiUrl: 'http://192.168.0.159:5000/api/classes-producao',
+      callType: ApiCallType.GET,
+      headers: {
+        'content-type': 'application/json',
+      },
+      params: {},
+      returnBody: true,
+      cache: false,
+      isStreamingApi: false,
+    );
+  }
+}
+
 String _serializeJson(dynamic jsonVar, [bool isList = false]) {
   jsonVar ??= (isList ? [] : {});
   try {
@@ -39,5 +74,53 @@ String _serializeJson(dynamic jsonVar, [bool isList = false]) {
       print("Json serialization failed. Returning empty json.");
     }
     return isList ? '[]' : '{}';
+  }
+}
+
+class AdicionarRomaneioConvercaoCall {
+  static Future<ApiCallResponse> call({
+    required int caixaDE,
+    required int caixaPARA,
+    required String lote,
+    String? nomeClasse,
+    required int codClasse,
+    required int qtdeCaixaClasse,
+    required String operacao,
+    String? observacao,
+    DateTime? data,
+    required int codBarras,
+  }) async {
+    final bodyMap = <String, dynamic>{
+      'CaixaDE': caixaDE,
+      'CaixaPARA': caixaPARA,
+      'Lote': lote.trim(),
+      if (nomeClasse != null && nomeClasse.trim().isNotEmpty)
+        'NomeClasse': nomeClasse.trim(),
+      'CodClasse': codClasse,
+      'QtdeCaixaClasse': qtdeCaixaClasse,
+      'Operacao': operacao.trim(),
+      if (observacao != null && observacao.trim().isNotEmpty)
+        'Observacao': observacao.trim(),
+      if (data != null) 'Data': data.toIso8601String(),
+      'CodBarras': codBarras,
+    };
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'Adicionar Romaneio Convercao',
+      apiUrl: 'http://192.168.0.159:5000/api/romaneio-convercao',
+      callType: ApiCallType.POST,
+      headers: {
+        'content-type': 'application/json',
+      },
+      params: const {},
+      body: json.encode(bodyMap),
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
   }
 }

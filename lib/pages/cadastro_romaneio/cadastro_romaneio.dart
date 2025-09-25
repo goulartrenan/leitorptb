@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/backend/sqlite/sqlite_manager.dart';
-import 'package:leitorptb/pages/cadastro_romaneio/classe_romaneio.dart';
+//import 'package:leitorptb/pages/cadastro_romaneio/classe_romaneio.dart';
 import 'package:leitorptb/pages/romaneio_page/romaneio_widget.dart';
 import 'package:leitorptb/flutter_flow/flutter_flow_theme.dart';
 
@@ -18,18 +18,18 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
   final TextEditingController loteController = TextEditingController();
   final TextEditingController operacaoController = TextEditingController();
 
-  Future<void> _salvarLote() async {
-    if (loteController.text.isNotEmpty) {
-      await SQLiteManager.instance.insertLoteRomaneio(loteController.text);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('✅ Lote salvo com sucesso!'),
-          backgroundColor: Color(0xFF173F35),
-        ),
-      );
-      loteController.clear();
-    }
-  }
+  // Future<void> _salvarLote() async {
+  //   if (loteController.text.isNotEmpty) {
+  //     await SQLiteManager.instance.insertLoteRomaneio(loteController.text);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('✅ Lote salvo com sucesso!'),
+  //         backgroundColor: Color(0xFF173F35),
+  //       ),
+  //     );
+  //     loteController.clear();
+  //   }
+  // }
 
   Future<void> _salvarOperacao() async {
     if (operacaoController.text.isNotEmpty) {
@@ -50,7 +50,7 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text("Cadastro de Lote e Operação"),
+        title: const Text("Cadastro da Operação"),
         backgroundColor: const Color(0xFF76232F),
       ),
       body: SingleChildScrollView(
@@ -58,71 +58,72 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Align(
-                alignment: AlignmentDirectional(-1.0, 0.0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  child: Text(
-                    'Lote',
-                    textAlign: TextAlign.left,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          fontFamily: 'Open Sans',
-                          color: Color(0xFF173F35),
-                          fontSize: 18.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ),
-              ),
+              // Align(
+              //   alignment: AlignmentDirectional(-1.0, 0.0),
+              //   child:
+              //   Padding(
+              //     padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+              //     child: Text(
+              //       'Lote',
+              //       textAlign: TextAlign.left,
+              //       style: FlutterFlowTheme.of(context).bodyMedium.override(
+              //             fontFamily: 'Open Sans',
+              //             color: Color(0xFF173F35),
+              //             fontSize: 18.0,
+              //             letterSpacing: 0.0,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 16),
-              TextField(
-                controller: loteController,
-                decoration: InputDecoration(
-                  labelText: "Cadastre o lote...",
-                  labelStyle: const TextStyle(
-                    color: Color(0xFF173F35), // Cor do label
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFF173F35), // Cor da borda quando focado
-                      width: 2,
-                    ),
-                    borderRadius:
-                        BorderRadius.circular(8), // deixa arredondado se quiser
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFF173F35), // cor da borda normal
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                style: const TextStyle(
-                  color: Color(0xFF173F35),
-                  fontSize: 20,
-                  fontFamily: 'Open Sans',
-                ),
-                cursorColor: const Color(0xFF173F35),
-              ),
+              // TextField(
+              //   controller: loteController,
+              //   decoration: InputDecoration(
+              //     labelText: "Cadastre o lote...",
+              //     labelStyle: const TextStyle(
+              //       color: Color(0xFF173F35), // Cor do label
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: const BorderSide(
+              //         color: Color(0xFF173F35), // Cor da borda quando focado
+              //         width: 2,
+              //       ),
+              //       borderRadius:
+              //           BorderRadius.circular(8), // deixa arredondado se quiser
+              //     ),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: const BorderSide(
+              //         color: Color(0xFF173F35), // cor da borda normal
+              //         width: 1,
+              //       ),
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //   ),
+              //   style: const TextStyle(
+              //     color: Color(0xFF173F35),
+              //     fontSize: 16,
+              //     fontFamily: 'Open Sans',
+              //   ),
+              //   cursorColor: const Color(0xFF173F35),
+              // ),
 
-              const SizedBox(height: 12),
+              // const SizedBox(height: 12),
 
-              // Botão personalizado 1
-              CustomButton(
-                text: "Salvar Lote",
-                icon: Icons.save,
-                color: Color(0xFF76232F),
-                fontSize: 14,
-                iconSize: 16,
-                onPressed: _salvarLote,
-                buttonWidth: 260,
-                buttonHeight: 40,
-                hasShadow: true,
-              ),
+              // // Botão personalizado 1
+              // CustomButton(
+              //   text: "Salvar Lote",
+              //   icon: Icons.save,
+              //   color: Color(0xFF76232F),
+              //   fontSize: 14,
+              //   iconSize: 16,
+              //   onPressed: _salvarLote,
+              //   buttonWidth: 260,
+              //   buttonHeight: 40,
+              //   hasShadow: true,
+              // ),
 
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
               Align(
                 alignment: AlignmentDirectional(-1.0, 0.0),
                 child: Padding(
@@ -165,7 +166,7 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
                 ),
                 style: const TextStyle(
                   color: Color(0xFF173F35),
-                  fontSize: 20,
+                  fontSize: 16,
                   fontFamily: 'Open Sans',
                 ),
                 cursorColor: const Color(0xFF173F35),
@@ -189,24 +190,24 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
               const SizedBox(height: 30),
 
               // Botão personalizado 3
-              CustomButton(
-                text: "Cadastrar Classe",
-                icon: Icons.list,
-                color: Color(0xFF76232F),
-                fontSize: 14,
-                iconSize: 16,
-                buttonWidth: 210,
-                buttonHeight: 35,
-                hasShadow: true,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CadastroClasseRomaneioPage(),
-                    ),
-                  );
-                },
-              ),
+              // CustomButton(
+              //   text: "Cadastrar Classe",
+              //   icon: Icons.list,
+              //   color: Color(0xFF76232F),
+              //   fontSize: 14,
+              //   iconSize: 16,
+              //   buttonWidth: 210,
+              //   buttonHeight: 35,
+              //   hasShadow: true,
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => const CadastroClasseRomaneioPage(),
+              //       ),
+              //     );
+              //   },
+              // ),
 
               const SizedBox(height: 20),
 
@@ -224,7 +225,7 @@ class _CadastroRomaneioPageState extends State<CadastroRomaneioPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const RomaneioWidget(),
+                      builder: (context) => RomaneioWidget(),
                     ),
                   );
                 },

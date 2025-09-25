@@ -9,7 +9,7 @@ import '/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 import 'jmc_page_model.dart';
 export 'jmc_page_model.dart';
 
@@ -34,6 +34,8 @@ class JmcPageWidget extends StatefulWidget {
 
 class _JmcPageWidgetState extends State<JmcPageWidget> {
   late JmcPageModel _model;
+
+  bool _isSending = false;
 
   int? ultimaCaixa;
 
@@ -114,7 +116,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
             backgroundColor: Color(0xFF76232F),
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
             title: Text(
               'JMC',
               style: FlutterFlowTheme.of(context).headlineMedium.override(
@@ -620,7 +622,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                                   borderRadius: 8.0,
                                                   margin: EdgeInsetsDirectional
                                                       .fromSTEB(
-                                                          12.0, 0.0, 12.0, 0.0),
+                                                          7.0, 0.0, 12.0, 0.0),
                                                   hidesUnderline: true,
                                                   isOverButton: false,
                                                   isSearchable: true,
@@ -690,44 +692,65 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                   children: [
                     Form(
                       key: _model.formKey3,
-                      autovalidateMode: AutovalidateMode.always,
+                      autovalidateMode: AutovalidateMode.disabled,
                       child: Align(
                         alignment: AlignmentDirectional(-1.0, 0.0),
                         child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
                               5.0, 0.0, 0.0, 0.0),
-                          child: FlutterFlowDropDown<String>(
-                            controller: _model.localValueController ??=
-                                FormFieldController<String>(null),
-                            options: ['Produção', 'Embarque'],
-                            onChanged: (val) =>
-                                safeSetState(() => _model.localValue = val),
-                            width: 180.0,
-                            height: 40.0,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  fontFamily: 'Open Sans',
-                                  letterSpacing: 0.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FlutterFlowDropDown<String>(
+                                controller: _model.localValueController ??=
+                                    FormFieldController<String>(null),
+                                options: ['Produção', 'Embarque'],
+                                onChanged: (val) {
+                                  safeSetState(() {
+                                    _model.localValue = val;
+                                  });
+                                },
+                                width: 180.0,
+                                height: 40.0,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Open Sans',
+                                      letterSpacing: 0.0,
+                                    ),
+                                hintText: 'Selecione o Local',
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 24.0,
                                 ),
-                            hintText: 'Selecione o Local',
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24.0,
-                            ),
-                            fillColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            elevation: 2.0,
-                            borderColor: Color(0xFF173F35),
-                            borderWidth: 0.0,
-                            borderRadius: 8.0,
-                            margin: EdgeInsetsDirectional.fromSTEB(
-                                12.0, 0.0, 12.0, 0.0),
-                            hidesUnderline: true,
-                            isOverButton: false,
-                            isSearchable: false,
-                            isMultiSelect: false,
+                                fillColor: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                elevation: 2.0,
+                                borderColor:
+                                    const Color(0xFF173F35), // ✅ borda fixa
+                                borderWidth: 1.0,
+                                borderRadius: 8.0,
+                                margin: const EdgeInsetsDirectional.fromSTEB(
+                                    12.0, 0.0, 12.0, 0.0),
+                                hidesUnderline: true,
+                                isOverButton: false,
+                                isSearchable: false,
+                                isMultiSelect: false,
+                              ),
+                              if ((_model.localValue == null ||
+                                  _model.localValue!.isEmpty))
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 12.0, top: 4.0),
+                                  child: Text(
+                                    'Campo obrigatório',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 12.0),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
@@ -1580,336 +1603,473 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     Padding(
                       padding: EdgeInsetsGeometry.only(bottom: 24.0),
                       child: Align(
-                        alignment: AlignmentDirectional(0.0, 0.0),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            var _shouldSetState = false;
-                            if (_model.formKey9.currentState == null ||
-                                !_model.formKey9.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey4.currentState == null ||
-                                !_model.formKey4.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.operacaobdValue == null) {
-                              return;
-                            }
-                            if (_model.classebdValue == null) {
-                              return;
-                            }
-                            if (_model.formKey3.currentState == null ||
-                                !_model.formKey3.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.localValue == null) {
-                              return;
-                            }
-                            if (_model.formKey7.currentState == null ||
-                                !_model.formKey7.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey8.currentState == null ||
-                                !_model.formKey8.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey5.currentState == null ||
-                                !_model.formKey5.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey6.currentState == null ||
-                                !_model.formKey6.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey1.currentState == null ||
-                                !_model.formKey1.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.formKey2.currentState == null ||
-                                !_model.formKey2.currentState!.validate()) {
-                              return;
-                            }
-                            var confirmDialogResponse = await showDialog<bool>(
-                                  context: context,
-                                  builder: (alertDialogContext) {
-                                    return AlertDialog(
-                                      title: Text('Salvando'),
-                                      content:
-                                          Text('Deseja salvar o registro?'),
-                                      actions: [
-                                        TextButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                WidgetStatePropertyAll(
-                                                    Color(0xFF76232F)),
-                                            foregroundColor:
-                                                WidgetStatePropertyAll(
-                                                    Colors.white),
-                                            padding: WidgetStatePropertyAll(
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 10)),
-                                          ),
-                                          onPressed: () => Navigator.pop(
-                                              alertDialogContext, false),
-                                          child: Text('Cancelar'),
-                                        ),
-                                        TextButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                WidgetStatePropertyAll(
-                                                    Color(0xFF173F35)),
-                                            foregroundColor:
-                                                WidgetStatePropertyAll(
-                                                    Colors.white),
-                                            padding: WidgetStatePropertyAll(
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 10)),
-                                          ),
-                                          onPressed: () => Navigator.pop(
-                                              alertDialogContext, true),
-                                          child: Text('Confirmar'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ) ??
-                                false;
+                          alignment: AlignmentDirectional(0.0, 0.0),
+                          child: FFButtonWidget(
+                            onPressed: () async {
+                              if (_isSending) return;
+                              setState(() => _isSending = true);
+                              try {
+                                // Validações básicas
+                                final numeroCaixa = int.tryParse(
+                                    _model.nrcaixaTextController?.text ?? '');
+                                final operacao = _model.operacaobdValue ?? '';
+                                final classe = _model.classebdValue ?? '';
+                                final local = _model.localValue ?? '';
+                                final cod1a = int.tryParse(
+                                    _model.codigo1ATextController?.text ?? '');
+                                final cod2a = int.tryParse(
+                                    _model.codigo2ATextController?.text ?? '');
+                                final cod1b = int.tryParse(
+                                    _model.codigo1BTextController?.text ?? '');
+                                final cod2b = int.tryParse(
+                                    _model.codigo2BTextController?.text ?? '');
+                                final cod3a = int.tryParse(
+                                    _model.codigo3ATextController?.text ?? '');
+                                final cod3b = int.tryParse(
+                                    _model.codigo3BTextController?.text ?? '');
 
-                            if (confirmDialogResponse) {
-                              final numeroCaixa = int.tryParse(
-                                  _model.nrcaixaTextController?.text ?? '');
-                              final operacao = _model.operacaobdValue ?? '';
-                              final classe = _model.classebdValue ?? '';
-
-                              if (numeroCaixa == null ||
-                                  operacao.isEmpty ||
-                                  classe.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        '⚠️ Preencha todos os campos obrigatórios.'),
-                                    backgroundColor: Colors.orange,
-                                  ),
+                                if (numeroCaixa == null ||
+                                    operacao.trim().isEmpty ||
+                                    classe.trim().isEmpty ||
+                                    local.trim().isEmpty ||
+                                    cod1a == null ||
+                                    cod2a == null ||
+                                    cod1b == null ||
+                                    cod2b == null ||
+                                    cod3a == null ||
+                                    cod3b == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          '⚠️ Preencha todos os campos obrigatórios!'),
+                                      backgroundColor: Colors.yellow[700],
+                                    ),
+                                  );
+                                  return;
+                                }
+                                // Verifica duplicidade local (JMC)
+                                final existe = await SQLiteManager.instance
+                                    .existeCaixaRegistradaJMC(
+                                  caixa: numeroCaixa,
+                                  operacao: operacao,
+                                  classe: classe,
                                 );
-                                return;
-                              }
-
-                              final existe = await SQLiteManager.instance
-                                  .existeCaixaRegistradaJMC(
-                                caixa: numeroCaixa,
-                                operacao: operacao,
-                                classe: classe,
-                              );
-
-                              if (existe) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        '⚠️ Esta caixa já foi lida para esta operação e classe.'),
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                );
-                                return;
-                              } else
-                                // ✅ Prossegue com a gravação se não existir
+                                if (existe) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          '⚠️ Esta caixa já foi lida para esta operação e classe.'),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                  );
+                                  return;
+                                }
                                 await SQLiteManager.instance
                                     .insertConferenciaJMC(
                                   caixa: numeroCaixa,
-                                  classe: _model.classebdValue,
-                                  localconferencia: _model.localValue,
+                                  classe: classe,
+                                  localconferencia: local,
                                   ladoA: widget.ladoA,
                                   cliente: widget.jmc,
                                   data: getCurrentTimestamp,
-                                  codigo1a: _model.codigo1ATextController.text,
-                                  codigo2a: _model.codigo2ATextController.text,
-                                  codigo3a: _model.codigo3ATextController.text,
-                                  codigo1b: _model.codigo1BTextController.text,
-                                  codigo2b: _model.codigo2BTextController.text,
-                                  codigo3b: _model.codigo3BTextController.text,
+                                  codigo1a: _model.codigo1ATextController?.text,
+                                  codigo2a: _model.codigo2ATextController?.text,
+                                  codigo3a: _model.codigo3ATextController?.text,
+                                  codigo1b: _model.codigo1BTextController?.text,
+                                  codigo2b: _model.codigo2BTextController?.text,
+                                  codigo3b: _model.codigo3BTextController?.text,
                                   ladoB: widget.ladoB,
                                   operacao: operacao,
                                 );
-                              carregarUltimaCaixa();
-                              carregarTotalCaixas();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content:
-                                      Text('✅ Registro salvo com sucesso!'),
-                                  backgroundColor: Color(0xFF173F35),
-                                ),
-                              );
 
-                              // 1. Abre o diálogo de confirmação
-                              final confirmDialogResponse =
-                                  await showDialog<bool>(
-                                        context: context,
-                                        builder: (alertDialogContext) {
-                                          return AlertDialog(
-                                            title: Text(
-                                                'Realizar a sincronização?'),
-                                            content: Text(
-                                                'Deseja enviar os registros atuais?'),
-                                            actions: [
-                                              TextButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      WidgetStatePropertyAll(
-                                                          Color(0xFF76232F)),
-                                                  foregroundColor:
-                                                      WidgetStatePropertyAll(
-                                                          Colors.white),
-                                                  padding:
-                                                      WidgetStatePropertyAll(
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 16,
-                                                              vertical: 10)),
-                                                ),
-                                                onPressed: () => Navigator.pop(
-                                                    alertDialogContext, false),
-                                                child: Text('Cancelar'),
-                                              ),
-                                              TextButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      WidgetStatePropertyAll(
-                                                          Color(0xFF173F35)),
-                                                  foregroundColor:
-                                                      WidgetStatePropertyAll(
-                                                          Colors.white),
-                                                  padding:
-                                                      WidgetStatePropertyAll(
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 16,
-                                                              vertical: 10)),
-                                                ),
-                                                onPressed: () => Navigator.pop(
-                                                    alertDialogContext, true),
-                                                child: Text('Enviar'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ) ??
-                                      false;
-                              _model.jmcinsert = await SQLiteManager.instance
-                                  .buscarConferenciasJMC();
+                                carregarUltimaCaixa();
+                                carregarTotalCaixas();
 
-                              print(
-                                  '📦 Total de registros encontrados: ${_model.jmcinsert.length}');
-                              print(
-                                  '📤 JSON a ser enviado: ${_model.jmcinsert.map((e) => e.toMap()).toList()}');
+                                // Recarrega e envia
+                                final registrosLocais = await SQLiteManager
+                                    .instance
+                                    .buscarConferenciasJMC();
 
-                              // 2. Se o usuário confirmar, envia os dados
-                              if (confirmDialogResponse) {
-                                _model.apiResultqak =
+                                final apiResult =
                                     await AdicionarDadosConferenciaCall.call(
-                                  dadosJMCJson: _model.jmcinsert
+                                  dadosJMCJson: registrosLocais
                                       .map((e) => e.toMap())
                                       .toList(),
                                 );
 
-                                // 3. Valida o resultado da API
-                                if ((_model.apiResultqak?.succeeded ?? false)) {
+                                if ((apiResult.succeeded)) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content:
-                                          Text('✅ Dados enviados com sucesso!'),
-                                      backgroundColor: Color(0xFF173F35),
-                                    ),
+                                        content: Text(
+                                            '✅ Dados gravados e enviados com sucesso!'),
+                                        backgroundColor: Color(0xFF173F35)),
                                   );
-
-                                  // 4. Limpa a tabela local (JMC)
-                                  //   await SQLiteManager.instance
-                                  //       .limparConferenciasJMC();
-                                  // } else {
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //     content: Text(
-                                  //         '❌ Falha ao enviar dados. Código: ${_model.apiResultqak?.statusCode ?? "?"}'),
-                                  //     backgroundColor: Color(0xFF76232F),
-                                  //   ),
-                                  // );
+                                  // await SQLiteManager.instance.limparConferenciasJMC(); // opcional
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            '❌ Falha ao enviar dados. Código: ${apiResult.statusCode}'),
+                                        backgroundColor: Color(0xFF76232F)),
+                                  );
                                 }
-                              } else {
-                                // Se cancelado, pode logar ou ignorar
-                                print('🔁 Envio cancelado pelo usuário.');
-                                _shouldSetState = true;
+
+                                // Limpa campos e posiciona cursor na caixa
+                                setState(() {
+                                  _model.codigo1ATextController?.clear();
+                                  _model.codigo2ATextController?.clear();
+                                  _model.codigo3ATextController?.clear();
+                                  _model.codigo1BTextController?.clear();
+                                  _model.codigo2BTextController?.clear();
+                                  _model.codigo3BTextController?.clear();
+                                  _model.nrcaixaTextController?.clear();
+                                });
+                                _model.nrcaixaFocusNode?.requestFocus();
+                                carregarUltimaCaixa();
+                                carregarTotalCaixas();
+                              } catch (e, st) {
+                                debugPrint(
+                                    'Erro ao salvar/enviar JMC: $e\n$st');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Erro inesperado: $e'),
+                                      backgroundColor: Colors.red),
+                                );
+                              } finally {
+                                setState(() => _isSending = false);
                               }
+                            },
+                            text: 'Salvar',
+                            iconData: Icons.save,
+                            options: FFButtonOptions(
+                              height: 40,
+                              width: 110,
+                              color: const Color(0xFF76232F),
+                              iconSize: 16,
+                              textStyle: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              elevation: 4,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          )
 
-                              safeSetState(() {
-                                _model.nrcaixaTextController?.clear();
-                                _model.codigo1ATextController?.clear();
-                                _model.codigo2ATextController?.clear();
-                                _model.codigo3ATextController?.clear();
-                                _model.codigo1BTextController?.clear();
-                                _model.codigo2BTextController?.clear();
-                                _model.codigo3BTextController?.clear();
-                                _model.nrcaixaFocusNode?.requestFocus();
-                              });
-                              safeSetState(() {
-                                _model.nrcaixaTextController?.clear();
-                                _model.codigo1ATextController?.clear();
-                                _model.codigo2ATextController?.clear();
-                                _model.codigo3ATextController?.clear();
-                                _model.codigo1BTextController?.clear();
-                                _model.codigo2BTextController?.clear();
-                                _model.codigo3BTextController?.clear();
-                                _model.nrcaixaFocusNode?.requestFocus();
-                              });
-                              safeSetState(() {
-                                _model.nrcaixaTextController?.text = '';
-                              });
-                              if (_shouldSetState) safeSetState(() {});
-                              return;
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Cancelado!',
-                                    style: GoogleFonts.getFont(
-                                      'Open Sans',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  duration: Duration(milliseconds: 4000),
-                                  backgroundColor: Color(0xFF173F35),
-                                ),
-                              );
-                              // if (_shouldSetState) safeSetState(() {});
-                              return;
-                            }
+                          // FFButtonWidget(
+                          //   onPressed: () async {
+                          //     var _shouldSetState = false;
+                          //     if (_model.formKey9.currentState == null ||
+                          //         !_model.formKey9.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey4.currentState == null ||
+                          //         !_model.formKey4.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.operacaobdValue == null) {
+                          //       return;
+                          //     }
+                          //     if (_model.classebdValue == null) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey3.currentState == null ||
+                          //         !_model.formKey3.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.localValue == null) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey7.currentState == null ||
+                          //         !_model.formKey7.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey8.currentState == null ||
+                          //         !_model.formKey8.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey5.currentState == null ||
+                          //         !_model.formKey5.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey6.currentState == null ||
+                          //         !_model.formKey6.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey1.currentState == null ||
+                          //         !_model.formKey1.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     if (_model.formKey2.currentState == null ||
+                          //         !_model.formKey2.currentState!.validate()) {
+                          //       return;
+                          //     }
+                          //     var confirmDialogResponse = await showDialog<bool>(
+                          //           context: context,
+                          //           builder: (alertDialogContext) {
+                          //             return AlertDialog(
+                          //               title: Text('Salvando'),
+                          //               content:
+                          //                   Text('Deseja salvar o registro?'),
+                          //               actions: [
+                          //                 TextButton(
+                          //                   style: ButtonStyle(
+                          //                     backgroundColor:
+                          //                         WidgetStatePropertyAll(
+                          //                             Color(0xFF76232F)),
+                          //                     foregroundColor:
+                          //                         WidgetStatePropertyAll(
+                          //                             Colors.white),
+                          //                     padding: WidgetStatePropertyAll(
+                          //                         EdgeInsets.symmetric(
+                          //                             horizontal: 16,
+                          //                             vertical: 10)),
+                          //                   ),
+                          //                   onPressed: () => Navigator.pop(
+                          //                       alertDialogContext, false),
+                          //                   child: Text('Cancelar'),
+                          //                 ),
+                          //                 TextButton(
+                          //                   style: ButtonStyle(
+                          //                     backgroundColor:
+                          //                         WidgetStatePropertyAll(
+                          //                             Color(0xFF173F35)),
+                          //                     foregroundColor:
+                          //                         WidgetStatePropertyAll(
+                          //                             Colors.white),
+                          //                     padding: WidgetStatePropertyAll(
+                          //                         EdgeInsets.symmetric(
+                          //                             horizontal: 16,
+                          //                             vertical: 10)),
+                          //                   ),
+                          //                   onPressed: () => Navigator.pop(
+                          //                       alertDialogContext, true),
+                          //                   child: Text('Confirmar'),
+                          //                 ),
+                          //               ],
+                          //             );
+                          //           },
+                          //         ) ??
+                          //         false;
 
-                            //  if (_shouldSetState) safeSetState(() {});
-                          },
-                          text: 'Gravar',
-                          icon: Icon(
-                            Icons.send,
-                            size: 15.0,
+                          //     if (confirmDialogResponse) {
+                          //       final numeroCaixa = int.tryParse(
+                          //           _model.nrcaixaTextController?.text ?? '');
+                          //       final operacao = _model.operacaobdValue ?? '';
+                          //       final classe = _model.classebdValue ?? '';
+
+                          //       if (numeroCaixa == null ||
+                          //           operacao.isEmpty ||
+                          //           classe.isEmpty) {
+                          //         ScaffoldMessenger.of(context).showSnackBar(
+                          //           SnackBar(
+                          //             content: Text(
+                          //                 '⚠️ Preencha todos os campos obrigatórios.'),
+                          //             backgroundColor: Colors.orange,
+                          //           ),
+                          //         );
+                          //         return;
+                          //       }
+
+                          //       final existe = await SQLiteManager.instance
+                          //           .existeCaixaRegistradaJMC(
+                          //         caixa: numeroCaixa,
+                          //         operacao: operacao,
+                          //         classe: classe,
+                          //       );
+
+                          //       if (existe) {
+                          //         ScaffoldMessenger.of(context).showSnackBar(
+                          //           SnackBar(
+                          //             content: Text(
+                          //                 '⚠️ Esta caixa já foi lida para esta operação e classe.'),
+                          //             backgroundColor: Colors.orange,
+                          //           ),
+                          //         );
+                          //         return;
+                          //       } else
+                          //         // ✅ Prossegue com a gravação se não existir
+                          //         await SQLiteManager.instance
+                          //             .insertConferenciaJMC(
+                          //           caixa: numeroCaixa,
+                          //           classe: _model.classebdValue,
+                          //           localconferencia: _model.localValue,
+                          //           ladoA: widget.ladoA,
+                          //           cliente: widget.jmc,
+                          //           data: getCurrentTimestamp,
+                          //           codigo1a: _model.codigo1ATextController.text,
+                          //           codigo2a: _model.codigo2ATextController.text,
+                          //           codigo3a: _model.codigo3ATextController.text,
+                          //           codigo1b: _model.codigo1BTextController.text,
+                          //           codigo2b: _model.codigo2BTextController.text,
+                          //           codigo3b: _model.codigo3BTextController.text,
+                          //           ladoB: widget.ladoB,
+                          //           operacao: operacao,
+                          //         );
+                          //       carregarUltimaCaixa();
+                          //       carregarTotalCaixas();
+                          //       ScaffoldMessenger.of(context).showSnackBar(
+                          //         SnackBar(
+                          //           content:
+                          //               Text('✅ Registro salvo com sucesso!'),
+                          //           backgroundColor: Color(0xFF173F35),
+                          //         ),
+                          //       );
+
+                          //       // 1. Abre o diálogo de confirmação
+                          //       final confirmDialogResponse =
+                          //           await showDialog<bool>(
+                          //                 context: context,
+                          //                 builder: (alertDialogContext) {
+                          //                   return AlertDialog(
+                          //                     title: Text(
+                          //                         'Realizar a sincronização?'),
+                          //                     content: Text(
+                          //                         'Deseja enviar os registros atuais?'),
+                          //                     actions: [
+                          //                       TextButton(
+                          //                         style: ButtonStyle(
+                          //                           backgroundColor:
+                          //                               WidgetStatePropertyAll(
+                          //                                   Color(0xFF76232F)),
+                          //                           foregroundColor:
+                          //                               WidgetStatePropertyAll(
+                          //                                   Colors.white),
+                          //                           padding:
+                          //                               WidgetStatePropertyAll(
+                          //                                   EdgeInsets.symmetric(
+                          //                                       horizontal: 16,
+                          //                                       vertical: 10)),
+                          //                         ),
+                          //                         onPressed: () => Navigator.pop(
+                          //                             alertDialogContext, false),
+                          //                         child: Text('Cancelar'),
+                          //                       ),
+                          //                       TextButton(
+                          //                         style: ButtonStyle(
+                          //                           backgroundColor:
+                          //                               WidgetStatePropertyAll(
+                          //                                   Color(0xFF173F35)),
+                          //                           foregroundColor:
+                          //                               WidgetStatePropertyAll(
+                          //                                   Colors.white),
+                          //                           padding:
+                          //                               WidgetStatePropertyAll(
+                          //                                   EdgeInsets.symmetric(
+                          //                                       horizontal: 16,
+                          //                                       vertical: 10)),
+                          //                         ),
+                          //                         onPressed: () => Navigator.pop(
+                          //                             alertDialogContext, true),
+                          //                         child: Text('Enviar'),
+                          //                       ),
+                          //                     ],
+                          //                   );
+                          //                 },
+                          //               ) ??
+                          //               false;
+                          //       _model.jmcinsert = await SQLiteManager.instance
+                          //           .buscarConferenciasJMC();
+
+                          //       print(
+                          //           '📦 Total de registros encontrados: ${_model.jmcinsert.length}');
+                          //       print(
+                          //           '📤 JSON a ser enviado: ${_model.jmcinsert.map((e) => e.toMap()).toList()}');
+
+                          //       if (confirmDialogResponse) {
+                          //         _model.apiResultqak =
+                          //             await AdicionarDadosConferenciaCall.call(
+                          //           dadosJMCJson: _model.jmcinsert
+                          //               .map((e) => e.toMap())
+                          //               .toList(),
+                          //         );
+
+                          //         if ((_model.apiResultqak?.succeeded ?? false)) {
+                          //           ScaffoldMessenger.of(context).showSnackBar(
+                          //             SnackBar(
+                          //               content:
+                          //                   Text('✅ Dados enviados com sucesso!'),
+                          //               backgroundColor: Color(0xFF173F35),
+                          //             ),
+                          //           );
+                          //         }
+                          //       } else {
+                          //         // Se cancelado, pode logar ou ignorar
+                          //         print('🔁 Envio cancelado pelo usuário.');
+                          //         _shouldSetState = true;
+                          //       }
+
+                          //       safeSetState(() {
+                          //         _model.nrcaixaTextController?.clear();
+                          //         _model.codigo1ATextController?.clear();
+                          //         _model.codigo2ATextController?.clear();
+                          //         _model.codigo3ATextController?.clear();
+                          //         _model.codigo1BTextController?.clear();
+                          //         _model.codigo2BTextController?.clear();
+                          //         _model.codigo3BTextController?.clear();
+                          //         _model.nrcaixaFocusNode?.requestFocus();
+                          //       });
+                          //       safeSetState(() {
+                          //         _model.nrcaixaTextController?.clear();
+                          //         _model.codigo1ATextController?.clear();
+                          //         _model.codigo2ATextController?.clear();
+                          //         _model.codigo3ATextController?.clear();
+                          //         _model.codigo1BTextController?.clear();
+                          //         _model.codigo2BTextController?.clear();
+                          //         _model.codigo3BTextController?.clear();
+                          //         _model.nrcaixaFocusNode?.requestFocus();
+                          //       });
+                          //       safeSetState(() {
+                          //         _model.nrcaixaTextController?.text = '';
+                          //       });
+                          //       if (_shouldSetState) safeSetState(() {});
+                          //       return;
+                          //     } else {
+                          //       ScaffoldMessenger.of(context).showSnackBar(
+                          //         SnackBar(
+                          //           content: Text(
+                          //             'Cancelado!',
+                          //             style: GoogleFonts.getFont(
+                          //               'Open Sans',
+                          //               color: FlutterFlowTheme.of(context)
+                          //                   .secondaryBackground,
+                          //               fontWeight: FontWeight.bold,
+                          //             ),
+                          //           ),
+                          //           duration: Duration(milliseconds: 4000),
+                          //           backgroundColor: Color(0xFF173F35),
+                          //         ),
+                          //       );
+                          //       // if (_shouldSetState) safeSetState(() {});
+                          //       return;
+                          //     }
+
+                          //     //  if (_shouldSetState) safeSetState(() {});
+                          //   },
+                          //   text: 'Gravar',
+                          //   icon: Icon(
+                          //     Icons.send,
+                          //     size: 15.0,
+                          //   ),
+                          //   options: FFButtonOptions(
+                          //     width: 110.0,
+                          //     height: 40.0,
+                          //     padding: EdgeInsetsDirectional.fromSTEB(
+                          //         16.0, 0.0, 16.0, 0.0),
+                          //     iconPadding: EdgeInsetsDirectional.fromSTEB(
+                          //         0.0, 0.0, 0.0, 0.0),
+                          //     color: Color(0xFF76232F),
+                          //     textStyle: FlutterFlowTheme.of(context)
+                          //         .labelLarge
+                          //         .override(
+                          //           fontFamily: 'Open Sans',
+                          //           color: FlutterFlowTheme.of(context).info,
+                          //           letterSpacing: 0.0,
+                          //         ),
+                          //     elevation: 10.0,
+                          //     borderRadius: BorderRadius.circular(8.0),
+                          //   ),
+                          // ),
                           ),
-                          options: FFButtonOptions(
-                            width: 110.0,
-                            height: 40.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                16.0, 0.0, 16.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF76232F),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .labelLarge
-                                .override(
-                                  fontFamily: 'Open Sans',
-                                  color: FlutterFlowTheme.of(context).info,
-                                  letterSpacing: 0.0,
-                                ),
-                            elevation: 10.0,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
                     ),
                     Padding(
                       padding: EdgeInsetsGeometry.only(bottom: 24.0),
@@ -1994,7 +2154,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                             width: 110.0,
                             height: 40.0,
                             padding: EdgeInsetsDirectional.fromSTEB(
-                                16.0, 0.0, 16.0, 0.0),
+                                0.0, 0.0, 0.0, 0.0),
                             iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
                             color: Color(0xFF173F35),

@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:leitorptb/pages/romaneio_page/classe_producao_stp.dart';
+import 'package:leitorptb/pages/romaneio_page/lote_embarque_stp.dart';
 import '/backend/sqlite/init.dart';
 import 'queries/read.dart';
 import 'queries/update.dart';
@@ -200,6 +202,28 @@ class SQLiteManager {
         print("Tabela conferenciaALTRIA já existe.");
       }
 
+      // Verifica e cria a tabela romaneioALTRIA
+      var tablesromaneioALTRIA = await _database!.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='romaneioALTRIA'");
+      if (tablesromaneioALTRIA.isEmpty) {
+        await _database!.execute('''
+            CREATE TABLE romaneioALTRIA (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              CodDe       INTEGER ,
+              CodPara     INTEGER ,
+              Lote        TEXT ,
+              Operacao    TEXT ,
+              Classe      TEXT ,
+              CodBarras   INTEGER ,
+              Observacao  TEXT ,
+              Data        TEXT );
+    )
+    ''');
+        print("Tabela romaneioALTRIA criada com sucesso!");
+      } else {
+        print("Tabela romaneioALTRIA já existe.");
+      }
+
       var loteRomaneio = await _database!.rawQuery(
           "SELECT name FROM sqlite_master WHERE type='table' AND name='loteRomaneio'");
       if (loteRomaneio.isEmpty) {
@@ -233,6 +257,28 @@ class SQLiteManager {
         print("Tabela classeRomaneio já existe!");
       }
 
+      var lotesSTP = await _database!.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='loteEmbarqueSTP'");
+      if (lotesSTP.isEmpty) {
+        await _database!.execute(
+          "CREATE TABLE IF NOT EXISTS loteEmbarqueSTP  (id INTEGER PRIMARY KEY AUTOINCREMENT, CodLoteEmb TEXT UNIQUE, DescrLote TEXT)",
+        );
+        print("Tabela loteEmbarqueSTP criada com sucesso!");
+      } else {
+        print("Tabela loteEmbarqueSTP já existe!");
+      }
+
+      var classesSTP = await _database!.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='classeProducaoSTP'");
+      if (classesSTP.isEmpty) {
+        await _database!.execute(
+          "CREATE TABLE IF NOT EXISTS classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd TEXT UNIQUE, NomeClasseProd TEXT)",
+        );
+        print("Tabela classeProducaoSTP criada com sucesso!");
+      } else {
+        print("Tabela classeProducaoSTP já existe!");
+      }
+
       // Lista todas as tabelas do banco (para depuração)
       var allTables = await _database!
           .rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
@@ -261,6 +307,17 @@ class SQLiteManager {
 
   Future<List<BuscaUltimaCaixaALTRIARow>> buscaUltimaCaixaALTRIA() =>
       performBuscaUltimaCaixaALTRIA(database());
+
+  ///
+  Future<List<BuscaLoteRomenioAltria>> buscaLoteRomenioAltria() =>
+      performBuscaLoteRomenioAltria(database());
+
+  ///
+  Future<List<BuscaOperacaoRomenioAltria>> buscaOperacaoRomenioAltria() =>
+      performBuscaOperacaoRomenioAltria(database());
+
+  Future<List<BuscaClasseRomenioAltria>> buscaClasseRomenioAltria() =>
+      performBuscaClasseRomenioAltria(database());
 
   /// END READ QUERY CALLS
 
@@ -336,6 +393,27 @@ class SQLiteManager {
     });
   }
 
+  Future insertRomaneioALTRIA(
+          {int? codde,
+          int? codpara,
+          String? lote,
+          String? operacao,
+          String? classe,
+          String? observacao,
+          DateTime? data,
+          int? CodBarras}) =>
+      performinsertRomaneioALTRIA(
+        database(),
+        codde: codde,
+        codpara: codpara,
+        lote: lote,
+        operacao: operacao,
+        classe: classe,
+        observacao: observacao,
+        data: data,
+        CodBarras: CodBarras,
+      );
+
   Future insertConferenciaALTRIA({
     String? ladoA,
     String? cliente,
@@ -375,6 +453,74 @@ class SQLiteManager {
           codigo4b: codigo4b,
           codigo5b: codigo5b,
           operacao: operacao);
+
+  // Future<void> inserirLoteEmbarque(
+  //     List<LoteEmbarqueSTP> lotes, String descricao) async {
+  //   final db = await database();
+  //   final batch = db.batch();
+  //   for (final lote in lotes) {
+  //     batch.insert(
+  //       'loteEmbarqueSTP',
+  //       {'CodLoteEmb': lote.codigo, 'DescrLote': lote.descricao},
+  //       conflictAlgorithm: ConflictAlgorithm.replace,
+  //     );
+  //   }
+  //   await batch.commit(noResult: true);
+  // }
+
+  Future<void> inserirLoteEmbarque(List<LoteEmbarqueSTP> lotes) async {
+    final db = await database();
+    // (opcional) garantir tabela e índice únicos
+    await db.execute("delete from loteEmbarqueSTP");
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS loteEmbarqueSTP ("
+      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+      "CodLoteEmb TEXT UNIQUE, "
+      "DescrLote TEXT"
+      ")",
+    );
+    await db.execute(
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_loteEmbarque_cod "
+      "ON loteEmbarqueSTP(CodLoteEmb)",
+    );
+
+    final batch = db.batch();
+    for (final l in lotes) {
+      batch.insert(
+        'loteEmbarqueSTP',
+        {'CodLoteEmb': l.codigo, 'DescrLote': l.descricao},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  Future<void> inserirClasseProducaoSTP(List<ClasseProducaoSTP> classes) async {
+    final db = await database();
+
+    await db.execute("DELETE FROM classeProducaoSTP");
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd INTEGER UNIQUE, NomeClasseProd TEXT)",
+    );
+    await db.execute(
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_classeProducao_cod "
+      "ON classeProducaoSTP(CodClasseProd)",
+    );
+
+    final batch = db.batch();
+    for (final c in classes) {
+      batch.insert(
+        'classeProducaoSTP',
+        {
+          'CodClasseProd': c.codigo,
+          'NomeClasseProd': c.descricao,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    await batch.commit(noResult: true);
+  }
 
   /// END UPDATE QUERY CALLS
   Future<List<ConferenciaJMC>> getConferenciasJMCFromDB() async {
@@ -424,6 +570,60 @@ class SQLiteManager {
     return 0;
   }
 
+  Future<int> contarCaixasPorClasse(String codClasse) async {
+    final db = await database();
+    final resultado = await db.rawQuery(
+      'SELECT COUNT(*) as total FROM romaneioALTRIA WHERE Classe = ?',
+      [codClasse],
+    );
+
+    if (resultado.isNotEmpty) {
+      return resultado.first['total'] as int;
+    }
+    return 0;
+  }
+
+  Future<List<Map<String, dynamic>>> buscarLotesEmbarque() async {
+    final db = await database();
+
+    return await db.query(
+      'loteEmbarqueSTP',
+      orderBy: 'CodLoteEmb ASC',
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> buscarClassesProducaoSTP() async {
+    final db = await database();
+
+    return await db.query(
+      'classeProducaoSTP',
+      orderBy: 'CodClasseProd ASC',
+    );
+  }
+
+  Future<void> limparLotesEmbarque() async {
+    final db = await database();
+    await db.delete('classeProducaoSTP');
+  }
+
+  Future<bool> existeCaixaRegistradaRomaneio({
+    required int codde,
+    required String codpara,
+    required String classe,
+  }) async {
+    final db = await database();
+    final resultado = await db.rawQuery(
+      '''
+    SELECT 1 FROM romaneioALTRIA
+    WHERE codde = ? AND codpara = ?  AND classe = ?
+    LIMIT 1
+    ''',
+      [codde, codpara, classe],
+    );
+
+    return resultado.isNotEmpty;
+  }
+
   Future<bool> existeCaixaRegistradaJMC({
     required int caixa,
     required String operacao,
@@ -460,16 +660,22 @@ class SQLiteManager {
     return resultado.isNotEmpty;
   }
 
+  // Buscar todos os Lotes cadastrados
   Future<List<Map<String, dynamic>>> getLotesRomaneio() async {
-    return await _database!.query('loteRomaneio');
+    final db = await database();
+    return await db.query('loteRomaneio'); // substitua pelo nome real da tabela
   }
 
+// Buscar todas as Operações cadastradas
   Future<List<Map<String, dynamic>>> getOperacoesRomaneio() async {
-    return await _database!.query('operacaoRomaneio');
+    final db = await database();
+    return await db.query('operacaoRomaneio');
   }
 
+// Buscar todas as Classes cadastradas
   Future<List<Map<String, dynamic>>> getClassesRomaneio() async {
-    return await _database!.query('classeRomaneio');
+    final db = await database();
+    return await db.query('classeRomaneio');
   }
 
   Future<int> deleteLoteRomaneio(int id) async {
@@ -487,29 +693,30 @@ class SQLiteManager {
         .delete('classeRomaneio', where: 'id = ?', whereArgs: [id]);
   }
 
-//   Future<void> limparConferenciasJMC() async {
-//     final db = SQLiteManager.database;
-//     await db.delete('conferenciaJMC');
-//     print("🧹 Tabela conferenciaJMC limpa.");
-//   }
-// }
-
-// Future<void> limparConferenciasALTRIA() async {
-//   final db = SQLiteManager.database;
-//   await db.delete('conferenciaALTRIA');
-//   print("🧹 Tabela conferenciaALTRIA limpa.");
-// }
-
-//   Future<void> limparConferenciasJMC() async {
-//     final db = await SQLiteManager.database();
-//     await db.delete('conferenciaJMC');
-//     print("🧹 Tabela conferenciaJMC limpa.");
-//   }
-
-//   Future<void> limparConferenciasALTRIA() async {
-//     final db = await SQLiteManager.database();
-//     await db.delete('conferenciaALTRIA');
-//     print("🧹 Tabela conferenciaALTRIA limpa.");
-//   }
-// }
+  Future<void> performinsertRomaneioALTRIA(
+    Database database, {
+    int? codde,
+    int? codpara,
+    String? lote,
+    String? operacao,
+    String? classe,
+    String? observacao,
+    DateTime? data,
+    int? CodBarras,
+  }) async {
+    await database.insert(
+      'romaneioALTRIA',
+      {
+        'CodDe': codde,
+        'CodPara': codpara,
+        'Lote': lote,
+        'Operacao': operacao,
+        'Classe': classe,
+        'Observacao': observacao,
+        'Data': (data ?? DateTime.now()).toIso8601String(),
+        'CodBarras': CodBarras,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 }
