@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+//import 'package:leitorptb/backend/api_requests/api_calls.dart';
+import 'package:leitorptb/pages/reprocessar/caixa_model.dart';
 import 'package:leitorptb/pages/romaneio_page/classe_producao_stp.dart';
 import 'package:leitorptb/pages/romaneio_page/lote_embarque_stp.dart';
 import '/backend/sqlite/init.dart';
@@ -26,9 +29,11 @@ class SQLiteManager {
 
     return maps.map((map) {
       return ConferenciaJMC(
+        id: map['id'],
         ladoA: map['ladoA'],
         cliente: map['cliente'],
         caixa: map['caixa'],
+        enviado: map['enviado'],
         data: DateTime.tryParse(map['data'] ?? ''),
         classe: map['classe'],
         localconferencia: map['localconferencia'],
@@ -51,9 +56,11 @@ class SQLiteManager {
 
     return maps.map((map) {
       return ConferenciaALTRIA(
+        id: map['codconf'],
         ladoA: map['ladoA'],
         cliente: map['cliente'],
         caixa: map['caixa'],
+        enviado: map['enviado'],
         data: DateTime.tryParse(map['data'] ?? ''),
         classe: map['classe'],
         localconferencia: map['localconferencia'],
@@ -113,7 +120,7 @@ class SQLiteManager {
           "SELECT name FROM sqlite_master WHERE type='table' AND name='operacaoJMC'");
       if (tablesOperacaoJMC.isEmpty) {
         await _database!.execute(
-          "CREATE TABLE operacaoJMC(id INTEGER PRIMARY KEY AUTOINCREMENT, operacao TEXT)",
+          "CREATE TABLE operacaoJMC(id INTEGER PRIMARY KEY AUTOINCREMENT, operacao TEXT UNIQUE)",
         );
         print("Tabela operacaoJMC criada com sucesso!");
       } else {
@@ -137,7 +144,7 @@ class SQLiteManager {
           "SELECT name FROM sqlite_master WHERE type='table' AND name='operacaoALTRIA'");
       if (tablesOperacaoALTRIA.isEmpty) {
         await _database!.execute(
-          "CREATE TABLE operacaoALTRIA(id INTEGER PRIMARY KEY AUTOINCREMENT, operacao TEXT)",
+          "CREATE TABLE operacaoALTRIA(id INTEGER PRIMARY KEY AUTOINCREMENT, operacao TEXT UNIQUE)",
         );
         print("Tabela operacaoALTRIA criada com sucesso!");
       } else {
@@ -164,7 +171,8 @@ class SQLiteManager {
       codigo2b TEXT,
       codigo3b TEXT,
       ladoB TEXT,
-      operacao TEXT
+      operacao TEXT,
+      enviado INTEGER DEFAULT 0
     )
     ''');
         print("Tabela conferenciaJMC criada com sucesso!");
@@ -196,7 +204,8 @@ class SQLiteManager {
       codigo4b TEXT,
       codigo5b TEXT,
       ladoB TEXT,
-      operacao TEXT)''');
+      operacao TEXT,
+      enviado INTEGER DEFAULT 0)''');
         print("Tabela conferenciaALTRIA criada com sucesso!");
       } else {
         print("Tabela conferenciaALTRIA já existe.");
@@ -272,11 +281,22 @@ class SQLiteManager {
           "SELECT name FROM sqlite_master WHERE type='table' AND name='classeProducaoSTP'");
       if (classesSTP.isEmpty) {
         await _database!.execute(
-          "CREATE TABLE IF NOT EXISTS classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd TEXT UNIQUE, NomeClasseProd TEXT)",
+          "CREATE TABLE IF NOT EXISTS classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd INTEGER UNIQUE, NomeClasseProd TEXT)",
         );
         print("Tabela classeProducaoSTP criada com sucesso!");
       } else {
         print("Tabela classeProducaoSTP já existe!");
+      }
+
+      var CaixasLidas = await _database!.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='CaixasLidas'");
+      if (CaixasLidas.isEmpty) {
+        await _database!.execute(
+          "CREATE TABLE IF NOT EXISTS CaixasLidas (id INTEGER PRIMARY KEY AUTOINCREMENT, Caixa TEXT UNIQUE, Classe TEXT, Operacao TEXT, Cliente TEXT)",
+        );
+        print("Tabela CaixasLidas criada com sucesso!");
+      } else {
+        print("Tabela CaixasLidas já existe!");
       }
 
       // Lista todas as tabelas do banco (para depuração)
@@ -339,21 +359,24 @@ class SQLiteManager {
     String? ladoB,
     String? operacao,
   }) =>
-      performInsertConferenciaJMC(database(),
-          ladoA: ladoA,
-          cliente: cliente,
-          caixa: caixa,
-          data: data,
-          classe: classe,
-          localconferencia: localconferencia,
-          codigo1a: codigo1a,
-          codigo2a: codigo2a,
-          codigo3a: codigo3a,
-          codigo1b: codigo1b,
-          codigo2b: codigo2b,
-          codigo3b: codigo3b,
-          ladoB: ladoB,
-          operacao: operacao);
+      performInsertConferenciaJMC(
+        database(),
+        ladoA: ladoA,
+        cliente: cliente,
+        caixa: caixa,
+        data: data,
+        classe: classe,
+        localconferencia: localconferencia,
+        codigo1a: codigo1a,
+        codigo2a: codigo2a,
+        codigo3a: codigo3a,
+        codigo1b: codigo1b,
+        codigo2b: codigo2b,
+        codigo3b: codigo3b,
+        ladoB: ladoB,
+        operacao: operacao,
+        enviado: 0,
+      );
 
   Future classeJMC({String? classe}) =>
       performClasseJMC(database(), classe: classe);
@@ -434,25 +457,28 @@ class SQLiteManager {
     String? codigo5b,
     String? operacao,
   }) =>
-      performInsertConferenciaALTRIA(database(),
-          ladoA: ladoA,
-          cliente: cliente,
-          caixa: caixa,
-          data: data,
-          classe: classe,
-          localconferencia: localconferencia,
-          codigo1a: codigo1a,
-          codigo2a: codigo2a,
-          codigo3a: codigo3a,
-          codigo1b: codigo1b,
-          codigo2b: codigo2b,
-          codigo3b: codigo3b,
-          ladoB: ladoB,
-          codigo4a: codigo4a,
-          codigo5a: codigo5a,
-          codigo4b: codigo4b,
-          codigo5b: codigo5b,
-          operacao: operacao);
+      performInsertConferenciaALTRIA(
+        database(),
+        ladoA: ladoA,
+        cliente: cliente,
+        caixa: caixa,
+        data: data,
+        classe: classe,
+        localconferencia: localconferencia,
+        codigo1a: codigo1a,
+        codigo2a: codigo2a,
+        codigo3a: codigo3a,
+        codigo1b: codigo1b,
+        codigo2b: codigo2b,
+        codigo3b: codigo3b,
+        ladoB: ladoB,
+        codigo4a: codigo4a,
+        codigo5a: codigo5a,
+        codigo4b: codigo4b,
+        codigo5b: codigo5b,
+        operacao: operacao,
+        enviado: 0,
+      );
 
   // Future<void> inserirLoteEmbarque(
   //     List<LoteEmbarqueSTP> lotes, String descricao) async {
@@ -495,16 +521,48 @@ class SQLiteManager {
     await batch.commit(noResult: true);
   }
 
+  Future<void> inserirCaixasLidas(List<CaixaModel> caixas) async {
+    final db = await database();
+
+    await db.execute("delete from caixasLidas");
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS caixasLidas ("
+      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+      "Caixa TEXT UNIQUE, "
+      "Classe TEXT, "
+      "Operacao TEXT, "
+      "Cliente TEXT"
+      ")",
+    );
+
+    await db.execute(
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_caixasLidas_cod "
+      "ON caixasLidas(Caixa)",
+    );
+
+    final batch = db.batch();
+
+    for (final l in caixas) {
+      batch.insert(
+        'caixasLidas',
+        {
+          'Caixa': l.caixa,
+          'Classe': l.classe,
+          'Operacao': l.operacao,
+          'Cliente': l.cliente
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
   Future<void> inserirClasseProducaoSTP(List<ClasseProducaoSTP> classes) async {
     final db = await database();
 
-    await db.execute("DELETE FROM classeProducaoSTP");
+    await db.execute("DROP TABLE IF EXISTS classeProducaoSTP");
     await db.execute(
-      "CREATE TABLE IF NOT EXISTS classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd INTEGER UNIQUE, NomeClasseProd TEXT)",
-    );
-    await db.execute(
-      "CREATE UNIQUE INDEX IF NOT EXISTS idx_classeProducao_cod "
-      "ON classeProducaoSTP(CodClasseProd)",
+      "CREATE TABLE classeProducaoSTP (id INTEGER PRIMARY KEY AUTOINCREMENT, CodClasseProd INTEGER UNIQUE, NomeClasseProd TEXT)",
     );
 
     final batch = db.batch();
@@ -520,6 +578,11 @@ class SQLiteManager {
     }
 
     await batch.commit(noResult: true);
+  }
+
+  Future<void> limparCaixasLidas() async {
+    final db = await database();
+    await db.delete('caixasLidas');
   }
 
   /// END UPDATE QUERY CALLS
@@ -551,7 +614,7 @@ class SQLiteManager {
   Future<int> contarCaixasLidasJMC() async {
     final db = await database();
     final resultado =
-        await db.rawQuery('SELECT COUNT(*) as total FROM conferenciaJMC');
+        await db.rawQuery('SELECT COUNT(*) as total FROM conferenciaJMC ');
 
     if (resultado.isNotEmpty) {
       return resultado.first['total'] as int;
@@ -562,12 +625,38 @@ class SQLiteManager {
   Future<int> contarCaixasLidasAltria() async {
     final db = await database();
     final resultado =
-        await db.rawQuery('SELECT COUNT(*) as total FROM conferenciaALTRIA');
+        await db.rawQuery('SELECT COUNT(*) as total FROM conferenciaALTRIA ');
 
     if (resultado.isNotEmpty) {
       return resultado.first['total'] as int;
     }
     return 0;
+  }
+
+  /// Retorna o número da última caixa registrada para JMC (maior valor)
+  Future<int?> buscarUltimaCaixaNumericaJMC() async {
+    final db = database();
+    final resultado = await db.rawQuery(
+      'SELECT caixa FROM conferenciaJMC ORDER BY data DESC LIMIT 1',
+    );
+    if (resultado.isNotEmpty && resultado.first['caixa'] != null) {
+      final val = resultado.first['caixa'];
+      return val is int ? val : int.tryParse(val.toString());
+    }
+    return null;
+  }
+
+  /// Retorna o número da última caixa registrada para ALTRIA (maior valor)
+  Future<int?> buscarUltimaCaixaNumericaALTRIA() async {
+    final db = database();
+    final resultado = await db.rawQuery(
+      'SELECT caixa FROM conferenciaALTRIA ORDER BY data DESC LIMIT 1',
+    );
+    if (resultado.isNotEmpty && resultado.first['caixa'] != null) {
+      final val = resultado.first['caixa'];
+      return val is int ? val : int.tryParse(val.toString());
+    }
+    return null;
   }
 
   Future<int> contarCaixasPorClasse(String codClasse) async {
@@ -607,15 +696,22 @@ class SQLiteManager {
   }
 
   Future<bool> existeCaixaRegistradaRomaneio({
-    required int codde,
-    required String codpara,
-    required String classe,
+    required TextEditingController coddeController,
+    required TextEditingController codparaController,
+    required String? classeSelecionada,
   }) async {
     final db = await database();
+
+    final codde = int.tryParse(coddeController.text.trim()) ?? -1;
+    final codpara = int.tryParse(codparaController.text.trim()) ?? -1;
+    final classe = (classeSelecionada ?? '').trim().toUpperCase();
+
+    print("🔍 Validando no banco: DE=$codde PARA=$codpara CLASSE=$classe");
+
     final resultado = await db.rawQuery(
       '''
     SELECT 1 FROM romaneioALTRIA
-    WHERE codde = ? AND codpara = ?  AND classe = ?
+    WHERE CodDe = ? AND CodPara = ? AND Classe = ?
     LIMIT 1
     ''',
       [codde, codpara, classe],
@@ -660,6 +756,21 @@ class SQLiteManager {
     return resultado.isNotEmpty;
   }
 
+  Future<bool> operacaoExiste({
+    required String tabela,
+    required String operacao,
+  }) async {
+    final db = await database();
+
+    final result = await db.query(
+      tabela,
+      where: 'operacao = ?',
+      whereArgs: [operacao],
+    );
+
+    return result.isNotEmpty;
+  }
+
   // Buscar todos os Lotes cadastrados
   Future<List<Map<String, dynamic>>> getLotesRomaneio() async {
     final db = await database();
@@ -676,6 +787,50 @@ class SQLiteManager {
   Future<List<Map<String, dynamic>>> getClassesRomaneio() async {
     final db = await database();
     return await db.query('classeRomaneio');
+  }
+
+  Future<List<ConferenciaJMC>> buscarNaoEnviadosJMC() async {
+    final db = await database();
+    final result = await db.query(
+      'conferenciaJMC',
+      where: 'enviado = ?',
+      whereArgs: [0],
+    );
+
+    return result.map((e) => ConferenciaJMC.fromMap(e)).toList();
+  }
+
+  Future<List<ConferenciaALTRIA>> buscarNaoEnviadosALTRIA() async {
+    final db = await database();
+    final result = await db.query(
+      'conferenciaALTRIA',
+      where: 'enviado = ?',
+      whereArgs: [0],
+    );
+    return result.map((e) {
+      // fromMap também precisa ser corrigido (ver item 2)
+      return ConferenciaALTRIA.fromMap(e);
+    }).toList();
+  }
+
+  Future<void> marcarComoEnviadoJMC(int id) async {
+    final db = await database();
+    await db.update(
+      'conferenciaJMC',
+      {'enviado': 1},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> marcarComoEnviadoALTRIA(int id) async {
+    final db = await database();
+    await db.update(
+      'conferenciaALTRIA',
+      {'enviado': 1},
+      where: 'codconf = ?', // ← era 'id = ?'
+      whereArgs: [id],
+    );
   }
 
   Future<int> deleteLoteRomaneio(int id) async {
@@ -718,5 +873,79 @@ class SQLiteManager {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> insert(List classes) async {}
+
+  //novo método para inserir caixas lidas a partir de uma lista de mapas (para flexibilidade)
+  Future<void> inserirCaixasLidasFromMaps(
+      List<Map<String, dynamic>> linhas) async {
+    final db = await database();
+
+    await db.execute("DELETE FROM caixasLidas");
+    // Garante tabela e índice
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS caixasLidas ("
+      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+      "Caixa TEXT UNIQUE, "
+      "Classe TEXT, "
+      "Operacao TEXT, "
+      "Cliente TEXT"
+      ")",
+    );
+    await db.execute(
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_caixasLidas_cod "
+      "ON caixasLidas(Caixa)",
+    );
+
+    // Estratégia: limpar e repopular (igual ao seu método)
+    await db.execute("DELETE FROM caixasLidas");
+
+    final batch = db.batch();
+    for (final r in linhas) {
+      batch.insert(
+        'caixasLidas',
+        {
+          'Caixa': (r['Caixa'] ?? '').toString(),
+          'Classe': (r['Classe'] ?? '').toString(),
+          'Operacao': (r['Operacao'] ?? '').toString(),
+          'Cliente': (r['Cliente'] ?? '').toString(),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  // =============================================
+  // LISTAGENS/AUXILIARES
+  // =============================================
+
+  /// Lista de caixas distintas (uma por linha na sua tabela)
+  Future<List<String>> getDistinctCaixas(String cliente) async {
+    final db = await database();
+
+    final rs = await db.rawQuery(
+      "SELECT Caixa FROM caixasLidas WHERE Cliente = ? ORDER BY Caixa ASC",
+      [cliente],
+    );
+
+    return rs
+        .map((m) => (m['Caixa'] ?? '').toString())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  /// Retorna a linha atual da caixa (Classe e Operacao)
+  Future<Map<String, dynamic>?> getInfoAtualByCaixa(String caixa) async {
+    final db = await database();
+    final rs = await db.query(
+      'caixasLidas',
+      columns: ['Classe', 'Operacao', 'Cliente', 'Caixa'],
+      where: 'Caixa = ?',
+      whereArgs: [caixa],
+      limit: 1,
+    );
+    return rs.isNotEmpty ? rs.first : null;
   }
 }

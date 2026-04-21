@@ -117,211 +117,10 @@ class _CadastroJMCWidgetState extends State<CadastroJMCWidget> {
                                         Align(
                                           alignment:
                                               AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'Classe',
-                                            textAlign: TextAlign.start,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Open Sans',
-                                                  color: Color(0xFF173F35),
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ),
-                                        TextFormField(
-                                          controller:
-                                              _model.classejmcTextController,
-                                          focusNode: _model.classejmcFocusNode,
-                                          onChanged: (_) =>
-                                              EasyDebounce.debounce(
-                                            '_model.classejmcTextController',
-                                            Duration(milliseconds: 2000),
-                                            () => safeSetState(() {}),
-                                          ),
-                                          autofocus: true,
-                                          textCapitalization:
-                                              TextCapitalization.words,
-                                          obscureText: false,
-                                          decoration: InputDecoration(
-                                            labelText: 'Cadastre a classe...',
-                                            labelStyle: FlutterFlowTheme.of(
-                                                    context)
-                                                .headlineMedium
-                                                .override(
-                                                  fontFamily: 'Open Sans',
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  fontSize: 20.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                            hintStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      fontFamily: 'Open Sans',
-                                                      color: Color(0xFF606A85),
-                                                      fontSize: 14.0,
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                            errorStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .override(
-                                                      fontFamily: 'Figtree',
-                                                      color: Color(0xFFFF5963),
-                                                      fontSize: 12.0,
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xFF173F35),
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xFF173F35),
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xFFFF5963),
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                            ),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0xFFFF5963),
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                            ),
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            contentPadding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 10.0, 16.0, 10.0),
-                                            suffixIcon: _model
-                                                    .classejmcTextController!
-                                                    .text
-                                                    .isNotEmpty
-                                                ? InkWell(
-                                                    onTap: () async {
-                                                      _model
-                                                          .classejmcTextController
-                                                          ?.clear();
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: Icon(
-                                                      Icons.clear,
-                                                      size: 22,
-                                                    ),
-                                                  )
-                                                : null,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .headlineMedium
-                                              .override(
-                                                fontFamily: 'Open Sans',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryText,
-                                                fontSize: 20.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                          cursorColor: Color(0xFF173F35),
-                                          validator: _model
-                                              .classejmcTextControllerValidator
-                                              .asValidator(context),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 12.0, 16.0, 12.0),
-                                          child: FFButtonWidget(
-                                            onPressed: () async {
-                                              await SQLiteManager.instance
-                                                  .classeJMC(
-                                                classe: _model
-                                                    .classejmcTextController
-                                                    .text,
-                                              );
-                                              safeSetState(() {
-                                                _model.classejmcTextController
-                                                    ?.clear();
-                                              });
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      '✅ Classe salva com sucesso!'),
-                                                  backgroundColor:
-                                                      Color(0xFF173F35),
-                                                ),
-                                              );
-                                            },
-                                            text: 'Salvar',
-                                            icon: Icon(
-                                              Icons.save,
-                                              size: 20.0,
-                                            ),
-                                            options: FFButtonOptions(
-                                              width: double.infinity,
-                                              height: 48.0,
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      24.0, 0.0, 24.0, 0.0),
-                                              iconPadding: EdgeInsetsDirectional
-                                                  .fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                              color: Color(0xFF76232F),
-                                              textStyle: FlutterFlowTheme.of(
-                                                      context)
-                                                  .titleSmall
-                                                  .override(
-                                                    fontFamily: 'Open Sans',
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryBackground,
-                                                    fontSize: 16.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                              elevation: 10.0,
-                                              borderSide: BorderSide(
-                                                color: Colors.transparent,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional(-1.0, 0.0),
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 50.0, 0.0, 0.0),
+                                                    0.0, 10.0, 0.0, 0.0),
                                             child: Text(
                                               'Operação',
                                               textAlign: TextAlign.start,
@@ -468,15 +267,56 @@ class _CadastroJMCWidgetState extends State<CadastroJMCWidget> {
                                         16.0, 12.0, 16.0, 12.0),
                                     child: FFButtonWidget(
                                       onPressed: () async {
+                                        final operacao = _model
+                                            .operacaojmcTextController.text
+                                            .trim();
+
+                                        // 1️⃣ Valida vazio
+                                        if (operacao.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  '⚠️ Informe uma operação'),
+                                              backgroundColor: Colors.orange,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // 2️⃣ Verifica duplicidade
+                                        final existe = await SQLiteManager
+                                            .instance
+                                            .operacaoExiste(
+                                          tabela: 'operacaoJMC',
+                                          operacao: operacao,
+                                        );
+
+                                        if (existe) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  '❌ Já existe uma operação com esse nome'),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // 3️⃣ Salva
                                         await SQLiteManager.instance
                                             .operacaoJMC(
-                                          operacao: _model
-                                              .operacaojmcTextController.text,
+                                          operacao: operacao,
                                         );
+
+                                        // 4️⃣ Limpa campo
                                         safeSetState(() {
                                           _model.operacaojmcTextController
                                               ?.clear();
                                         });
+
+                                        // 5️⃣ Feedback
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
@@ -486,7 +326,7 @@ class _CadastroJMCWidgetState extends State<CadastroJMCWidget> {
                                           ),
                                         );
                                       },
-                                      text: 'Salvar',
+                                      text: 'Salvar Operação',
                                       icon: Icon(
                                         Icons.save,
                                         size: 20.0,

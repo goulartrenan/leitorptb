@@ -44,24 +44,6 @@ class BuscaOperacaoJMCRow extends SqliteRow {
 
 /// END BUSCA OPERACAO JMC
 
-/// BEGIN BUSCA ULTIMA CAIXA JMC
-/* Future<List<BuscaUltimaCaixaJMCRow>> performBuscaUltimaCaixaJMC(
-  Database database,
-) {
-  final query = '''
-SELECT * FROM conferenciajmc ORDER BY caixa DESC LIMIT 1
-''';
-  return _readQuery(database, query, (d) => BuscaUltimaCaixaJMCRow(d));
-}
-
-class BuscaUltimaCaixaJMCRow extends SqliteRow {
-  BuscaUltimaCaixaJMCRow(Map<String, dynamic> data) : super(data);
-
-  String? get caixa => data['caixa'] as String?;
-} */
-
-/// END BUSCA ULTIMA CAIXA JMC
-
 /// BEGIN BUSCA CLASSE ALTRIA
 Future<List<BuscaClasseALTRIARow>> performBuscaClasseALTRIA(
   Database database,
@@ -103,7 +85,7 @@ Future<List<BuscaUltimaCaixaALTRIARow>> performBuscaUltimaCaixaALTRIA(
   Database database,
 ) {
   final query = '''
-SELECT caixa FROM conferenciaALTRIA ORDER BY id DESC LIMIT 1
+SELECT caixa FROM conferenciaALTRIA WHERE enviado = 1 ORDER BY id DESC LIMIT 1
 ''';
   return _readQuery(database, query, (d) => BuscaUltimaCaixaALTRIARow(d));
 }

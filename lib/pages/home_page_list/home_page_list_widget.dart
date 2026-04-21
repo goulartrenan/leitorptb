@@ -1,5 +1,6 @@
 //import 'package:leitorptb/pages/cadastro_romaneio/cadastro_romaneio.dart';
 import 'package:leitorptb/pages/select_menus_romaneio/romaneio_menu_altria.dart';
+//import 'package:leitorptb/pages/select_menus_romaneio/romaneio_menu_bat.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -149,51 +150,68 @@ class _HomePageWidgetState extends State<HomePageRomaneioWidget> {
                                 ),
                               ),
                             ),
-                            // Flexible(
-                            //   child: Padding(
-                            //     padding: EdgeInsetsDirectional.fromSTEB(
-                            //         20.0, 0.0, 0.0, 0.0),
-                            //     child: FFButtonWidget(
-                            //       onPressed: () async {
-                            //         context.pushNamed(
-                            //             SelecaoMenusJMCWidget.routeName);
-                            //       },
-                            //       text: 'JMC',
-                            //       options: FFButtonOptions(
-                            //         width: 100.0,
-                            //         height: 100.0,
-                            //         padding: EdgeInsetsDirectional.fromSTEB(
-                            //             16.0, 0.0, 16.0, 0.0),
-                            //         iconPadding: EdgeInsetsDirectional.fromSTEB(
-                            //             0.0, 0.0, 0.0, 0.0),
-                            //         color: Color(0xFF173F35),
-                            //         textStyle: FlutterFlowTheme.of(context)
-                            //             .titleSmall
-                            //             .override(
-                            //           fontFamily: 'Open Sans',
-                            //           color: Colors.white,
-                            //           letterSpacing: 0.0,
-                            //           fontWeight: FontWeight.bold,
-                            //           shadows: [
-                            //             Shadow(
-                            //               color: FlutterFlowTheme.of(context)
-                            //                   .secondaryText,
-                            //               offset: Offset(2.0, 2.0),
-                            //               blurRadius: 4.0,
-                            //             )
-                            //           ],
-                            //         ),
-                            //         elevation: 20.0,
-                            //         borderRadius: BorderRadius.circular(8.0),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
                     ),
                   ),
+                  // Flexible(
+                  //   child: Align(
+                  //     alignment: AlignmentDirectional(0.0, 1.0),
+                  //     child: Padding(
+                  //       padding: EdgeInsets.all(24.0),
+                  //       child: Row(
+                  //         mainAxisSize: MainAxisSize.max,
+                  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //         children: [
+                  //           Flexible(
+                  //             child: Padding(
+                  //               padding: EdgeInsetsDirectional.fromSTEB(
+                  //                   0.0, 0.0, 20.0, 0.0),
+                  //               child: FFButtonWidget(
+                  //                 onPressed: () async {
+                  //                   context.pushNamed(
+                  //                       RomaneioMenusBATWidget.routeName);
+                  //                 },
+                  //                 text: 'BAT',
+                  //                 options: FFButtonOptions(
+                  //                   width: 100.0,
+                  //                   height: 100.0,
+                  //                   padding: EdgeInsetsDirectional.fromSTEB(
+                  //                       16.0, 0.0, 16.0, 0.0),
+                  //                   iconPadding: EdgeInsetsDirectional.fromSTEB(
+                  //                       0.0, 0.0, 0.0, 0.0),
+                  //                   color: Color(0xFF173F35),
+                  //                   textStyle: FlutterFlowTheme.of(context)
+                  //                       .titleSmall
+                  //                       .override(
+                  //                         fontFamily: 'Open Sans',
+                  //                         color: Colors.white,
+                  //                         letterSpacing: 0.0,
+                  //                         fontWeight: FontWeight.bold,
+                  //                         shadows: [
+                  //                           Shadow(
+                  //                             color:
+                  //                                 FlutterFlowTheme.of(context)
+                  //                                     .secondaryText,
+                  //                             offset: Offset(2.0, 2.0),
+                  //                             blurRadius: 4.0,
+                  //                           )
+                  //                         ],
+                  //                         lineHeight: 0.0,
+                  //                       ),
+                  //                   elevation: 20.0,
+                  //                   borderRadius: BorderRadius.circular(8.0),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           //
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

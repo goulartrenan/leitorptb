@@ -6,6 +6,7 @@ Future performInsertConferenciaJMC(
   String? ladoA,
   String? cliente,
   int? caixa,
+  int? enviado,
   DateTime? data,
   String? classe,
   String? localconferencia,
@@ -22,6 +23,7 @@ Future performInsertConferenciaJMC(
 INSERT INTO conferenciaJMC (
                                cliente,
                                caixa,
+                               enviado,
                                data,
                                classe,
                                operacao,
@@ -38,6 +40,7 @@ INSERT INTO conferenciaJMC (
                            VALUES (
                                "$cliente",
                                $caixa,
+                               ${enviado ?? 0},
                                "$data",
                                "$classe",
                                "$operacao",
@@ -120,6 +123,7 @@ Future performInsertConferenciaALTRIA(
   String? ladoA,
   String? cliente,
   int? caixa,
+  int? enviado,
   DateTime? data,
   String? classe,
   String? localconferencia,
@@ -140,6 +144,7 @@ Future performInsertConferenciaALTRIA(
 INSERT INTO conferenciaALTRIA (
                                   cliente,
                                   caixa,
+                                  enviado,
                                   data,
                                   classe,
                                   operacao,
@@ -160,6 +165,7 @@ INSERT INTO conferenciaALTRIA (
                               VALUES (
                                   "$cliente",
                                   $caixa,
+                                  ${enviado ?? 0},
                                   "$data",
                                   "$classe",
                                   "$operacao",

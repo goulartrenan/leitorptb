@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:leitorptb/pages/cadastro_romaneio/cadastro_romaneio.dart';
 import 'package:leitorptb/pages/select_menus_romaneio/romaneio_menu_altria.dart';
-//import 'package:leitorptb/pages/select_menus_romaneio/romaneio_menu_altria.dart';
-//import 'package:leitorptb/pages/home_page_list/home_page_list_widget.dart';
+import 'package:leitorptb/pages/reprocessar/reprocessar_altria_page.dart';
+import 'package:leitorptb/pages/reprocessar/reprocessar_jmc_page.dart';
 import 'package:leitorptb/pages/romaneio_page/romaneio_widget.dart';
+import 'package:leitorptb/pages/romaneio_page/romaneio_cliente_config.dart';
 import 'package:provider/provider.dart';
 
 import '/backend/schema/structs/index.dart';
@@ -91,7 +92,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
             name: RomaneioWidget.routeName,
             path: RomaneioWidget.routePath,
-            builder: (context, params) => RomaneioWidget()),
+            builder: (context, params) =>
+                RomaneioWidget(cliente: clientesRomaneio[0])),
         FFRoute(
           name: AltriaPageWidget.routeName,
           path: AltriaPageWidget.routePath,
@@ -119,7 +121,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: CadastroALTRIAWidget.routeName,
           path: CadastroALTRIAWidget.routePath,
           builder: (context, params) => CadastroALTRIAWidget(),
-        )
+        ),
+        FFRoute(
+          name: ReprocessarAltriaPage.routeName,
+          path: ReprocessarAltriaPage.routePath,
+          builder: (context, params) => ReprocessarAltriaPage(),
+        ),
+        FFRoute(
+          name: ReprocessarJmcPage.routeName,
+          path: ReprocessarJmcPage.routePath,
+          builder: (context, params) => ReprocessarJmcPage(),
+        ),
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
 

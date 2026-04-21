@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:leitorptb/pages/romaneio_page/romaneio_cliente_config.dart';
 import 'package:leitorptb/pages/romaneio_page/romaneio_widget.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 
@@ -206,7 +207,8 @@ class _CadastroClasseRomaneioPageState
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RomaneioWidget(),
+                        builder: (context) =>
+                            RomaneioWidget(cliente: clientesRomaneio[0]),
                       ),
                     );
                   },

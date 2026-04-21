@@ -1,9 +1,4 @@
-// import 'dart:ffi';
-
-//import 'dart:convert';
-
 import 'package:flutter/material.dart';
-//import 'package:http/http.dart' as http;
 import 'package:leitorptb/backend/api_requests/api_calls.dart';
 import 'package:leitorptb/backend/sqlite/sqlite_manager.dart';
 import 'package:leitorptb/flutter_flow/flutter_flow_drop_down.dart';
@@ -11,12 +6,17 @@ import 'package:leitorptb/flutter_flow/flutter_flow_theme.dart';
 import 'package:leitorptb/flutter_flow/flutter_flow_widgets.dart';
 import 'package:leitorptb/flutter_flow/form_field_controller.dart';
 import 'package:leitorptb/flutter_flow/nav/nav.dart';
-import 'package:leitorptb/pages/home_page_tags/home_page_widget.dart';
-//import 'package:leitorptb/pages/romaneio_page/lote_embarque_stp.dart';
+import 'package:leitorptb/pages/romaneio_page/romaneio_cliente_config.dart';
 export 'romaneio_widget.dart';
 
 class RomaneioWidget extends StatefulWidget {
-  const RomaneioWidget({super.key});
+  /// Cliente selecionado no menu — define a regra de extração do código PARA.
+  final ClienteRomaneioConfig cliente;
+
+  RomaneioWidget({
+    super.key,
+    required ClienteRomaneioConfig cliente,
+  }) : cliente = cliente;
 
   static String routeName = 'RomaneioPage';
   static String routePath = '/romaneioPage';
@@ -26,174 +26,210 @@ class RomaneioWidget extends StatefulWidget {
 }
 
 class _RomaneioWidgetState extends State<RomaneioWidget> {
+  // ── Controllers dos campos de resultado ───────────────────────────────────
   final TextEditingController obsController = TextEditingController();
-  final qtdCaixaController = TextEditingController();
   final TextEditingController deController = TextEditingController();
   final TextEditingController paraController = TextEditingController();
-  final TextEditingController fullCodeController = TextEditingController();
-  final FocusNode fullCodeFocusNode = FocusNode();
-  bool _updatingDE =
-      false; // evita loop ao mudar deController programaticamente
 
-  final deFocusNode = FocusNode();
-  final paraFocusNode = FocusNode();
+  // ── Controllers dos campos de leitura do scanner ──────────────────────────
+  // Cada campo recebe o código COMPLETO do scanner e extrai o trecho correto.
+  final TextEditingController fullCodeDeController = TextEditingController();
+  final TextEditingController fullCodeParaController = TextEditingController();
 
-  String? selectedLoteRomaneio;
-  FormFieldController<String>? loteRomaneioController;
+  final FocusNode fullCodeDeFocusNode = FocusNode();
+  final FocusNode fullCodeParaFocusNode = FocusNode();
+  final FocusNode deFocusNode = FocusNode();
+  final FocusNode paraFocusNode = FocusNode();
 
+  bool _updatingDE = false;
+
+  // ── Dropdowns ────────────────────────────────────────────────────────────
   String? selectedLoteEmbarque;
   FormFieldController<String>? loteEmbarqueController;
 
   String? selectedOperacaoRomaneio;
   FormFieldController<String>? operacaoRomaneioController;
 
-  String? selectedClasseRomaneio;
-  FormFieldController<String>? classeRomaneioController;
-
   String? selectedClasseCodigoProd;
   FormFieldController<String>? classeProducaoController;
+  FormFieldController<String>? classeRomaneioController;
 
   int? codClasseSelecionado;
-  String? selectedLote;
-
-  String? selectedOperacao;
-  Map<String, dynamic>? selectedClasse;
+  String? selectedClasseRomaneio;
   int caixasRestantes = 99999999999;
-
   int? totalCaixas;
+
+  ClienteRomaneioConfig get _cliente => widget.cliente;
+
+  // ── SQLite helpers ────────────────────────────────────────────────────────
 
   Future<void> carregarTotalCaixas() async {
     final total = await SQLiteManager.instance
         .contarCaixasPorClasse(selectedClasseCodigoProd ?? '');
+    setState(() => totalCaixas = total);
+  }
 
-    setState(() {
-      totalCaixas = total;
-    });
+  Future<List<String>> _buscarOperacoesCadastradas() async {
+    final operacoes = await SQLiteManager.instance.getOperacoesRomaneio();
+    return operacoes
+        .map((item) =>
+            (item['OperacaoRomaneio'] ?? item['operacaoRomaneio'] ?? '')
+                .toString()
+                .trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
+  }
+
+  Future<List<Map<String, String>>> _buscarClassesParaRomaneio() async {
+    final classesCadastradas =
+        await SQLiteManager.instance.getClassesRomaneio();
+
+    if (classesCadastradas.isNotEmpty) {
+      return classesCadastradas
+          .map((item) => {
+                'codigo': (item['CodigoClasse'] ?? item['codigoClasse'] ?? '')
+                    .toString(),
+                'nome':
+                    (item['NomeClasse'] ?? item['nomeClasse'] ?? '').toString(),
+              })
+          .where(
+              (item) => item['codigo']!.isNotEmpty && item['nome']!.isNotEmpty)
+          .toList();
+    }
+
+    final classesStp = await SQLiteManager.instance.buscarClassesProducaoSTP();
+    return classesStp
+        .map((item) => {
+              'codigo': (item['CodClasseProd'] ?? '').toString(),
+              'nome': (item['NomeClasseProd'] ?? '').toString(),
+            })
+        .where((item) => item['codigo']!.isNotEmpty && item['nome']!.isNotEmpty)
+        .toList();
   }
 
   @override
   void initState() {
     super.initState();
-
-    loteRomaneioController = FormFieldController<String>(null);
     loteEmbarqueController = FormFieldController<String>(null);
     operacaoRomaneioController = FormFieldController<String>(null);
     classeRomaneioController = FormFieldController<String>(null);
     classeProducaoController = FormFieldController<String>(null);
-
     carregarTotalCaixas();
-
-    //_sincronizarLotesComSQLite();
   }
 
-  // Future<void> _sincronizarLotesComSQLite() async {
-  //   try {
-  //     final response = await BuscarLotesEmbarqueCall.call();
-
-  //     debugPrint('succeeded: ${response.succeeded}');
-  //     debugPrint('jsonBody runtimeType: ${response.jsonBody.runtimeType}');
-
-  //     if (!response.succeeded) return;
-
-  //     final body = response.jsonBody;
-  //     late final List<dynamic> items;
-
-  //     if (body is List) {
-  //       items = body;
-  //     } else if (body is Map && body['data'] is List) {
-  //       items = body['data'] as List;
-  //     } else if (body is String) {
-  //       final decoded = jsonDecode(body);
-  //       if (decoded is List) {
-  //         items = decoded;
-  //       } else if (decoded is Map && decoded['data'] is List) {
-  //         items = decoded['data'] as List;
-  //       } else {
-  //         throw Exception('JSON inesperado (string): ${decoded.runtimeType}');
-  //       }
-  //     } else {
-  //       throw Exception('jsonBody inesperado: ${body.runtimeType}');
-  //     }
-
-  //     final lotes = items
-  //         .map((e) => LoteEmbarqueSTP.fromJson(e as Map<String, dynamic>))
-  //         .toList();
-
-  //     //for (final lote in lotes) {
-  //     await SQLiteManager.instance.inserirLoteEmbarque(
-  //       lotes,
-  //     );
-  //     //}
-
-  //     setState(() {});
-  //   } catch (e, st) {
-  //     debugPrint('ERRO em _sincronizarLotesComSQLite: $e');
-  //     debugPrint('$st');
-  //   }
-  // }
-
-  // Quando o scanner enviar Enter (\n) neste campo, processamos
-  void _onFullBarcodeSubmitted(String value) {
-    final raw = value.trim(); // remove \n e espaços
+  // ── Processa o scanner do código DE (Premium) ─────────────────────────────
+  // Regra fixa: substring(7, 12) — não depende do cliente.
+  void _onFullBarcodeDeSubmitted(String value) {
+    final raw = value.trim();
     if (raw.isEmpty) return;
 
-    // Mantive sua regra original: só processa com >=16 para segurança
     if (raw.length < 16) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('⚠️ Código de barras muito curto.'),
+          content: Text('⚠️ Código de barras Premium muito curto (mín. 16).'),
           backgroundColor: Colors.orangeAccent,
         ),
       );
       return;
     }
 
-    // Extrai o número da caixa para o "CAIXA DE"
-    // (sua regra original: substring(3, 10))
-    final trecho = raw.substring(3, 10);
+    final trechoDe = raw.substring(7, 12);
 
     setState(() {
       _updatingDE = true;
-      deController.text = trecho;
-      deController.selection = TextSelection.collapsed(offset: trecho.length);
+      deController.text = trechoDe;
+      deController.selection = TextSelection.collapsed(offset: trechoDe.length);
       _updatingDE = false;
     });
 
-    // Seguir o fluxo para o campo PARA
-    FocusScope.of(context).requestFocus(paraFocusNode);
+    // Após ler o DE, move o foco para o scanner do PARA
+    FocusScope.of(context).requestFocus(fullCodeParaFocusNode);
   }
 
-// Limpeza somente visual (não mexe no banco)
-  void _clearVisualOnly() {
+  // ── Processa o scanner do código PARA (cliente) ───────────────────────────
+  // Regra variável: definida em ClienteRomaneioConfig.extrairCodigoPara
+  void _onFullBarcodeParaSubmitted(String value) {
+    final raw = value.trim();
+    if (raw.isEmpty) return;
+
+    if (raw.length < _cliente.comprimentoMinimo) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '⚠️ Código de barras muito curto para ${_cliente.nome}. '
+            'Esperado mínimo ${_cliente.comprimentoMinimo} caracteres.',
+          ),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+      return;
+    }
+
+    late final String trechoPara;
+    try {
+      trechoPara = _cliente.extrairCodigoPara(raw);
+    } on FormatException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('⚠️ Erro ao extrair código PARA: ${e.message}'),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+      return;
+    }
+
     setState(() {
-      fullCodeController.clear();
+      paraController.text = trechoPara;
+      paraController.selection =
+          TextSelection.collapsed(offset: trechoPara.length);
+    });
+
+    // Após preencher os dois campos, o foco pode ir para o botão Salvar
+    // ou simplesmente ficar no campo PARA para conferência
+    FocusScope.of(context).unfocus();
+  }
+
+  // ── Limpeza visual ────────────────────────────────────────────────────────
+
+  void _clearVisualDe() {
+    setState(() {
+      fullCodeDeController.clear();
       deController.clear();
     });
-    // Re-foca para a próxima leitura
-    fullCodeFocusNode.requestFocus();
+    fullCodeDeFocusNode.requestFocus();
+  }
+
+  void _clearVisualPara() {
+    setState(() {
+      fullCodeParaController.clear();
+      paraController.clear();
+    });
+    fullCodeParaFocusNode.requestFocus();
   }
 
   void _limparCamposDeCodigo() {
     setState(() {
       _updatingDE = true;
-      // Limpeza somente visual
       if (mounted) {
-        fullCodeController.clear();
+        fullCodeDeController.clear();
+        fullCodeParaController.clear();
         deController.clear();
         paraController.clear();
       }
       _updatingDE = false;
     });
-
-    fullCodeFocusNode.requestFocus();
+    // Volta o foco para o primeiro scanner (DE)
+    fullCodeDeFocusNode.requestFocus();
   }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Romaneio de Conversão"),
-        centerTitle: true,
+        title: Text("Romaneio — ${_cliente.nome}"),
+        centerTitle: false,
         backgroundColor: const Color(0xFF76232F),
       ),
       body: SingleChildScrollView(
@@ -201,113 +237,17 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dropdown de Lote
-            // FutureBuilder<List<BuscaLoteRomenioAltria>>(
-            //   future: SQLiteManager.instance.buscaLoteRomenioAltria(),
-            //   builder: (context, snapshot) {
-            //     if (!snapshot.hasData) return const CircularProgressIndicator();
-            //     final lotes = snapshot.data!;
-            //     return FlutterFlowDropDown<String>(
-            //       controller: loteRomaneioController,
-            //       options: lotes.map((l) => l.loteRomaneio.toString()).toList(),
-            //       onChanged: (val) {
-            //         setState(() => selectedLoteRomaneio = val);
-            //       },
-            //       value: selectedLoteRomaneio,
-            //       hintText: 'Selecione o Lote cadastro local',
-            //       textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-            //             fontFamily: 'Open Sans',
-            //             letterSpacing: 0.0,
-            //           ),
-            //       isSearchable: true,
-            //       fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-            //       borderColor: const Color(0xFF173F35),
-            //       borderWidth: 1.0,
-            //       borderRadius: 8.0,
-            //       elevation: 2.0,
-            //       margin: const EdgeInsetsDirectional.fromSTEB(
-            //           12.0, 0.0, 12.0, 0.0),
-            //       hidesUnderline: true,
-            //       isOverButton: false,
-            //       isMultiSelect: false,
-            //     );
-            //   },
-            // ),
-
-            // const SizedBox(height: 16),
-            // ElevatedButton(
-            //   onPressed: _sincronizarLotesComSQLite,
-            //   child: Text('Atualizar Lotes'),
-            // ),
-            const Text(
-              'Lote:',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF173F35)),
-            ),
-
-            const SizedBox(
-              height: 16,
-            ),
-
-            // FutureBuilder<List<Map<String, dynamic>>>(
-            //   future: SQLiteManager.instance.buscarLotesEmbarque(),
-            //   builder: (context, snapshot) {
-            //     if (!snapshot.hasData) return const CircularProgressIndicator();
-            //     final lotesemb = snapshot.data!;
-
-            //     final optionsValues = lotesemb
-            //         .map((l) => (l['CodLoteEmb'] ?? '').toString())
-            //         .toList();
-
-            //     // Texto exibido na UI
-            //     final optionsLabels = lotesemb
-            //         .map((l) => "${l['CodLoteEmb']} - ${l['DescrLote']}")
-            //         .toList();
-
-            //     return FlutterFlowDropDown<String>(
-            //       controller: loteEmbarqueController,
-            //       options: optionsValues,
-            //       optionLabels: optionsLabels,
-            //       value: selectedLoteEmbarque,
-            //       onChanged: (val) {
-            //         setState(() {
-            //           selectedLoteEmbarque = val; // código do lote
-            //         });
-            //       },
-            //       hintText: 'Selecione o Lote cadastrado do STP',
-            //       textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-            //             fontFamily: 'Open Sans',
-            //             letterSpacing: 0.0,
-            //           ),
-            //       isSearchable: true,
-            //       fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-            //       borderColor: const Color(0xFF173F35),
-
-            //       borderWidth: 1.0,
-            //       borderRadius: 8.0,
-            //       elevation: 2.0,
-            //       margin: const EdgeInsetsDirectional.fromSTEB(
-            //           12.0, 0.0, 12.0, 0.0),
-            //       hidesUnderline: true,
-            //       isOverButton: false,
-            //       isMultiSelect: false,
-            //     );
-            //   },
-            // ),
-
+            // ── Lote ──────────────────────────────────────────────────────
+            _sectionLabel('Lote:'),
+            const SizedBox(height: 16),
             FutureBuilder<List<Map<String, dynamic>>>(
               future: SQLiteManager.instance.buscarLotesEmbarque(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return const CircularProgressIndicator();
                 final lotesemb = snapshot.data!;
-
                 final optionsValues = lotesemb
                     .map((l) => (l['CodLoteEmb'] ?? '').toString())
                     .toList();
-
                 final optionsLabels = lotesemb
                     .map((l) => "${l['CodLoteEmb']} - ${l['DescrLote']}")
                     .toList();
@@ -320,11 +260,8 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       options: optionsValues,
                       optionLabels: optionsLabels,
                       value: selectedLoteEmbarque,
-                      onChanged: (val) {
-                        setState(() {
-                          selectedLoteEmbarque = val;
-                        });
-                      },
+                      onChanged: (val) =>
+                          setState(() => selectedLoteEmbarque = val),
                       hintText: 'Selecione o Lote cadastrado do STP',
                       textStyle:
                           FlutterFlowTheme.of(context).bodyMedium.override(
@@ -346,57 +283,31 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                     ),
                     if (selectedLoteEmbarque == null ||
                         selectedLoteEmbarque!.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 16.0, top: 4.0),
-                        child: Text(
-                          'Campo obrigatório',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
+                      _campoObrigatorio(),
                   ],
                 );
               },
             ),
 
+            // ── Operação ──────────────────────────────────────────────────
             const SizedBox(height: 16),
-            const Text(
-              'Operação:',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF173F35)),
-            ),
-
-            const SizedBox(
-              height: 16,
-            ),
-
-            // Dropdown de Operação
-            FutureBuilder<List<BuscaOperacaoRomenioAltria>>(
-              future: SQLiteManager.instance.buscaOperacaoRomenioAltria(),
+            _sectionLabel('Operação:'),
+            const SizedBox(height: 16),
+            FutureBuilder<List<String>>(
+              future: _buscarOperacoesCadastradas(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return const CircularProgressIndicator();
-                final operacao = snapshot.data!;
-
+                final operacoes = snapshot.data!;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FlutterFlowDropDown<String>(
                       controller: operacaoRomaneioController ??=
                           FormFieldController<String>(null),
-                      options: operacao
-                          .map((l) => l.operacaoRomaneio.toString())
-                          .toList(),
+                      options: operacoes,
                       value: selectedOperacaoRomaneio,
-                      onChanged: (val) {
-                        setState(() {
-                          selectedOperacaoRomaneio = val;
-                        });
-                      },
+                      onChanged: (val) =>
+                          setState(() => selectedOperacaoRomaneio = val),
                       hintText: 'Selecione a operação...',
                       textStyle:
                           FlutterFlowTheme.of(context).bodyMedium.override(
@@ -416,110 +327,27 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       isOverButton: false,
                       isMultiSelect: false,
                     ),
-                    if ((selectedOperacaoRomaneio == null ||
-                        selectedOperacaoRomaneio!.isEmpty))
-                      const Padding(
-                        padding: EdgeInsets.only(left: 16.0, top: 4.0),
-                        child: Text(
-                          'Campo obrigatório',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
+                    if (selectedOperacaoRomaneio == null ||
+                        selectedOperacaoRomaneio!.isEmpty)
+                      _campoObrigatorio(),
                   ],
                 );
               },
             ),
 
+            // ── Classe ────────────────────────────────────────────────────
             const SizedBox(height: 16),
-
-            const Text(
-              'Classe:',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF173F35)),
-            ),
-
-            const SizedBox(
-              height: 16,
-            ),
-            // Dropdown de Classe
-            // FutureBuilder<List<BuscaClasseRomenioAltria>>(
-            //   future: SQLiteManager.instance.buscaClasseRomenioAltria(),
-            //   builder: (context, snapshot) {
-            //     if (!snapshot.hasData) return const CircularProgressIndicator();
-            //     final classe = snapshot.data!;
-
-            //     // Listas paralelas: valores (ids) e labels (nomes)
-            //     final optionsValues = classe
-            //         .map((l) => (l.codigoClasse ?? 0).toString())
-            //         .toList();
-            //     final optionsLabels =
-            //         classe.map((l) => l.nomeClasse?.toString() ?? '').toList();
-
-            //     return FlutterFlowDropDown<String>(
-            //       searchCursorColor: const Color(0xFF173F35),
-            //       controller: classeRomaneioController ??=
-            //           FormFieldController<String>(null),
-            //       options: optionsValues, // ✅ valor = CÓDIGO (string)
-            //       optionLabels: optionsLabels, // ✅ label = NOME
-            //       onChanged: (val) {
-            //         setState(() {
-            //           // Guarda o valor selecionado (código, em string)
-            //           selectedClasseRomaneio = val;
-
-            //           // Converte p/ int e guarda no estado
-            //           codClasseSelecionado = int.tryParse(val!);
-
-            //           // Recupera o item completo pelo código
-            //           final idx = optionsValues.indexOf(val);
-            //           final classeSelecionada = classe[idx];
-
-            //           // Atualizações existentes
-            //           obsController.text = classeSelecionada.observacao ?? '';
-            //           qtdCaixaController.text =
-            //               (classeSelecionada.qtdeCaixa ?? 0).toString();
-            //           caixasRestantes = classeSelecionada.qtdeCaixa ?? 0;
-            //         });
-            //       },
-            //       value: selectedClasseRomaneio, // aqui fica o código (string)
-            //       hintText: 'Selecione a classe',
-            //       textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-            //             fontFamily: 'Open Sans',
-            //             letterSpacing: 0.0,
-            //           ),
-            //       isSearchable: true,
-            //       fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-            //       borderColor: const Color(0xFF173F35),
-            //       borderWidth: 1.0,
-            //       borderRadius: 8.0,
-            //       elevation: 2.0,
-            //       margin: const EdgeInsetsDirectional.fromSTEB(
-            //           12.0, 0.0, 12.0, 0.0),
-            //       hidesUnderline: true,
-            //       isOverButton: false,
-            //       isMultiSelect: false,
-            //     );
-            //   },
-            // ),
-
-            FutureBuilder<List<Map<String, dynamic>>>(
-              future: SQLiteManager.instance.buscarClassesProducaoSTP(),
+            _sectionLabel('Classe:'),
+            const SizedBox(height: 16),
+            FutureBuilder<List<Map<String, String>>>(
+              future: _buscarClassesParaRomaneio(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return const CircularProgressIndicator();
                 final classes = snapshot.data!;
-
-                final optionsValues = classes
-                    .map((c) => (c['CodClasseProd'] ?? '').toString())
-                    .toList();
-
+                final optionsValues =
+                    classes.map((c) => (c['codigo'] ?? '').toString()).toList();
                 final optionsLabels = classes
-                    .map(
-                        (c) => "${c['CodClasseProd']} - ${c['NomeClasseProd']}")
+                    .map((c) => "${c['codigo']} - ${c['nome']}")
                     .toList();
 
                 return Column(
@@ -533,14 +361,11 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       onChanged: (val) {
                         setState(() {
                           selectedClasseCodigoProd = val;
-
                           final idx = optionsValues.indexOf(val!);
                           final item = classes[idx];
-
                           codClasseSelecionado =
-                              int.tryParse(item['CodClasseProd'].toString());
-                          selectedClasseRomaneio =
-                              (item['NomeClasseProd'] ?? '').toString();
+                              int.tryParse((item['codigo'] ?? '').toString());
+                          selectedClasseRomaneio = item['nome'] ?? '';
                           carregarTotalCaixas();
                         });
                       },
@@ -563,35 +388,18 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       isOverButton: false,
                       isMultiSelect: false,
                     ),
-                    if ((selectedClasseCodigoProd == null ||
-                        selectedClasseCodigoProd!.isEmpty))
-                      const Padding(
-                        padding: EdgeInsets.only(left: 16.0, top: 4.0),
-                        child: Text(
-                          'Campo obrigatório',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
+                    if (selectedClasseCodigoProd == null ||
+                        selectedClasseCodigoProd!.isEmpty)
+                      _campoObrigatorio(),
                   ],
                 );
               },
             ),
 
+            // ── Observação ────────────────────────────────────────────────
             const SizedBox(height: 16),
-
-            const Text(
-              'Observação:',
-              style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF173F35)),
-            ),
+            _sectionLabel('Observação:'),
             const SizedBox(height: 16),
-            // Campo observação
             TextFormField(
               controller: obsController,
               maxLines: 3,
@@ -602,125 +410,88 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
               ),
             ),
 
+            // ── Contador de caixas ────────────────────────────────────────
             const SizedBox(height: 16),
-
-            // Contador de caixas restantes
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  selectedClasseCodigoProd == null
-                      ? "Selecione uma classe para ver o total"
-                      : "Total de caixas na classe código $selectedClasseCodigoProd : ${totalCaixas ?? 0}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 15,
-                    fontFamily: 'Open Sans',
-                    color: Color(0xFF173F35),
-                  ),
-                ),
-
-                // Text(
-                //   "Total de caixas na classe cod $selectedClasseCodigoProd : ${totalCaixas}",
-                //   style: const TextStyle(
-                //     fontWeight: FontWeight.bold,
-                //     fontFamily: 'Open Sans',
-                //     color: Color(0xFF173F35),
-                //   ),
-                // ),
-                //const SizedBox(height: 8),
-                // Text(
-                //   "Caixas salvas: $totalCaixas",
-                //   style: const TextStyle(
-                //     fontFamily: 'Open Sans',
-                //     fontWeight: FontWeight.bold,
-                //     color: Color(0xFF173F35),
-                //   ),
-                // ),
-              ],
+            Text(
+              selectedClasseCodigoProd == null
+                  ? "Selecione uma classe para ver o total"
+                  : "Total de caixas na classe código "
+                      "$selectedClasseCodigoProd : ${totalCaixas ?? 0}",
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 15,
+                fontFamily: 'Open Sans',
+                color: Color(0xFF173F35),
+              ),
             ),
 
-            const SizedBox(height: 16),
+            // ════════════════════════════════════════════════════════════
+            // BLOCO DE LEITURA — CÓDIGO DE (Premium)
+            // ════════════════════════════════════════════════════════════
+            const SizedBox(height: 24),
+            _sectionLabel('Leitura Premium (DE):'),
+            const SizedBox(height: 8),
 
-            // Código de barras completo (o scanner digita aqui)
-            ValueListenableBuilder<TextEditingValue>(
-              valueListenable: fullCodeController,
-              builder: (context, value, child) {
-                final hasText = value.text.isNotEmpty;
-
-                return TextFormField(
-                  controller: fullCodeController,
-                  focusNode: fullCodeFocusNode,
-                  onFieldSubmitted: _onFullBarcodeSubmitted,
-                  cursorColor: const Color(0xFF173F35),
-                  autovalidateMode: AutovalidateMode.always,
-                  validator: (text) {
-                    if (text == null || text.isEmpty) {
-                      return 'Campo Obrigátorio!';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Código de Barras (completo)',
-                    labelStyle: const TextStyle(color: Color(0xFF173F35)),
-                    prefixIcon: const Icon(Icons.qr_code_scanner,
-                        color: Color(0xFF173F35)),
-                    border: const OutlineInputBorder(),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFF173F35), width: 2.0),
-                    ),
-                    suffixIcon: hasText
-                        ? IconButton(
-                            icon: const Icon(
-                              Icons.clear,
-                              color: Color(0xFF173F35),
-                            ),
-                            tooltip: 'Limpar leitura (somente visual)',
-                            onPressed: _clearVisualOnly,
-                          )
-                        : null,
-                  ),
-                );
-              },
+            // Scanner Premium — recebe o código completo
+            _buildScannerField(
+              controller: fullCodeDeController,
+              focusNode: fullCodeDeFocusNode,
+              label: 'Leia a etiqueta de Produção',
+              onSubmitted: _onFullBarcodeDeSubmitted,
+              onClear: _clearVisualDe,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
-            const SizedBox(height: 16),
-
-            // Código DE
+            // Campo DE — preenchido automaticamente, somente leitura
             _buildTextField(
               controller: deController,
-              label: "Código DE (Premium)",
+              label: 'Código DE (Premium)',
               icon: Icons.qr_code_2_rounded,
               focusNode: deFocusNode,
-              onFieldSubmitted: (p0) {
-                FocusScope.of(context).requestFocus(paraFocusNode);
-              },
-              onChanged: (value) {
-                if (_updatingDE) return;
-              },
               readOnly: true,
               enableClear: true,
+              onClear: () {
+                deController.clear();
+                fullCodeDeController.clear();
+                fullCodeDeFocusNode.requestFocus();
+              },
             ),
 
-            const SizedBox(height: 16),
+            // ════════════════════════════════════════════════════════════
+            // BLOCO DE LEITURA — CÓDIGO PARA (cliente)
+            // ════════════════════════════════════════════════════════════
+            const SizedBox(height: 24),
+            _sectionLabel('Leitura Cliente (PARA):'),
+            const SizedBox(height: 8),
 
+            // Scanner cliente — recebe o código completo e extrai o PARA
+            _buildScannerField(
+              controller: fullCodeParaController,
+              focusNode: fullCodeParaFocusNode,
+              label: 'Etiqueta ${_cliente.nome} ',
+              onSubmitted: _onFullBarcodeParaSubmitted,
+              onClear: _clearVisualPara,
+            ),
+
+            const SizedBox(height: 12),
+
+            // Campo PARA — preenchido automaticamente, somente leitura
             _buildTextField(
               controller: paraController,
-              label: "Código PARA (Cliente)",
+              label: 'Código PARA (${_cliente.nome})',
               icon: Icons.qr_code_2_rounded,
               focusNode: paraFocusNode,
-              onChanged: (value) {
-                final partes = value.split('-');
-                if (partes.length >= 2) {
-                  paraController.text = partes[1];
-                }
-              },
+              readOnly: true,
               enableClear: true,
+              onClear: () {
+                paraController.clear();
+                fullCodeParaController.clear();
+                fullCodeParaFocusNode.requestFocus();
+              },
             ),
 
+            // ── Botões ────────────────────────────────────────────────────
             const SizedBox(height: 24),
             Center(
               child: Wrap(
@@ -729,85 +500,7 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                 alignment: WrapAlignment.center,
                 children: [
                   FFButtonWidget(
-                    onPressed: () async {
-                      if (selectedLoteEmbarque == null ||
-                          selectedOperacaoRomaneio == null ||
-                          selectedClasseCodigoProd == null ||
-                          deController.text.isEmpty ||
-                          paraController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                "⚠️ Preencha todos os campos obrigatórios"),
-                            backgroundColor: Colors.orangeAccent,
-                          ),
-                        );
-                        return;
-                      }
-                      if (caixasRestantes <= 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("⚠️ Limite de caixas atingido!"),
-                            backgroundColor: Colors.deepOrangeAccent,
-                          ),
-                        );
-                        return;
-                      }
-
-                      // ✅ Salvar no banco
-                      await SQLiteManager.instance.insertRomaneioALTRIA(
-                        codde: int.tryParse(deController.text),
-                        codpara: int.tryParse(paraController.text),
-                        lote: selectedLoteEmbarque!,
-                        operacao: selectedOperacaoRomaneio!,
-                        classe: selectedClasseCodigoProd!,
-                        observacao: obsController.text,
-                        data: DateTime.now(),
-                        CodBarras: int.tryParse(fullCodeController.text),
-                      );
-
-                      // ✅ Atualizar contador de caixas salvas
-                      final totalSalvas = await SQLiteManager.instance
-                          .contarCaixasPorClasse(selectedClasseCodigoProd!);
-                      setState(() {
-                        //caixasRestantes--;
-                        totalCaixas = totalSalvas;
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text("✅ Dados gravados e enviados com sucesso!"),
-                          backgroundColor: Color(0xFF173F35),
-                        ),
-                      );
-
-                      try {
-                        await AdicionarRomaneioConvercaoCall.call(
-                          caixaDE: int.parse(deController.text),
-                          caixaPARA: int.parse(paraController.text),
-                          lote: selectedLoteEmbarque!,
-                          nomeClasse: selectedClasseRomaneio!,
-                          codClasse: codClasseSelecionado!,
-                          qtdeCaixaClasse: 1, // fixo conforme sua observação
-                          operacao: selectedOperacaoRomaneio!,
-                          observacao: obsController.text,
-                          data: DateTime.now(),
-                          codBarras: int.parse(fullCodeController.text),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text("⚠️ Falha ao enviar para o servidor: $e"),
-                            backgroundColor: Colors.orangeAccent,
-                          ),
-                        );
-                      }
-
-                      _limparCamposDeCodigo();
-                      carregarTotalCaixas();
-                    },
+                    onPressed: _salvar,
                     text: 'Salvar',
                     iconData: Icons.save,
                     options: FFButtonOptions(
@@ -823,74 +516,9 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  const SizedBox(
-                    width: 40,
-                  ),
+                  const SizedBox(width: 40),
                   FFButtonWidget(
-                    onPressed: () async {
-                      final confirmDialogResponse = await showDialog<bool>(
-                            context: context,
-                            builder: (alertDialogContext) {
-                              return AlertDialog(
-                                backgroundColor: const Color(0xFFF5F5F5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                title: const Text(
-                                  'Você quer voltar?',
-                                  style: TextStyle(
-                                    color: Color(0xFF173F35),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                content: const Text(
-                                  'O que foi lido será perdido, quer continuar?',
-                                  style: TextStyle(
-                                    color: Color(0xFF173F35),
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                          Color(0xFF76232F)),
-                                      foregroundColor:
-                                          WidgetStatePropertyAll(Colors.white),
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 10),
-                                      ),
-                                    ),
-                                    onPressed: () => Navigator.pop(
-                                        alertDialogContext, false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    style: const ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                          Color(0xFF173F35)),
-                                      foregroundColor:
-                                          WidgetStatePropertyAll(Colors.white),
-                                      padding: WidgetStatePropertyAll(
-                                        EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 10),
-                                      ),
-                                    ),
-                                    onPressed: () =>
-                                        Navigator.pop(alertDialogContext, true),
-                                    child: const Text('Confirmar'),
-                                  ),
-                                ],
-                              );
-                            },
-                          ) ??
-                          false;
-
-                      if (!confirmDialogResponse) return;
-
-                      // go_router (FlutterFlow): navega para a Home limpando a rota atual
-                      context.goNamed(HomePageWidget.routeName);
-                    },
+                    onPressed: _voltarParaHome,
                     text: 'Inicio',
                     icon: const Icon(Icons.home_filled, size: 20.0),
                     options: FFButtonOptions(
@@ -901,84 +529,264 @@ class _RomaneioWidgetState extends State<RomaneioWidget> {
                       iconPadding: const EdgeInsetsDirectional.fromSTEB(
                           0.0, 0.0, 0.0, 0.0),
                       color: const Color(0xFF173F35),
-                      textStyle: FlutterFlowTheme.of(context)
-                          .titleSmall
-                          .override(
-                              fontFamily: 'Open Sans',
-                              color: Colors.white,
-                              fontSize: 12.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.bold),
+                      textStyle:
+                          FlutterFlowTheme.of(context).titleSmall.override(
+                                fontFamily: 'Open Sans',
+                                color: Colors.white,
+                                fontSize: 12.0,
+                                letterSpacing: 0.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                       elevation: 10.0,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField({
+  // ── Lógica de salvar ──────────────────────────────────────────────────────
+
+  Future<void> _salvar() async {
+    if (selectedLoteEmbarque == null ||
+        selectedOperacaoRomaneio == null ||
+        selectedClasseCodigoProd == null ||
+        deController.text.isEmpty ||
+        paraController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("⚠️ Preencha todos os campos obrigatórios"),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+      return;
+    }
+
+    if (caixasRestantes <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("⚠️ Limite de caixas atingido!"),
+          backgroundColor: Colors.deepOrangeAccent,
+        ),
+      );
+      return;
+    }
+
+    final existe = await SQLiteManager.instance.existeCaixaRegistradaRomaneio(
+      coddeController: deController,
+      codparaController: paraController,
+      classeSelecionada: selectedClasseCodigoProd,
+    );
+
+    if (existe) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              '⚠️ As caixas DE e PARA já foram lidas na Classe selecionada.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    await SQLiteManager.instance.insertRomaneioALTRIA(
+      codde: int.tryParse(deController.text),
+      codpara: int.tryParse(paraController.text),
+      lote: selectedLoteEmbarque!,
+      operacao: selectedOperacaoRomaneio!,
+      classe: selectedClasseCodigoProd!,
+      observacao: obsController.text,
+      data: DateTime.now(),
+      CodBarras: int.tryParse(fullCodeDeController.text),
+    );
+
+    final totalSalvas = await SQLiteManager.instance
+        .contarCaixasPorClasse(selectedClasseCodigoProd!);
+    setState(() => totalCaixas = totalSalvas);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("✅ Dados gravados e enviados com sucesso!"),
+        backgroundColor: Color(0xFF173F35),
+      ),
+    );
+
+    try {
+      await AdicionarRomaneioConvercaoCall.call(
+        caixaDE: int.parse(deController.text),
+        caixaPARA: int.parse(paraController.text),
+        lote: selectedLoteEmbarque!,
+        nomeClasse: selectedClasseRomaneio!,
+        codClasse: codClasseSelecionado!,
+        qtdeCaixaClasse: 1,
+        operacao: selectedOperacaoRomaneio!,
+        observacao: obsController.text,
+        data: DateTime.now(),
+        codBarras: int.parse(fullCodeDeController.text),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("⚠️ Falha ao enviar para o servidor: $e"),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+    }
+
+    _limparCamposDeCodigo();
+    carregarTotalCaixas();
+  }
+
+  // ── Navegar para home ─────────────────────────────────────────────────────
+
+  Future<void> _voltarParaHome() async {
+    final confirmDialogResponse = await showDialog<bool>(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFFF5F5F5),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              title: const Text(
+                'Você quer voltar?',
+                style: TextStyle(
+                    color: Color(0xFF173F35), fontWeight: FontWeight.bold),
+              ),
+              content: const Text(
+                'O que foi lido será perdido, quer continuar?',
+                style: TextStyle(color: Color(0xFF173F35)),
+              ),
+              actions: [
+                TextButton(
+                  style: const ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Color(0xFF76232F)),
+                    foregroundColor: WidgetStatePropertyAll(Colors.white),
+                    padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
+                  ),
+                  onPressed: () => Navigator.pop(alertDialogContext, false),
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  style: const ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(Color(0xFF173F35)),
+                    foregroundColor: WidgetStatePropertyAll(Colors.white),
+                    padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 10)),
+                  ),
+                  onPressed: () => Navigator.pop(alertDialogContext, true),
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!confirmDialogResponse) return;
+    context.goNamed('HomePageTags');
+  }
+
+  // ── Helpers de UI ─────────────────────────────────────────────────────────
+
+  Widget _sectionLabel(String text) => Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontFamily: 'Open Sans',
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF173F35),
+        ),
+      );
+
+  Widget _campoObrigatorio() => const Padding(
+        padding: EdgeInsets.only(left: 16.0, top: 4.0),
+        child: Text('Campo obrigatório',
+            style: TextStyle(color: Colors.red, fontSize: 12)),
+      );
+
+  /// Campo que recebe o código completo do scanner.
+  /// Ao pressionar Enter (onFieldSubmitted), chama [onSubmitted].
+  Widget _buildScannerField({
     required TextEditingController controller,
+    required FocusNode focusNode,
     required String label,
-    required IconData icon,
-    FocusNode? focusNode,
-    void Function(String)? onFieldSubmitted,
-    void Function(String)? onChanged,
-    bool enableClear = true,
-    bool readOnly = false,
+    required void Function(String) onSubmitted,
+    required void Function() onClear,
   }) {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, _) {
         final hasText = value.text.isNotEmpty;
-
         return TextFormField(
           controller: controller,
           focusNode: focusNode,
-          onFieldSubmitted: onFieldSubmitted,
-          onChanged: onChanged,
+          onFieldSubmitted: onSubmitted,
+          cursorColor: const Color(0xFF173F35),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: const TextStyle(color: Color(0xFF173F35)),
+            prefixIcon:
+                const Icon(Icons.qr_code_scanner, color: Color(0xFF173F35)),
+            border: const OutlineInputBorder(),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF173F35), width: 2.0),
+            ),
+            suffixIcon: hasText
+                ? IconButton(
+                    icon: const Icon(Icons.clear, color: Color(0xFF173F35)),
+                    tooltip: 'Limpar leitura',
+                    onPressed: onClear,
+                  )
+                : null,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Campo de resultado — somente leitura, preenchido automaticamente.
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    FocusNode? focusNode,
+    bool enableClear = true,
+    bool readOnly = false,
+    void Function()? onClear,
+  }) {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, _) {
+        final hasText = value.text.isNotEmpty;
+        return TextFormField(
+          controller: controller,
+          focusNode: focusNode,
           readOnly: readOnly,
           cursorColor: const Color(0xFF173F35),
           autovalidateMode: AutovalidateMode.always,
-          validator: (text) {
-            if (text == null || text.isEmpty) {
-              return 'Campo Obrigátorio!';
-            }
-            return null;
-          },
+          validator: (text) =>
+              (text == null || text.isEmpty) ? 'Campo Obrigatório!' : null,
           decoration: InputDecoration(
             labelText: label,
-            labelStyle: const TextStyle(
-              color: Color(0xFF173F35),
-            ),
+            labelStyle: const TextStyle(color: Color(0xFF173F35)),
             prefixIcon: Icon(icon, color: const Color(0xFF173F35)),
             suffixIcon: enableClear && hasText
                 ? IconButton(
                     tooltip: 'Limpar',
                     icon: const Icon(Icons.close),
                     color: const Color(0xFF173F35),
-                    onPressed: () {
-                      controller.clear();
-                      Future.microtask(() {
-                        if (focusNode?.canRequestFocus ?? false) {
-                          focusNode!.requestFocus();
-                        }
-                      });
-                      onChanged?.call('');
-                    },
+                    onPressed: onClear ?? () => controller.clear(),
                   )
                 : null,
             border: const OutlineInputBorder(),
             focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0xFF173F35),
-                width: 2.0,
-              ),
+              borderSide: BorderSide(color: Color(0xFF173F35), width: 2.0),
             ),
           ),
         );

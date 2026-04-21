@@ -1,6 +1,10 @@
+import 'dart:async';
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_patch.dart';
+
 import 'package:leitorptb/backend/api_requests/api_calls.dart';
 import 'package:leitorptb/pages/home_page_tags/home_page_widget.dart';
 
+import '../romaneio_page/classe_producao_stp.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -60,15 +64,17 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
 
   int? ultimaCaixa;
 
+  int? codClasseSelecionado;
+
+  String? selectedClasseRomaneio;
+  FormFieldController<String>? classeRomaneioController;
+
+  String? selectedClasseCodigoProd;
+  FormFieldController<String>? classeProducaoController;
+
   Future<void> carregarUltimaCaixa() async {
-    final lista = await SQLiteManager.instance.buscarConferenciasALTRIA();
-
-    final ultima = lista.map((e) => e.caixa).whereType<int>().fold<int?>(null,
-        (max, atual) {
-      if (max == null || atual > max) return atual;
-      return max;
-    });
-
+    final ultima =
+        await SQLiteManager.instance.buscarUltimaCaixaNumericaALTRIA();
     setState(() {
       ultimaCaixa = ultima;
     });
@@ -84,11 +90,124 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
     });
   }
 
+  // ── Indicador de progresso de caracteres ──────────────────────────────────
+
+  static const List<Map<String, int>> _regrasCodigos = [
+    {'min': 18, 'max': 20}, // Código 1
+    {'min': 18, 'max': 20}, // Código 2
+    {'min': 77, 'max': 79}, // Código 3
+    {'min': 77, 'max': 79}, // Código 4
+    {'min': 11, 'max': 13}, // Código 5
+  ];
+
+  Color _corIndicador(int atual, int min, int max) {
+    if (atual == 0) return Colors.grey.shade300;
+    if (atual > max) return Colors.red;
+    if (atual >= min) return const Color(0xFF173F35);
+    return Colors.orange;
+  }
+
+  String _textoContador(int atual, int min, int max) {
+    if (atual == 0) return '$min–$max caracteres';
+    if (atual > max) return 'Excedeu em ${atual - max}';
+    if (atual >= min) return '✓ $atual/$max';
+    return 'Faltam ${min - atual}';
+  }
+
+  Widget _barraProgresso(TextEditingController ctrl, int index) {
+    final regra = _regrasCodigos[index];
+    final min = regra['min']!;
+    final max = regra['max']!;
+    final atual = ctrl.text.length;
+    final cor = _corIndicador(atual, min, max);
+    final texto = _textoContador(atual, min, max);
+    final ok = atual >= min && atual <= max;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 2.0, 5.0, 6.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: atual == 0 ? 0 : (atual / max).clamp(0.0, 1.0),
+                minHeight: 4,
+                backgroundColor: Colors.grey.shade200,
+                valueColor: AlwaysStoppedAnimation<Color>(cor),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            texto,
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'Open Sans',
+              color: atual == 0 ? Colors.grey : cor,
+              fontWeight: ok ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+
+  Future<void> _sincronizarClassesComSQLite() async {
+    try {
+      debugPrint('➡️ sync classes: iniciando chamada API');
+      final response = await BuscarClassesProducaoCall
+              .call() // garanta a URL certa p/ seu ambiente: 10.0.2.2/localhost/IP
+          .timeout(const Duration(seconds: 12));
+
+      debugPrint('classes.succeeded: ${response.succeeded}');
+      debugPrint(
+          'classes.jsonBody runtimeType: ${response.jsonBody.runtimeType}');
+
+      if (!response.succeeded) return;
+
+      // Pega JSON do jsonBody ou do bodyText (fallback)
+      final dynamic bodyAny = response.jsonBody ??
+          ((response.bodyText.isNotEmpty)
+              ? jsonDecode(response.bodyText)
+              : null);
+
+      late final List<dynamic> items;
+      if (bodyAny is List) {
+        items = bodyAny;
+      } else if (bodyAny is Map && bodyAny['data'] is List) {
+        items = bodyAny['data'] as List;
+      } else {
+        throw Exception('Formato JSON inesperado: ${bodyAny.runtimeType}');
+      }
+
+      final classes = items
+          .map((e) => ClasseProducaoSTP.fromApi(e as Map<String, dynamic>))
+          .where((c) => c.codigo > 0) // filtra inválidos
+          .toList();
+
+      await SQLiteManager.instance.inserirClasseProducaoSTP(classes);
+
+      debugPrint('✅ sync classes: inserção concluída');
+      if (mounted) setState(() {});
+    } on TimeoutException {
+      debugPrint('⏱️ Timeout ao buscar classes (12s).');
+    } catch (e, st) {
+      debugPrint('❌ ERRO em _sincronizarClassesComSQLite: $e');
+      debugPrint('$st');
+    }
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _sincronizarClassesComSQLite();
+    });
     _model = createModel(context, () => AltriaPageModel());
 
     _model.nrcaixaTextController ??= TextEditingController();
@@ -124,8 +243,11 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
     _model.codigo5BTextController ??= TextEditingController();
     _model.codigo5BFocusNode ??= FocusNode();
 
+    classeProducaoController = FormFieldController<String>(null);
+
     carregarUltimaCaixa();
     carregarTotalCaixas();
+    _sincronizarClassesComSQLite();
   }
 
   @override
@@ -251,11 +373,23 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   controller: _model.nrcaixaTextController,
                                   focusNode: _model.nrcaixaFocusNode,
                                   onChanged: (value) {
-                                    if (value.contains('-')) {
+                                    // Se o código de barras tiver 16+ dígitos,
+                                    // extrai posições 8–12 (índices 7 a 11, base 0)
+                                    // Exemplo: 2612637004140047 → "00414"
+                                    if (value.length >= 16) {
+                                      final numeroCaixa =
+                                          value.substring(7, 12);
+                                      _model.nrcaixaTextController?.value =
+                                          TextEditingValue(
+                                        text: numeroCaixa,
+                                        selection: TextSelection.collapsed(
+                                            offset: numeroCaixa.length),
+                                      );
+                                    } else if (value.contains('-')) {
+                                      // fallback: formato antigo com hífen
                                       final partes = value.split('-');
                                       if (partes.length >= 2) {
-                                        final numeroCaixa =
-                                            partes[1]; // pega a parte do meio
+                                        final numeroCaixa = partes[1];
                                         _model.nrcaixaTextController?.value =
                                             TextEditingValue(
                                           text: numeroCaixa,
@@ -450,122 +584,94 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 child: Padding(
                                   padding: EdgeInsets.all(6.0),
                                   child:
-                                      FutureBuilder<List<BuscaClasseALTRIARow>>(
+                                      FutureBuilder<List<Map<String, dynamic>>>(
                                     future: SQLiteManager.instance
-                                        .buscaClasseALTRIA(),
+                                        .buscarClassesProducaoSTP(),
                                     builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                Color(0xFF76232F),
+                                      if (!snapshot.hasData)
+                                        return const CircularProgressIndicator();
+                                      final classe = snapshot.data!;
+
+                                      final optionsValues = classe
+                                          .map((c) => (c['CodClasseProd'] ?? '')
+                                              .toString())
+                                          .toList();
+
+                                      final optionsLabels = classe
+                                          .map((c) =>
+                                              "${c['CodClasseProd']} - ${c['NomeClasseProd']}")
+                                          .toList();
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          FlutterFlowDropDown<String>(
+                                            controller:
+                                                classeProducaoController,
+                                            options: optionsValues,
+                                            optionLabels: optionsLabels,
+                                            value: selectedClasseCodigoProd,
+                                            onChanged: (val) {
+                                              setState(() {
+                                                selectedClasseCodigoProd = val;
+
+                                                final idx =
+                                                    optionsValues.indexOf(val!);
+                                                final item = classe[idx];
+
+                                                codClasseSelecionado =
+                                                    int.tryParse(
+                                                        item['CodClasseProd']
+                                                            .toString());
+                                                selectedClasseRomaneio =
+                                                    (item['NomeClasseProd'] ??
+                                                            '')
+                                                        .toString();
+                                              });
+                                            },
+                                            width: 170.0,
+                                            height: 40.0,
+                                            hintText: 'Defina a Classe',
+                                            searchHintText: 'Buscar...',
+                                            textStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                      fontFamily: 'Open Sans',
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                            isSearchable: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .secondaryBackground,
+                                            borderColor:
+                                                const Color(0xFF173F35),
+                                            borderWidth: 1.0,
+                                            borderRadius: 8.0,
+                                            elevation: 2.0,
+                                            margin: const EdgeInsetsDirectional
+                                                .fromSTEB(12.0, 0.0, 12.0, 0.0),
+                                            hidesUnderline: true,
+                                            isOverButton: false,
+                                            isMultiSelect: false,
+                                          ),
+                                          if ((selectedClasseCodigoProd ==
+                                                  null ||
+                                              selectedClasseCodigoProd!
+                                                  .isEmpty))
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 16.0, top: 4.0),
+                                              child: Text(
+                                                'Campo obrigatório',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      }
-                                      final classebdBuscaClasseALTRIARowList =
-                                          snapshot.data!;
-
-                                      return FormField<String>(
-                                        validator: (val) {
-                                          if (_model.classebdValue == null ||
-                                              _model.classebdValue!.isEmpty) {
-                                            return 'Campo Obrigatório';
-                                          }
-                                          return null;
-                                        },
-                                        builder: (formFieldState) {
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              FlutterFlowDropDown<String>(
-                                                controller: _model
-                                                        .classebdValueController ??=
-                                                    FormFieldController<String>(
-                                                        null),
-                                                options:
-                                                    classebdBuscaClasseALTRIARowList
-                                                        .map((e) => e.classe)
-                                                        .whereType<
-                                                            String>() // remove nulls
-                                                        .toList(),
-                                                onChanged: (val) {
-                                                  safeSetState(() => _model
-                                                      .classebdValue = val);
-                                                  formFieldState.didChange(val);
-                                                },
-                                                width: 170.0,
-                                                height: 40.0,
-                                                searchHintTextStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .override(
-                                                          fontFamily:
-                                                              'Open Sans',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                searchTextStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily:
-                                                              'Open Sans',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                textStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily:
-                                                              'Open Sans',
-                                                          letterSpacing: 0.0,
-                                                        ),
-                                                hintText: 'Defina a classe',
-                                                searchHintText: 'Buscar',
-                                                icon: Icon(
-                                                  Icons
-                                                      .keyboard_arrow_down_rounded,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  size: 24.0,
-                                                ),
-                                                fillColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                                elevation: 2.0,
-                                                borderColor: Color(0xFF173F35),
-                                                borderWidth: 0.0,
-                                                borderRadius: 8.0,
-                                                margin: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        12.0, 0.0, 12.0, 0.0),
-                                                hidesUnderline: true,
-                                                isOverButton: false,
-                                                isSearchable: true,
-                                                isMultiSelect: false,
-                                              ),
-                                              if (formFieldState.hasError)
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 12.0, top: 4.0),
-                                                  child: Text(
-                                                    formFieldState.errorText!,
-                                                    style: TextStyle(
-                                                        color: Colors.red,
-                                                        fontSize: 12),
-                                                  ),
-                                                ),
-                                            ],
-                                          );
-                                        },
+                                        ],
                                       );
                                     },
                                   ),
@@ -867,11 +973,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo2AFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo1ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo1ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -944,8 +1053,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo1ATextControllerValidator
-                                  .asValidator(context),
+                              //validator: _model.codigo1ATextControllerValidator
+                              //.asValidator(context),
                             ),
                           ),
                         ),
@@ -953,6 +1062,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo1ATextController!, 0),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1001,11 +1112,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   FocusScope.of(context)
                                       .requestFocus(_model.codigo3AFocusNode);
                                 },
-                                onChanged: (_) => EasyDebounce.debounce(
-                                  '_model.codigo2ATextController',
-                                  Duration(milliseconds: 2000),
-                                  () => safeSetState(() {}),
-                                ),
+                                onChanged: (_) {
+                                  setState(() {});
+                                  EasyDebounce.debounce(
+                                    '_model.codigo2ATextController',
+                                    Duration(milliseconds: 2000),
+                                    () => safeSetState(() {}),
+                                  );
+                                },
                                 autofocus: true,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -1078,9 +1192,9 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                     ),
                                 cursorColor:
                                     FlutterFlowTheme.of(context).primaryText,
-                                validator: _model
-                                    .codigo2ATextControllerValidator
-                                    .asValidator(context),
+                                // validator: _model
+                                //     .codigo2ATextControllerValidator
+                                //     .asValidator(context),
                               ),
                             ),
                           ),
@@ -1089,6 +1203,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ],
                   ),
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo2ATextController!, 1),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1125,7 +1241,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -1136,11 +1252,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo4AFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo3ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo3ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1213,8 +1332,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo3ATextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo3ATextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1222,6 +1341,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo3ATextController!, 2),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1258,7 +1379,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -1269,11 +1390,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo5AFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo4ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo4ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1346,8 +1470,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo4ATextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo4ATextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1355,6 +1479,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo4ATextController!, 3),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1391,7 +1517,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -1402,11 +1528,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo1BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo5ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo5ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1479,8 +1608,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo5ATextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo5ATextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1488,6 +1617,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo5ATextController!, 4),
                 Align(
                   alignment: AlignmentDirectional(0.0, 0.0),
                   child: Row(
@@ -1569,11 +1700,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo2BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo1BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo1BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1646,8 +1780,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo1BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo1BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1655,6 +1789,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo1BTextController!, 0),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1703,11 +1839,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   FocusScope.of(context)
                                       .requestFocus(_model.codigo3BFocusNode);
                                 },
-                                onChanged: (_) => EasyDebounce.debounce(
-                                  '_model.codigo2BTextController',
-                                  Duration(milliseconds: 2000),
-                                  () => safeSetState(() {}),
-                                ),
+                                onChanged: (_) {
+                                  setState(() {});
+                                  EasyDebounce.debounce(
+                                    '_model.codigo2BTextController',
+                                    Duration(milliseconds: 2000),
+                                    () => safeSetState(() {}),
+                                  );
+                                },
                                 autofocus: true,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -1780,9 +1919,9 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                     ),
                                 cursorColor:
                                     FlutterFlowTheme.of(context).primaryText,
-                                validator: _model
-                                    .codigo2BTextControllerValidator
-                                    .asValidator(context),
+                                // validator: _model
+                                //     .codigo2BTextControllerValidator
+                                //     .asValidator(context),
                               ),
                             ),
                           ),
@@ -1791,6 +1930,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ],
                   ),
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo2BTextController!, 1),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1838,11 +1979,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo4BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo3BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo3BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1915,8 +2059,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo3BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo3BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1924,6 +2068,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo3BTextController!, 2),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -1971,11 +2117,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo5BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo4BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo4BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -2048,8 +2197,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo4BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo4BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -2057,6 +2206,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo4BTextController!, 3),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
@@ -2093,7 +2244,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -2103,11 +2254,14 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context).unfocus();
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo5BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo5BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -2180,8 +2334,8 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo5BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo5BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -2189,6 +2343,9 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo5BTextController!, 4),
+                SizedBox(height: 10),
                 Flexible(
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -2211,53 +2368,63 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                             '');
                                     final operacao =
                                         _model.operacaobdValue ?? '';
-                                    final classe = _model.classebdValue ?? '';
+                                    final classe = selectedClasseRomaneio ?? '';
                                     final local = _model.localValue ?? '';
-                                    final cod1a = int.tryParse(
-                                        _model.codigo1ATextController?.text ??
+                                    final cod1a = (_model
+                                            .codigo1ATextController?.text
+                                            .trim() ??
+                                        '');
+                                    final cod2a = (_model
+                                            .codigo2ATextController?.text
+                                            .trim() ??
+                                        '');
+                                    final cod1b = (_model
+                                            .codigo1BTextController?.text
+                                            .trim() ??
+                                        '');
+                                    final cod2b = (_model
+                                            .codigo2BTextController?.text
+                                            .trim() ??
+                                        '');
+
+                                    final cod3a =
+                                        (_model.codigo3ATextController?.text ??
                                             '');
-                                    final cod2a = int.tryParse(
-                                        _model.codigo2ATextController?.text ??
-                                            '');
-                                    final cod1b = int.tryParse(
-                                        _model.codigo1BTextController?.text ??
-                                            '');
-                                    final cod2b = int.tryParse(
-                                        _model.codigo2BTextController?.text ??
-                                            '');
-                                    final cod3a = int.tryParse(
-                                        _model.codigo3ATextController?.text ??
-                                            '');
-                                    final cod3b = int.tryParse(
-                                        _model.codigo3BTextController?.text ??
-                                            '');
-                                    final cod4a = int.tryParse(
-                                        _model.codigo4ATextController?.text ??
-                                            '');
-                                    final cod4b = int.tryParse(
-                                        _model.codigo4BTextController?.text ??
-                                            '');
-                                    final cod5a = int.tryParse(
-                                        _model.codigo5ATextController?.text ??
-                                            '');
-                                    final cod5b = int.tryParse(
-                                        _model.codigo5ATextController?.text ??
-                                            '');
+                                    final cod3b = _model
+                                            .codigo3BTextController?.text
+                                            .trim() ??
+                                        '';
+                                    final cod4a = _model
+                                            .codigo4ATextController?.text
+                                            .trim() ??
+                                        '';
+                                    final cod4b = _model
+                                            .codigo4BTextController?.text
+                                            .trim() ??
+                                        '';
+                                    final cod5a = (_model
+                                            .codigo5ATextController?.text
+                                            .trim() ??
+                                        '');
+                                    final cod5b = (_model
+                                            .codigo5ATextController?.text
+                                            .trim() ??
+                                        '');
 
                                     if (numeroCaixa == null ||
                                         operacao.trim().isEmpty ||
                                         classe.trim().isEmpty ||
                                         local.trim().isEmpty ||
-                                        cod1a == null ||
-                                        cod2a == null ||
-                                        cod1b == null ||
-                                        cod2b == null ||
-                                        cod3a == null ||
-                                        cod3b == null ||
-                                        cod4a == null ||
-                                        cod4b == null ||
-                                        cod5a == null ||
-                                        cod5b == null) {
+                                        cod1a.isEmpty ||
+                                        cod2a.isEmpty ||
+                                        cod1b.isEmpty ||
+                                        cod2b.isEmpty ||
+                                        cod3a.isEmpty ||
+                                        cod3b.isEmpty ||
+                                        cod4a.isEmpty ||
+                                        cod4b.isEmpty ||
+                                        cod5a.isEmpty ||
+                                        cod5b.isEmpty) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
@@ -2286,10 +2453,11 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                       );
                                       return;
                                     }
+
                                     await SQLiteManager.instance
                                         .insertConferenciaALTRIA(
                                       caixa: numeroCaixa,
-                                      classe: classe,
+                                      classe: selectedClasseRomaneio,
                                       localconferencia: local,
                                       ladoA: widget.ladoA,
                                       cliente: widget.altria,
@@ -2321,37 +2489,43 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                     carregarUltimaCaixa();
                                     carregarTotalCaixas();
 
-                                    // Recarrega e envia
                                     final registrosLocais = await SQLiteManager
                                         .instance
-                                        .buscarConferenciasALTRIA();
+                                        .buscarNaoEnviadosALTRIA();
 
-                                    final apiResult =
-                                        await AdicionarDadosConferenciaCall
-                                            .call(
-                                      dadosJMCJson: registrosLocais
-                                          .map((e) => e.toMap())
-                                          .toList(),
-                                    );
+                                    bool tudoOk = true;
 
-                                    if ((apiResult.succeeded)) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                '✅ Dados gravados e enviados com sucesso!'),
-                                            backgroundColor: Color(0xFF173F35)),
+                                    for (var registro in registrosLocais) {
+                                      final apiResult =
+                                          await AdicionarDadosConferenciaCall
+                                              .call(
+                                        dadosJMCJson: [registro.toMap()],
                                       );
-                                      // await SQLiteManager.instance.limparConferenciasALTRIA(); // opcional
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                '❌ Falha ao enviar dados. Código: ${apiResult.statusCode}'),
-                                            backgroundColor: Color(0xFF76232F)),
-                                      );
+
+                                      if (apiResult.succeeded) {
+                                        if (registro.id != null) {
+                                          await SQLiteManager.instance
+                                              .marcarComoEnviadoALTRIA(
+                                                  registro.id!);
+                                        }
+                                      } else {
+                                        tudoOk = false;
+                                        break;
+                                      }
                                     }
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          tudoOk
+                                              ? '✅ Dados ALTRIA enviados com sucesso!'
+                                              : '❌ Falha ao enviar dados ALTRIA',
+                                        ),
+                                        backgroundColor: tudoOk
+                                            ? Color(0xFF173F35)
+                                            : Color(0xFF76232F),
+                                      ),
+                                    );
 
                                     // Limpa campos e posiciona cursor na caixa
                                     setState(() {
@@ -2396,355 +2570,7 @@ class _AltriaPageWidgetState extends State<AltriaPageWidget> {
                                   elevation: 4,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                              )
-                              // FFButtonWidget(
-                              //   onPressed: () async {
-                              //     if (_model.formKey6.currentState == null ||
-                              //         !_model.formKey6.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey9.currentState == null ||
-                              //         !_model.formKey9.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.localValue == null) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey10.currentState == null ||
-                              //         !_model.formKey10.currentState!
-                              //             .validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey1.currentState == null ||
-                              //         !_model.formKey1.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey11.currentState == null ||
-                              //         !_model.formKey11.currentState!
-                              //             .validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey13.currentState == null ||
-                              //         !_model.formKey13.currentState!
-                              //             .validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey8.currentState == null ||
-                              //         !_model.formKey8.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey5.currentState == null ||
-                              //         !_model.formKey5.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey2.currentState == null ||
-                              //         !_model.formKey2.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey7.currentState == null ||
-                              //         !_model.formKey7.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey3.currentState == null ||
-                              //         !_model.formKey3.currentState!.validate()) {
-                              //       return;
-                              //     }
-                              //     if (_model.formKey12.currentState == null ||
-                              //         !_model.formKey12.currentState!
-                              //             .validate()) {
-                              //       return;
-                              //     }
-                              //     var confirmDialogResponse = await showDialog<
-                              //             bool>(
-                              //           context: context,
-                              //           builder: (alertDialogContext) {
-                              //             return AlertDialog(
-                              //               title: Text(
-                              //                 'Salvando',
-                              //                 style: TextStyle(
-                              //                   color: Color(0xFF173F35),
-                              //                   fontWeight: FontWeight.bold,
-                              //                 ),
-                              //               ),
-                              //               content: Text(
-                              //                 'Deseja salvar o registro?',
-                              //                 style: TextStyle(
-                              //                   color: Color(0xFF173F35),
-                              //                   fontWeight: FontWeight.bold,
-                              //                 ),
-                              //               ),
-                              //               actions: [
-                              //                 TextButton(
-                              //                   style: ButtonStyle(
-                              //                     backgroundColor:
-                              //                         WidgetStatePropertyAll(
-                              //                             Color(0xFF76232F)),
-                              //                     foregroundColor:
-                              //                         WidgetStatePropertyAll(
-                              //                             Colors.white),
-                              //                     padding: WidgetStatePropertyAll(
-                              //                         EdgeInsets.symmetric(
-                              //                             horizontal: 16,
-                              //                             vertical: 10)),
-                              //                   ),
-                              //                   onPressed: () => Navigator.pop(
-                              //                       alertDialogContext, false),
-                              //                   child: Text('Cancelar'),
-                              //                 ),
-                              //                 TextButton(
-                              //                   style: ButtonStyle(
-                              //                     backgroundColor:
-                              //                         WidgetStatePropertyAll(
-                              //                             Color(0xFF173F35)),
-                              //                     foregroundColor:
-                              //                         WidgetStatePropertyAll(
-                              //                             Colors.white),
-                              //                     padding: WidgetStatePropertyAll(
-                              //                         EdgeInsets.symmetric(
-                              //                             horizontal: 16,
-                              //                             vertical: 10)),
-                              //                   ),
-                              //                   onPressed: () => Navigator.pop(
-                              //                       alertDialogContext, true),
-                              //                   child: Text('Confirmar'),
-                              //                 ),],);},) ??false;
-                              //     print('Confirmação: $confirmDialogResponse');
-                              //     if (confirmDialogResponse) {
-                              //       final numeroCaixa = int.tryParse( _model.nrcaixaTextController?.text ?? '');
-                              //       final operacao = _model.operacaobdValue ?? '';
-                              //       final classe = _model.classebdValue ?? '';
-                              //       final localconferencia = _model.localValue ?? '';
-                              //       print('numeroCaixa: $numeroCaixa');
-                              //       print('operacao: "$operacao"');
-                              //       print('classe: "$classe"');
-                              //       print('localconferencia: "$localconferencia"');
-                              //       if (numeroCaixa == null ||
-                              //           operacao.trim().isEmpty ||
-                              //           classe.trim().isEmpty ||
-                              //           localconferencia.trim().isEmpty) {
-                              //         ScaffoldMessenger.of(context).clearSnackBars();
-                              //         ScaffoldMessenger.of(context).showSnackBar(
-                              //           SnackBar(
-                              //             content: Text(
-                              //                 '⚠️ Verifique os dados no início da tela.'),
-                              //             backgroundColor: Colors.orange,
-                              //           ),
-                              //         );
-                              //         return;
-                              //       }
-
-                              //       final existe = await SQLiteManager.instance
-                              //           .existeCaixaRegistradaALTRIA(
-                              //         caixa: numeroCaixa,
-                              //         operacao: operacao,
-                              //         classe: classe,
-                              //       );
-
-                              //       if (existe) {
-                              //         ScaffoldMessenger.of(context).showSnackBar(
-                              //           SnackBar(
-                              //             content: Text(
-                              //                 '⚠️ Esta caixa já foi lida para esta operação e classe.'),
-                              //             backgroundColor: Colors.orange,
-                              //           ),
-                              //         );
-                              //         return;
-                              //       }
-                              //       await SQLiteManager.instance.insertConferenciaALTRIA(
-                              //         cliente: widget.altria,
-                              //         ladoA: widget.ladoA,
-                              //         caixa: int.tryParse(_model.nrcaixaTextController.text),
-                              //         data: getCurrentTimestamp,
-                              //         classe: _model.classebdValue,
-                              //         localconferencia: _model.localValue,
-                              //         operacao: _model.operacaobdValue,
-                              //         codigo1a: _model.codigo1ATextController.text,
-                              //         codigo2a:_model.codigo2ATextController.text,
-                              //         codigo3a:_model.codigo3ATextController.text,
-                              //         codigo4a:_model.codigo4ATextController.text,
-                              //         codigo5a:_model.codigo5ATextController.text,
-                              //         codigo1b:_model.codigo1BTextController.text,
-                              //         codigo2b:_model.codigo2BTextController.text,
-                              //         codigo3b:_model.codigo3BTextController.text,
-                              //         codigo4b:_model.codigo4BTextController.text,
-                              //         codigo5b:_model.codigo5BTextController.text,
-                              //         ladoB: widget.ladoB,
-                              //       );
-                              //       carregarUltimaCaixa();
-                              //       carregarTotalCaixas();
-                              //       ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(
-                              //           content:
-                              //               Text('✅ Registro salvo com sucesso!'),
-                              //           backgroundColor: Color(0xFF173F35),
-                              //         ),
-                              //       );
-
-                              //       final confirmDialogResponse =
-                              //           await showDialog<bool>(
-                              //                 context: context,
-                              //                 builder: (alertDialogContext) {
-                              //                   return AlertDialog(
-                              //                     title: Text(
-                              //                         'Realizar a sincronização?'),
-                              //                     content: Text(
-                              //                         'Deseja enviar os registros atuais?'),
-                              //                     actions: [
-                              //                       TextButton(
-                              //                         style: ButtonStyle(
-                              //                           backgroundColor:
-                              //                               WidgetStatePropertyAll(
-                              //                                   Color(
-                              //                                       0xFF76232F)),
-                              //                           foregroundColor:
-                              //                               WidgetStatePropertyAll(
-                              //                                   Colors.white),
-                              //                           padding:
-                              //                               WidgetStatePropertyAll(
-                              //                                   EdgeInsets
-                              //                                       .symmetric(
-                              //                                           horizontal:
-                              //                                               16,
-                              //                                           vertical:
-                              //                                               10)),
-                              //                         ),
-                              //                         onPressed: () =>
-                              //                             Navigator.pop(
-                              //                                 alertDialogContext,
-                              //                                 false),
-                              //                         child: Text('Cancelar'),
-                              //                       ),
-                              //                       TextButton(
-                              //                         style: ButtonStyle(
-                              //                           backgroundColor:
-                              //                               WidgetStatePropertyAll(
-                              //                                   Color(
-                              //                                       0xFF173F35)),
-                              //                           foregroundColor:
-                              //                               WidgetStatePropertyAll(
-                              //                                   Colors.white),
-                              //                           padding:
-                              //                               WidgetStatePropertyAll(
-                              //                                   EdgeInsets
-                              //                                       .symmetric(
-                              //                                           horizontal:
-                              //                                               16,
-                              //                                           vertical:
-                              //                                               10)),
-                              //                         ),
-                              //                         onPressed: () =>
-                              //                             Navigator.pop(
-                              //                                 alertDialogContext,
-                              //                                 true),
-                              //                         child: Text('Enviar'),
-                              //                       ),
-                              //                     ],
-                              //                   );
-                              //                 },
-                              //               ) ??
-                              //               false;
-                              //       _model.altriainsert = await SQLiteManager
-                              //           .instance
-                              //           .buscarConferenciasALTRIA();
-                              //       if (confirmDialogResponse) {
-                              //         _model.apiResultqak =
-                              //             await AdicionarDadosConferenciaCall
-                              //                 .call(
-                              //           dadosJMCJson: _model.altriainsert
-                              //               .map((e) => e.toMap())
-                              //               .toList(),
-                              //         );
-
-                              //         // 3. Valida o resultado da API
-                              //         if ((_model.apiResultqak?.succeeded ??
-                              //             false)) {
-                              //           ScaffoldMessenger.of(context)
-                              //               .showSnackBar(
-                              //             SnackBar(
-                              //               content: Text(
-                              //                   '✅ Dados enviados com sucesso!'),
-                              //               backgroundColor: Color(0xFF173F35),
-                              //             ),
-                              //           );
-                              //         }
-                              //       } else {
-                              //         print('🔁 Envio cancelado pelo usuário.');
-                              //         setState(() {});
-                              //       }
-
-                              //       safeSetState(() {
-                              //         _model.nrcaixaTextController?.clear();
-                              //         _model.codigo1ATextController?.clear();
-                              //         _model.codigo2ATextController?.clear();
-                              //         _model.codigo3ATextController?.clear();
-                              //         _model.codigo1BTextController?.clear();
-                              //         _model.codigo2BTextController?.clear();
-                              //         _model.codigo3BTextController?.clear();
-                              //         _model.codigo4ATextController?.clear();
-                              //         _model.codigo5ATextController?.clear();
-                              //         _model.codigo4BTextController?.clear();
-                              //         _model.codigo5BTextController?.clear();
-                              //         _model.nrcaixaFocusNode?.requestFocus();
-                              //       });
-                              //       safeSetState(() {
-                              //         _model.nrcaixaTextController?.clear();
-                              //         _model.codigo1ATextController?.clear();
-                              //         _model.codigo2ATextController?.clear();
-                              //         _model.codigo3ATextController?.clear();
-                              //         _model.codigo4ATextController?.clear();
-                              //         _model.codigo5ATextController?.clear();
-                              //         _model.codigo1BTextController?.clear();
-                              //         _model.codigo2BTextController?.clear();
-                              //         _model.codigo3BTextController?.clear();
-                              //         _model.codigo4BTextController?.clear();
-                              //         _model.codigo5BTextController?.clear();
-                              //         _model.nrcaixaFocusNode?.requestFocus();
-                              //       });
-                              //       return;
-                              //     } else {
-                              //       ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(
-                              //           content: Text(
-                              //             'Cancelado!',
-                              //             style: GoogleFonts.getFont(
-                              //               'Open Sans',
-                              //               color: FlutterFlowTheme.of(context)
-                              //                   .secondaryBackground,
-                              //               fontWeight: FontWeight.bold,
-                              //             ),
-                              //           ),
-                              //           duration: Duration(milliseconds: 4000),
-                              //           backgroundColor: Color(0xFF173F35),
-                              //         ),
-                              //       );
-                              //       return;
-                              //     }
-                              //   },
-                              //   text: 'Gravar',
-                              //   icon: Icon(
-                              //     Icons.send,
-                              //     size: 15.0,
-                              //   ),
-                              //   options: FFButtonOptions(
-                              //     width: 110.0,
-                              //     height: 40.0,
-                              //     padding: EdgeInsetsDirectional.fromSTEB(
-                              //         16.0, 0.0, 16.0, 0.0),
-                              //     iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              //         0.0, 0.0, 0.0, 0.0),
-                              //     color: Color(0xFF76232F),
-                              //     textStyle: FlutterFlowTheme.of(context)
-                              //         .labelLarge
-                              //         .override(
-                              //           fontFamily: 'Open Sans',
-                              //           color: FlutterFlowTheme.of(context).info,
-                              //           letterSpacing: 0.0,
-                              //         ),
-                              //     elevation: 10.0,
-                              //     borderRadius: BorderRadius.circular(8.0),
-                              //   ),
-                              // ),
-                              ),
+                              )),
                         ),
                       ),
                       Flexible(

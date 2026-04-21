@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import '../romaneio_page/classe_producao_stp.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/backend/sqlite/sqlite_manager.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -39,15 +42,16 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
 
   int? ultimaCaixa;
 
+  int? codClasseSelecionado;
+
+  String? selectedClasseRomaneio;
+  FormFieldController<String>? classeRomaneioController;
+
+  String? selectedClasseCodigoProd;
+  FormFieldController<String>? classeProducaoController;
+
   Future<void> carregarUltimaCaixa() async {
-    final lista = await SQLiteManager.instance.buscarConferenciasJMC();
-
-    final ultima = lista.map((e) => e.caixa).whereType<int>().fold<int?>(null,
-        (max, atual) {
-      if (max == null || atual > max) return atual;
-      return max;
-    });
-
+    final ultima = await SQLiteManager.instance.buscarUltimaCaixaNumericaJMC();
     setState(() {
       ultimaCaixa = ultima;
     });
@@ -63,11 +67,122 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
     });
   }
 
+  // ── Indicador de progresso de caracteres ──────────────────────────────────
+
+  static const List<Map<String, int>> _regrasCodigos = [
+    {'min': 32, 'max': 34}, // Código 1
+    {'min': 77, 'max': 79}, // Código 2
+    {'min': 77, 'max': 79}, // Código 3
+  ];
+
+  Color _corIndicador(int atual, int min, int max) {
+    if (atual == 0) return Colors.grey.shade300;
+    if (atual > max) return Colors.red;
+    if (atual >= min) return const Color(0xFF173F35);
+    return Colors.orange;
+  }
+
+  String _textoContador(int atual, int min, int max) {
+    if (atual == 0) return '$min–$max caracteres';
+    if (atual > max) return 'Excedeu em ${atual - max}';
+    if (atual >= min) return '✓ $atual/$max';
+    return 'Faltam ${min - atual}';
+  }
+
+  Widget _barraProgresso(TextEditingController ctrl, int index) {
+    final regra = _regrasCodigos[index];
+    final min = regra['min']!;
+    final max = regra['max']!;
+    final atual = ctrl.text.length;
+    final cor = _corIndicador(atual, min, max);
+    final texto = _textoContador(atual, min, max);
+    final ok = atual >= min && atual <= max;
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 2.0, 5.0, 6.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: atual == 0 ? 0 : (atual / max).clamp(0.0, 1.0),
+                minHeight: 4,
+                backgroundColor: Colors.grey.shade200,
+                valueColor: AlwaysStoppedAnimation<Color>(cor),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            texto,
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'Open Sans',
+              color: atual == 0 ? Colors.grey : cor,
+              fontWeight: ok ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+
+  Future<void> _sincronizarClassesComSQLite() async {
+    try {
+      debugPrint('➡️ sync classes: iniciando chamada API');
+      final response = await BuscarClassesProducaoCall
+              .call() // garanta a URL certa p/ seu ambiente: 10.0.2.2/localhost/IP
+          .timeout(const Duration(seconds: 12));
+
+      debugPrint('classes.succeeded: ${response.succeeded}');
+      debugPrint(
+          'classes.jsonBody runtimeType: ${response.jsonBody.runtimeType}');
+
+      if (!response.succeeded) return;
+
+      // Pega JSON do jsonBody ou do bodyText (fallback)
+      final dynamic bodyAny = response.jsonBody ??
+          ((response.bodyText.isNotEmpty)
+              ? jsonDecode(response.bodyText)
+              : null);
+
+      late final List<dynamic> items;
+      if (bodyAny is List) {
+        items = bodyAny;
+      } else if (bodyAny is Map && bodyAny['data'] is List) {
+        items = bodyAny['data'] as List;
+      } else {
+        throw Exception('Formato JSON inesperado: ${bodyAny.runtimeType}');
+      }
+
+      final classes = items
+          .map((e) => ClasseProducaoSTP.fromApi(e as Map<String, dynamic>))
+          .where((c) => c.codigo > 0) // filtra inválidos
+          .toList();
+
+      await SQLiteManager.instance.inserirClasseProducaoSTP(classes);
+
+      debugPrint('✅ sync classes: inserção concluída');
+      if (mounted) setState(() {});
+    } on TimeoutException {
+      debugPrint('⏱️ Timeout ao buscar classes (12s).');
+    } catch (e, st) {
+      debugPrint('❌ ERRO em _sincronizarClassesComSQLite: $e');
+      debugPrint('$st');
+    }
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _sincronizarClassesComSQLite();
+    });
     _model = createModel(context, () => JmcPageModel());
 
     _model.nrcaixaTextController ??= TextEditingController();
@@ -91,8 +206,11 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
     _model.codigo3BTextController ??= TextEditingController();
     _model.codigo3BFocusNode ??= FocusNode();
 
+    classeProducaoController = FormFieldController<String>(null);
+
     carregarUltimaCaixa();
     carregarTotalCaixas();
+    _sincronizarClassesComSQLite();
   }
 
   @override
@@ -215,16 +333,17 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                     controller: _model.nrcaixaTextController,
                                     focusNode: _model.nrcaixaFocusNode,
                                     onChanged: (value) {
-                                      if (value.length > 4) {
-                                        final ultimos4 =
-                                            value.substring(value.length - 4);
-
-                                        // Atualiza o campo somente com os últimos 6
+                                      // Se o código de barras tiver 16+ dígitos,
+                                      // extrai posições 8–12 (índices 7 a 11, base 0)
+                                      // Exemplo: 2612637004140047 → "00414"
+                                      if (value.length >= 16) {
+                                        final numeroCaixa =
+                                            value.substring(7, 12);
                                         _model.nrcaixaTextController?.value =
                                             TextEditingValue(
-                                          text: ultimos4,
+                                          text: numeroCaixa,
                                           selection: TextSelection.collapsed(
-                                              offset: ultimos4.length),
+                                              offset: numeroCaixa.length),
                                         );
                                       }
                                     },
@@ -408,130 +527,99 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 Flexible(
                                   child: Padding(
                                     padding: EdgeInsets.all(6.0),
-                                    child:
-                                        FutureBuilder<List<BuscaClasseJMCRow>>(
+                                    child: FutureBuilder<
+                                        List<Map<String, dynamic>>>(
                                       future: SQLiteManager.instance
-                                          .buscaClasseJMC(),
+                                          .buscarClassesProducaoSTP(),
                                       builder: (context, snapshot) {
-                                        // Customize what your widget looks like when it's loading.
-                                        if (!snapshot.hasData) {
-                                          return Center(
-                                            child: SizedBox(
-                                              width: 50.0,
-                                              height: 50.0,
-                                              child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(
-                                                  Color(0xFF76232F),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        final classebdBuscaClasseJMCRowList =
-                                            snapshot.data!;
+                                        if (!snapshot.hasData)
+                                          return const CircularProgressIndicator();
+                                        final classe = snapshot.data!;
 
-                                        return FormField<String>(
-                                          validator: (val) {
-                                            if (_model.classebdValue == null ||
-                                                _model.classebdValue!.isEmpty) {
-                                              return 'Campo Obrigatório';
-                                            }
-                                            return null;
-                                          },
-                                          builder: (formFieldState) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                FlutterFlowDropDown<String>(
-                                                  controller: _model
-                                                          .classebdValueController ??=
-                                                      FormFieldController<
-                                                          String>(null),
-                                                  options:
-                                                      classebdBuscaClasseJMCRowList
-                                                          .map((e) => e.classe)
-                                                          .whereType<
-                                                              String>() // remove nulls
-                                                          .toList(),
-                                                  onChanged: (val) {
-                                                    safeSetState(() => _model
-                                                        .classebdValue = val);
-                                                    formFieldState
-                                                        .didChange(val);
-                                                  },
-                                                  width: 170.0,
-                                                  height: 40.0,
-                                                  searchHintTextStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Open Sans',
-                                                            letterSpacing: 0.0,
-                                                          ),
-                                                  searchTextStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .override(
-                                                            fontFamily:
-                                                                'Open Sans',
-                                                            letterSpacing: 0.0,
-                                                          ),
-                                                  textStyle: FlutterFlowTheme
-                                                          .of(context)
+                                        final optionsValues = classe
+                                            .map((c) =>
+                                                (c['CodClasseProd'] ?? '')
+                                                    .toString())
+                                            .toList();
+
+                                        final optionsLabels = classe
+                                            .map((c) =>
+                                                "${c['CodClasseProd']} - ${c['NomeClasseProd']}")
+                                            .toList();
+
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            FlutterFlowDropDown<String>(
+                                              controller:
+                                                  classeProducaoController,
+                                              options: optionsValues,
+                                              optionLabels: optionsLabels,
+                                              value: selectedClasseCodigoProd,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  selectedClasseCodigoProd =
+                                                      val;
+
+                                                  final idx = optionsValues
+                                                      .indexOf(val!);
+                                                  final item = classe[idx];
+
+                                                  codClasseSelecionado =
+                                                      int.tryParse(
+                                                          item['CodClasseProd']
+                                                              .toString());
+                                                  selectedClasseRomaneio =
+                                                      (item['NomeClasseProd'] ??
+                                                              '')
+                                                          .toString();
+                                                });
+                                              },
+                                              width: 170.0,
+                                              height: 40.0,
+                                              hintText: 'Defina a Classe',
+                                              searchHintText: 'Buscar...',
+                                              textStyle:
+                                                  FlutterFlowTheme.of(context)
                                                       .bodyMedium
                                                       .override(
                                                         fontFamily: 'Open Sans',
                                                         letterSpacing: 0.0,
                                                       ),
-                                                  hintText: 'Defina a classe',
-                                                  searchHintText: 'Buscar',
-                                                  icon: Icon(
-                                                    Icons
-                                                        .keyboard_arrow_down_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 24.0,
-                                                  ),
-                                                  fillColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .secondaryBackground,
-                                                  elevation: 2.0,
-                                                  borderColor:
-                                                      Color(0xFF173F35),
-                                                  borderWidth: 0.0,
-                                                  borderRadius: 8.0,
-                                                  margin: EdgeInsetsDirectional
+                                              isSearchable: true,
+                                              fillColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryBackground,
+                                              borderColor:
+                                                  const Color(0xFF173F35),
+                                              borderWidth: 1.0,
+                                              borderRadius: 8.0,
+                                              elevation: 2.0,
+                                              margin:
+                                                  const EdgeInsetsDirectional
                                                       .fromSTEB(
-                                                          12.0, 0.0, 12.0, 0.0),
-                                                  hidesUnderline: true,
-                                                  isOverButton: false,
-                                                  isSearchable: true,
-                                                  isMultiSelect: false,
-                                                ),
-                                                if (formFieldState.hasError)
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 12.0,
-                                                            top: 4.0),
-                                                    child: Text(
-                                                      formFieldState.errorText!,
-                                                      style: TextStyle(
-                                                          color: Colors.red,
-                                                          fontSize: 12),
-                                                    ),
+                                                      12.0, 0.0, 12.0, 0.0),
+                                              hidesUnderline: true,
+                                              isOverButton: false,
+                                              isMultiSelect: false,
+                                            ),
+                                            if ((selectedClasseCodigoProd ==
+                                                    null ||
+                                                selectedClasseCodigoProd!
+                                                    .isEmpty))
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 16.0, top: 4.0),
+                                                child: Text(
+                                                  'Campo obrigatório',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 12,
                                                   ),
-                                              ],
-                                            );
-                                          },
+                                                ),
+                                              ),
+                                          ],
                                         );
                                       },
                                     ),
@@ -602,7 +690,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                                   },
                                                   width: 170.0,
                                                   height: 40.0,
-                                                  searchHintText: 'Buscar',
+                                                  searchHintText: 'Buscar...',
                                                   hintText: 'Defina a operação',
                                                   icon: Icon(
                                                     Icons
@@ -832,11 +920,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo2AFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo1ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo1ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -909,8 +1000,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo1ATextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo1ATextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -918,6 +1009,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo1ATextController!, 0),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
                   child: Row(
@@ -961,11 +1054,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   FocusScope.of(context)
                                       .requestFocus(_model.codigo3AFocusNode);
                                 },
-                                onChanged: (_) => EasyDebounce.debounce(
-                                  '_model.codigo2ATextController',
-                                  Duration(milliseconds: 2000),
-                                  () => safeSetState(() {}),
-                                ),
+                                onChanged: (_) {
+                                  setState(() {});
+                                  EasyDebounce.debounce(
+                                    '_model.codigo2ATextController',
+                                    Duration(milliseconds: 2000),
+                                    () => safeSetState(() {}),
+                                  );
+                                },
                                 autofocus: true,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -1038,9 +1134,9 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                     ),
                                 cursorColor:
                                     FlutterFlowTheme.of(context).primaryText,
-                                validator: _model
-                                    .codigo2ATextControllerValidator
-                                    .asValidator(context),
+                                // validator: _model
+                                //     .codigo2ATextControllerValidator
+                                //     .asValidator(context),
                               ),
                             ),
                           ),
@@ -1049,6 +1145,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ],
                   ),
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo2ATextController!, 1),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
                   child: Row(
@@ -1080,7 +1178,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -1091,11 +1189,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo1BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo3ATextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo3ATextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1168,8 +1269,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo3ATextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo3ATextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1177,6 +1278,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo3ATextController!, 2),
                 Align(
                   alignment: AlignmentDirectional(0.0, 0.0),
                   child: Row(
@@ -1252,11 +1355,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 FocusScope.of(context)
                                     .requestFocus(_model.codigo2BFocusNode);
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo1BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo1BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1329,8 +1435,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo1BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo1BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1338,6 +1444,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo1BTextController!, 0),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
                   child: Row(
@@ -1381,11 +1489,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   FocusScope.of(context)
                                       .requestFocus(_model.codigo3BFocusNode);
                                 },
-                                onChanged: (_) => EasyDebounce.debounce(
-                                  '_model.codigo2BTextController',
-                                  Duration(milliseconds: 2000),
-                                  () => safeSetState(() {}),
-                                ),
+                                onChanged: (_) {
+                                  setState(() {});
+                                  EasyDebounce.debounce(
+                                    '_model.codigo2BTextController',
+                                    Duration(milliseconds: 2000),
+                                    () => safeSetState(() {}),
+                                  );
+                                },
                                 autofocus: true,
                                 obscureText: false,
                                 decoration: InputDecoration(
@@ -1458,9 +1569,9 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                     ),
                                 cursorColor:
                                     FlutterFlowTheme.of(context).primaryText,
-                                validator: _model
-                                    .codigo2BTextControllerValidator
-                                    .asValidator(context),
+                                // validator: _model
+                                //     .codigo2BTextControllerValidator
+                                //     .asValidator(context),
                               ),
                             ),
                           ),
@@ -1469,6 +1580,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ],
                   ),
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo2BTextController!, 1),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
                   child: Row(
@@ -1500,7 +1613,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                         autovalidateMode: AutovalidateMode.always,
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 0.0, 5.0, 10.0),
+                              5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 100.0,
                             child: TextFormField(
@@ -1510,11 +1623,14 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context).unfocus();
                               },
-                              onChanged: (_) => EasyDebounce.debounce(
-                                '_model.codigo3BTextController',
-                                Duration(milliseconds: 2000),
-                                () => safeSetState(() {}),
-                              ),
+                              onChanged: (_) {
+                                setState(() {});
+                                EasyDebounce.debounce(
+                                  '_model.codigo3BTextController',
+                                  Duration(milliseconds: 2000),
+                                  () => safeSetState(() {}),
+                                );
+                              },
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -1587,8 +1703,8 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                   ),
                               cursorColor:
                                   FlutterFlowTheme.of(context).primaryText,
-                              validator: _model.codigo3BTextControllerValidator
-                                  .asValidator(context),
+                              // validator: _model.codigo3BTextControllerValidator
+                              //     .asValidator(context),
                             ),
                           ),
                         ),
@@ -1596,6 +1712,9 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                     ),
                   ],
                 ),
+                SizedBox(height: 5),
+                _barraProgresso(_model.codigo3BTextController!, 2),
+                SizedBox(height: 15),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1613,31 +1732,43 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 final numeroCaixa = int.tryParse(
                                     _model.nrcaixaTextController?.text ?? '');
                                 final operacao = _model.operacaobdValue ?? '';
-                                final classe = _model.classebdValue ?? '';
+                                final classe = selectedClasseRomaneio ?? '';
                                 final local = _model.localValue ?? '';
-                                final cod1a = int.tryParse(
-                                    _model.codigo1ATextController?.text ?? '');
-                                final cod2a = int.tryParse(
-                                    _model.codigo2ATextController?.text ?? '');
-                                final cod1b = int.tryParse(
-                                    _model.codigo1BTextController?.text ?? '');
-                                final cod2b = int.tryParse(
-                                    _model.codigo2BTextController?.text ?? '');
-                                final cod3a = int.tryParse(
-                                    _model.codigo3ATextController?.text ?? '');
-                                final cod3b = int.tryParse(
-                                    _model.codigo3BTextController?.text ?? '');
+                                final cod1a = (_model
+                                        .codigo1ATextController?.text
+                                        .trim() ??
+                                    '');
+                                final cod2a = (_model
+                                        .codigo2ATextController?.text
+                                        .trim() ??
+                                    '');
+                                final cod1b = (_model
+                                        .codigo1BTextController?.text
+                                        .trim() ??
+                                    '');
+                                final cod2b = (_model
+                                        .codigo2BTextController?.text
+                                        .trim() ??
+                                    '');
+                                final cod3a = (_model
+                                        .codigo3ATextController?.text
+                                        .trim() ??
+                                    '');
+                                final cod3b = (_model
+                                        .codigo3BTextController?.text
+                                        .trim() ??
+                                    '');
 
                                 if (numeroCaixa == null ||
                                     operacao.trim().isEmpty ||
                                     classe.trim().isEmpty ||
                                     local.trim().isEmpty ||
-                                    cod1a == null ||
-                                    cod2a == null ||
-                                    cod1b == null ||
-                                    cod2b == null ||
-                                    cod3a == null ||
-                                    cod3b == null) {
+                                    cod1a.isEmpty ||
+                                    cod2a.isEmpty ||
+                                    cod1b.isEmpty ||
+                                    cod2b.isEmpty ||
+                                    cod3a.isEmpty ||
+                                    cod3b.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
@@ -1667,7 +1798,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 await SQLiteManager.instance
                                     .insertConferenciaJMC(
                                   caixa: numeroCaixa,
-                                  classe: classe,
+                                  classe: selectedClasseRomaneio,
                                   localconferencia: local,
                                   ladoA: widget.ladoA,
                                   cliente: widget.jmc,
@@ -1685,34 +1816,42 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                                 carregarUltimaCaixa();
                                 carregarTotalCaixas();
 
-                                // Recarrega e envia
+                                // Busca apenas não enviados
                                 final registrosLocais = await SQLiteManager
                                     .instance
-                                    .buscarConferenciasJMC();
+                                    .buscarNaoEnviadosJMC();
 
-                                final apiResult =
-                                    await AdicionarDadosConferenciaCall.call(
-                                  dadosJMCJson: registrosLocais
-                                      .map((e) => e.toMap())
-                                      .toList(),
-                                );
+                                bool tudoOk = true;
 
-                                if ((apiResult.succeeded)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            '✅ Dados gravados e enviados com sucesso!'),
-                                        backgroundColor: Color(0xFF173F35)),
+                                for (var registro in registrosLocais) {
+                                  final apiResult =
+                                      await AdicionarDadosConferenciaCall.call(
+                                    dadosJMCJson: [registro.toMap()],
                                   );
-                                  // await SQLiteManager.instance.limparConferenciasJMC(); // opcional
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            '❌ Falha ao enviar dados. Código: ${apiResult.statusCode}'),
-                                        backgroundColor: Color(0xFF76232F)),
-                                  );
+
+                                  if (apiResult.succeeded) {
+                                    if (registro.id != null) {
+                                      await SQLiteManager.instance
+                                          .marcarComoEnviadoJMC(registro.id!);
+                                    }
+                                  } else {
+                                    tudoOk = false;
+                                    break;
+                                  }
                                 }
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      tudoOk
+                                          ? '✅ Dados enviados com sucesso!'
+                                          : '❌ Falha ao enviar alguns registros',
+                                    ),
+                                    backgroundColor: tudoOk
+                                        ? Color(0xFF173F35)
+                                        : Color(0xFF76232F),
+                                  ),
+                                );
 
                                 // Limpa campos e posiciona cursor na caixa
                                 setState(() {
@@ -1753,323 +1892,7 @@ class _JmcPageWidgetState extends State<JmcPageWidget> {
                               elevation: 4,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                          )
-
-                          // FFButtonWidget(
-                          //   onPressed: () async {
-                          //     var _shouldSetState = false;
-                          //     if (_model.formKey9.currentState == null ||
-                          //         !_model.formKey9.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey4.currentState == null ||
-                          //         !_model.formKey4.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.operacaobdValue == null) {
-                          //       return;
-                          //     }
-                          //     if (_model.classebdValue == null) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey3.currentState == null ||
-                          //         !_model.formKey3.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.localValue == null) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey7.currentState == null ||
-                          //         !_model.formKey7.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey8.currentState == null ||
-                          //         !_model.formKey8.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey5.currentState == null ||
-                          //         !_model.formKey5.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey6.currentState == null ||
-                          //         !_model.formKey6.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey1.currentState == null ||
-                          //         !_model.formKey1.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     if (_model.formKey2.currentState == null ||
-                          //         !_model.formKey2.currentState!.validate()) {
-                          //       return;
-                          //     }
-                          //     var confirmDialogResponse = await showDialog<bool>(
-                          //           context: context,
-                          //           builder: (alertDialogContext) {
-                          //             return AlertDialog(
-                          //               title: Text('Salvando'),
-                          //               content:
-                          //                   Text('Deseja salvar o registro?'),
-                          //               actions: [
-                          //                 TextButton(
-                          //                   style: ButtonStyle(
-                          //                     backgroundColor:
-                          //                         WidgetStatePropertyAll(
-                          //                             Color(0xFF76232F)),
-                          //                     foregroundColor:
-                          //                         WidgetStatePropertyAll(
-                          //                             Colors.white),
-                          //                     padding: WidgetStatePropertyAll(
-                          //                         EdgeInsets.symmetric(
-                          //                             horizontal: 16,
-                          //                             vertical: 10)),
-                          //                   ),
-                          //                   onPressed: () => Navigator.pop(
-                          //                       alertDialogContext, false),
-                          //                   child: Text('Cancelar'),
-                          //                 ),
-                          //                 TextButton(
-                          //                   style: ButtonStyle(
-                          //                     backgroundColor:
-                          //                         WidgetStatePropertyAll(
-                          //                             Color(0xFF173F35)),
-                          //                     foregroundColor:
-                          //                         WidgetStatePropertyAll(
-                          //                             Colors.white),
-                          //                     padding: WidgetStatePropertyAll(
-                          //                         EdgeInsets.symmetric(
-                          //                             horizontal: 16,
-                          //                             vertical: 10)),
-                          //                   ),
-                          //                   onPressed: () => Navigator.pop(
-                          //                       alertDialogContext, true),
-                          //                   child: Text('Confirmar'),
-                          //                 ),
-                          //               ],
-                          //             );
-                          //           },
-                          //         ) ??
-                          //         false;
-
-                          //     if (confirmDialogResponse) {
-                          //       final numeroCaixa = int.tryParse(
-                          //           _model.nrcaixaTextController?.text ?? '');
-                          //       final operacao = _model.operacaobdValue ?? '';
-                          //       final classe = _model.classebdValue ?? '';
-
-                          //       if (numeroCaixa == null ||
-                          //           operacao.isEmpty ||
-                          //           classe.isEmpty) {
-                          //         ScaffoldMessenger.of(context).showSnackBar(
-                          //           SnackBar(
-                          //             content: Text(
-                          //                 '⚠️ Preencha todos os campos obrigatórios.'),
-                          //             backgroundColor: Colors.orange,
-                          //           ),
-                          //         );
-                          //         return;
-                          //       }
-
-                          //       final existe = await SQLiteManager.instance
-                          //           .existeCaixaRegistradaJMC(
-                          //         caixa: numeroCaixa,
-                          //         operacao: operacao,
-                          //         classe: classe,
-                          //       );
-
-                          //       if (existe) {
-                          //         ScaffoldMessenger.of(context).showSnackBar(
-                          //           SnackBar(
-                          //             content: Text(
-                          //                 '⚠️ Esta caixa já foi lida para esta operação e classe.'),
-                          //             backgroundColor: Colors.orange,
-                          //           ),
-                          //         );
-                          //         return;
-                          //       } else
-                          //         // ✅ Prossegue com a gravação se não existir
-                          //         await SQLiteManager.instance
-                          //             .insertConferenciaJMC(
-                          //           caixa: numeroCaixa,
-                          //           classe: _model.classebdValue,
-                          //           localconferencia: _model.localValue,
-                          //           ladoA: widget.ladoA,
-                          //           cliente: widget.jmc,
-                          //           data: getCurrentTimestamp,
-                          //           codigo1a: _model.codigo1ATextController.text,
-                          //           codigo2a: _model.codigo2ATextController.text,
-                          //           codigo3a: _model.codigo3ATextController.text,
-                          //           codigo1b: _model.codigo1BTextController.text,
-                          //           codigo2b: _model.codigo2BTextController.text,
-                          //           codigo3b: _model.codigo3BTextController.text,
-                          //           ladoB: widget.ladoB,
-                          //           operacao: operacao,
-                          //         );
-                          //       carregarUltimaCaixa();
-                          //       carregarTotalCaixas();
-                          //       ScaffoldMessenger.of(context).showSnackBar(
-                          //         SnackBar(
-                          //           content:
-                          //               Text('✅ Registro salvo com sucesso!'),
-                          //           backgroundColor: Color(0xFF173F35),
-                          //         ),
-                          //       );
-
-                          //       // 1. Abre o diálogo de confirmação
-                          //       final confirmDialogResponse =
-                          //           await showDialog<bool>(
-                          //                 context: context,
-                          //                 builder: (alertDialogContext) {
-                          //                   return AlertDialog(
-                          //                     title: Text(
-                          //                         'Realizar a sincronização?'),
-                          //                     content: Text(
-                          //                         'Deseja enviar os registros atuais?'),
-                          //                     actions: [
-                          //                       TextButton(
-                          //                         style: ButtonStyle(
-                          //                           backgroundColor:
-                          //                               WidgetStatePropertyAll(
-                          //                                   Color(0xFF76232F)),
-                          //                           foregroundColor:
-                          //                               WidgetStatePropertyAll(
-                          //                                   Colors.white),
-                          //                           padding:
-                          //                               WidgetStatePropertyAll(
-                          //                                   EdgeInsets.symmetric(
-                          //                                       horizontal: 16,
-                          //                                       vertical: 10)),
-                          //                         ),
-                          //                         onPressed: () => Navigator.pop(
-                          //                             alertDialogContext, false),
-                          //                         child: Text('Cancelar'),
-                          //                       ),
-                          //                       TextButton(
-                          //                         style: ButtonStyle(
-                          //                           backgroundColor:
-                          //                               WidgetStatePropertyAll(
-                          //                                   Color(0xFF173F35)),
-                          //                           foregroundColor:
-                          //                               WidgetStatePropertyAll(
-                          //                                   Colors.white),
-                          //                           padding:
-                          //                               WidgetStatePropertyAll(
-                          //                                   EdgeInsets.symmetric(
-                          //                                       horizontal: 16,
-                          //                                       vertical: 10)),
-                          //                         ),
-                          //                         onPressed: () => Navigator.pop(
-                          //                             alertDialogContext, true),
-                          //                         child: Text('Enviar'),
-                          //                       ),
-                          //                     ],
-                          //                   );
-                          //                 },
-                          //               ) ??
-                          //               false;
-                          //       _model.jmcinsert = await SQLiteManager.instance
-                          //           .buscarConferenciasJMC();
-
-                          //       print(
-                          //           '📦 Total de registros encontrados: ${_model.jmcinsert.length}');
-                          //       print(
-                          //           '📤 JSON a ser enviado: ${_model.jmcinsert.map((e) => e.toMap()).toList()}');
-
-                          //       if (confirmDialogResponse) {
-                          //         _model.apiResultqak =
-                          //             await AdicionarDadosConferenciaCall.call(
-                          //           dadosJMCJson: _model.jmcinsert
-                          //               .map((e) => e.toMap())
-                          //               .toList(),
-                          //         );
-
-                          //         if ((_model.apiResultqak?.succeeded ?? false)) {
-                          //           ScaffoldMessenger.of(context).showSnackBar(
-                          //             SnackBar(
-                          //               content:
-                          //                   Text('✅ Dados enviados com sucesso!'),
-                          //               backgroundColor: Color(0xFF173F35),
-                          //             ),
-                          //           );
-                          //         }
-                          //       } else {
-                          //         // Se cancelado, pode logar ou ignorar
-                          //         print('🔁 Envio cancelado pelo usuário.');
-                          //         _shouldSetState = true;
-                          //       }
-
-                          //       safeSetState(() {
-                          //         _model.nrcaixaTextController?.clear();
-                          //         _model.codigo1ATextController?.clear();
-                          //         _model.codigo2ATextController?.clear();
-                          //         _model.codigo3ATextController?.clear();
-                          //         _model.codigo1BTextController?.clear();
-                          //         _model.codigo2BTextController?.clear();
-                          //         _model.codigo3BTextController?.clear();
-                          //         _model.nrcaixaFocusNode?.requestFocus();
-                          //       });
-                          //       safeSetState(() {
-                          //         _model.nrcaixaTextController?.clear();
-                          //         _model.codigo1ATextController?.clear();
-                          //         _model.codigo2ATextController?.clear();
-                          //         _model.codigo3ATextController?.clear();
-                          //         _model.codigo1BTextController?.clear();
-                          //         _model.codigo2BTextController?.clear();
-                          //         _model.codigo3BTextController?.clear();
-                          //         _model.nrcaixaFocusNode?.requestFocus();
-                          //       });
-                          //       safeSetState(() {
-                          //         _model.nrcaixaTextController?.text = '';
-                          //       });
-                          //       if (_shouldSetState) safeSetState(() {});
-                          //       return;
-                          //     } else {
-                          //       ScaffoldMessenger.of(context).showSnackBar(
-                          //         SnackBar(
-                          //           content: Text(
-                          //             'Cancelado!',
-                          //             style: GoogleFonts.getFont(
-                          //               'Open Sans',
-                          //               color: FlutterFlowTheme.of(context)
-                          //                   .secondaryBackground,
-                          //               fontWeight: FontWeight.bold,
-                          //             ),
-                          //           ),
-                          //           duration: Duration(milliseconds: 4000),
-                          //           backgroundColor: Color(0xFF173F35),
-                          //         ),
-                          //       );
-                          //       // if (_shouldSetState) safeSetState(() {});
-                          //       return;
-                          //     }
-
-                          //     //  if (_shouldSetState) safeSetState(() {});
-                          //   },
-                          //   text: 'Gravar',
-                          //   icon: Icon(
-                          //     Icons.send,
-                          //     size: 15.0,
-                          //   ),
-                          //   options: FFButtonOptions(
-                          //     width: 110.0,
-                          //     height: 40.0,
-                          //     padding: EdgeInsetsDirectional.fromSTEB(
-                          //         16.0, 0.0, 16.0, 0.0),
-                          //     iconPadding: EdgeInsetsDirectional.fromSTEB(
-                          //         0.0, 0.0, 0.0, 0.0),
-                          //     color: Color(0xFF76232F),
-                          //     textStyle: FlutterFlowTheme.of(context)
-                          //         .labelLarge
-                          //         .override(
-                          //           fontFamily: 'Open Sans',
-                          //           color: FlutterFlowTheme.of(context).info,
-                          //           letterSpacing: 0.0,
-                          //         ),
-                          //     elevation: 10.0,
-                          //     borderRadius: BorderRadius.circular(8.0),
-                          //   ),
-                          // ),
-                          ),
+                          )),
                     ),
                     Padding(
                       padding: EdgeInsetsGeometry.only(bottom: 24.0),

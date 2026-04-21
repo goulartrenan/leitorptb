@@ -53,7 +53,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo1ATextControllerValidator;
   String? _codigo1ATextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 18 || val.length > 20) {
+      return 'O código deve ter entre 18 e 20 caracteres!';
+    }
     return null;
   }
 
@@ -62,7 +64,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo2ATextControllerValidator;
   String? _codigo2ATextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 18 || val.length > 20) {
+      return 'O código deve ter entre 18 e 20 caracteres!';
+    }
     return null;
   }
 
@@ -71,7 +75,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo3ATextControllerValidator;
   String? _codigo3ATextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
+    }
     return null;
   }
 
@@ -80,7 +86,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo4ATextControllerValidator;
   String? _codigo4ATextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
+    }
     return null;
   }
 
@@ -89,7 +97,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo5ATextControllerValidator;
   String? _codigo5ATextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 11 || val.length > 13) {
+      return 'O código deve ter entre 11 e 13 caracteres!';
+    }
     return null;
   }
 
@@ -98,7 +108,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo1BTextControllerValidator;
   String? _codigo1BTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 18 || val.length > 20) {
+      return 'O código deve ter entre 18 e 20 caracteres!';
+    }
     return null;
   }
 
@@ -107,7 +119,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo2BTextControllerValidator;
   String? _codigo2BTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 18 || val.length > 20) {
+      return 'O código deve ter entre 18 e 20 caracteres!';
+    }
     return null;
   }
 
@@ -116,7 +130,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo3BTextControllerValidator;
   String? _codigo3BTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
+    }
     return null;
   }
 
@@ -125,7 +141,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo4BTextControllerValidator;
   String? _codigo4BTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
+    }
     return null;
   }
 
@@ -134,7 +152,9 @@ class AltriaPageModel extends FlutterFlowModel<AltriaPageWidget> {
   String? Function(BuildContext, String?)? codigo5BTextControllerValidator;
   String? _codigo5BTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) return 'Campo Obrigatório!';
-    if (val.length < 10) return 'Necessário 10 caracteres!';
+    if (val.length < 11 || val.length > 13) {
+      return 'O código deve ter entre 11 e 13 caracteres!';
+    }
     return null;
   }
 

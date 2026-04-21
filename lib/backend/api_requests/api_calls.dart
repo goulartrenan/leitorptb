@@ -13,7 +13,7 @@ class AdicionarDadosConferenciaCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'Adicionar Dados Conferencia',
-      apiUrl: 'http://192.168.0.159:5000/api/conferencia',
+      apiUrl: 'http://192.168.0.15:5000/api/conferencia',
       callType: ApiCallType.POST,
       headers: {
         'content-type': 'application/json',
@@ -35,7 +35,7 @@ class BuscarLotesEmbarqueCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
       callName: 'Buscar Lotes Embarque',
-      apiUrl: 'http://192.168.0.159:5000/api/lote-embarque',
+      apiUrl: 'http://192.168.0.15:5000/api/lote-embarque',
       callType: ApiCallType.GET,
       headers: {
         'content-type': 'application/json',
@@ -52,7 +52,7 @@ class BuscarClassesProducaoCall {
   static Future<ApiCallResponse> call() async {
     return ApiManager.instance.makeApiCall(
       callName: 'Buscar Classes de Produção',
-      apiUrl: 'http://192.168.0.159:5000/api/classes-producao',
+      apiUrl: 'http://192.168.0.15:5000/api/classes-producao',
       callType: ApiCallType.GET,
       headers: {
         'content-type': 'application/json',
@@ -61,6 +61,54 @@ class BuscarClassesProducaoCall {
       returnBody: true,
       cache: false,
       isStreamingApi: false,
+    );
+  }
+}
+
+class ListarCaixasConferenciaCall {
+  static Future<ApiCallResponse> call({
+    required String cliente,
+    String? termo,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'Listar Caixas de Conferência',
+      apiUrl: 'http://192.168.0.15:5000/api/conferencia/caixas',
+      callType: ApiCallType.GET,
+      headers: {
+        'content-type': 'application/json',
+      },
+      params: {
+        'cliente': cliente,
+        if (termo != null) 'termo': termo,
+      },
+      returnBody: true,
+      cache: false,
+      isStreamingApi: false,
+    );
+  }
+}
+
+class DetalhesCaixaConferenciaCall {
+  static Future<ApiCallResponse> call({
+    required String cliente,
+    required String caixa,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'Detalhes Caixa Conferência',
+      apiUrl: 'http://192.168.0.15:5000/api/conferencia/detalhes',
+      callType: ApiCallType.GET,
+      headers: const {},
+      params: {
+        'cliente': cliente,
+        'caixa': caixa,
+      },
+      returnBody: true,
+      cache: false,
+      isStreamingApi: false,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      bodyType: BodyType.JSON,
+      alwaysAllowBody: false,
     );
   }
 }
@@ -107,7 +155,7 @@ class AdicionarRomaneioConvercaoCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'Adicionar Romaneio Convercao',
-      apiUrl: 'http://192.168.0.159:5000/api/romaneio-convercao',
+      apiUrl: 'http://192.168.0.15:5000/api/romaneio-convercao',
       callType: ApiCallType.POST,
       headers: {
         'content-type': 'application/json',
@@ -121,6 +169,33 @@ class AdicionarRomaneioConvercaoCall {
       cache: false,
       isStreamingApi: false,
       alwaysAllowBody: false,
+    );
+  }
+}
+
+class ReprocessarConferenciaCall {
+  static Future<ApiCallResponse> call({
+    dynamic payloadJson,
+  }) async {
+    final payload = _serializeJson(payloadJson, true);
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'Reprocessar Conferência',
+      apiUrl: 'http://192.168.0.15:5000/api/conferencia/reprocessar',
+      callType: ApiCallType.POST,
+      headers: const {
+        'content-type': 'application/json',
+      },
+      params: const {},
+      body: payload,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      // Se o teu ApiManager exigir, pode manter false.
+      alwaysAllowBody: true,
     );
   }
 }

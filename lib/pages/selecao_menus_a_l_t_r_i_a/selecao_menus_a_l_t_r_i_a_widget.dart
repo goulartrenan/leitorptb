@@ -1,3 +1,5 @@
+import 'package:leitorptb/pages/reprocessar/reprocessar_altria_page.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -170,6 +172,60 @@ class _SelecaoMenusALTRIAWidgetState extends State<SelecaoMenusALTRIAWidget> {
                                 iconPadding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 0.0),
                                 color: Color(0xFF173F35),
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                  fontFamily: 'Open Sans',
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                  shadows: [
+                                    Shadow(
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      offset: Offset(2.0, 2.0),
+                                      blurRadius: 4.0,
+                                    )
+                                  ],
+                                ),
+                                elevation: 10.0,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Align(
+                    alignment: AlignmentDirectional(0.0, -1.0),
+                    child: Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                context.pushNamed(ReprocessarAltriaPage
+                                    .routeName = 'reprocessar_altria');
+                              },
+                              text: 'Correção de Leitura',
+                              icon: Icon(
+                                Icons.change_circle_rounded,
+                                size: 20.0,
+                              ),
+                              options: FFButtonOptions(
+                                width: 200.0,
+                                height: 40.0,
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 0.0, 16.0, 0.0),
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 0.0),
+                                color: Color(0xFF76232F),
                                 textStyle: FlutterFlowTheme.of(context)
                                     .titleSmall
                                     .override(

@@ -74,10 +74,9 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 32 || val.length > 34) {
+      return 'O código deve ter entre 32 e 34 caracteres!';
     }
-
     return null;
   }
 
@@ -90,8 +89,8 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
     }
 
     return null;
@@ -106,8 +105,8 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
     }
 
     return null;
@@ -122,8 +121,8 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 32 || val.length > 34) {
+      return 'O código deve ter entre 32 e 34 caracteres!';
     }
 
     return null;
@@ -138,8 +137,8 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
     }
 
     return null;
@@ -154,8 +153,8 @@ class JmcPageModel extends FlutterFlowModel<JmcPageWidget> {
       return 'Campo Obrigatório!';
     }
 
-    if (val.length < 10) {
-      return 'Necessário 10 caracteres!';
+    if (val.length < 77 || val.length > 79) {
+      return 'O código deve ter entre 77 e 79 caracteres!';
     }
 
     return null;

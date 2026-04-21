@@ -1,6 +1,8 @@
 class ConferenciaJMC {
+  final int? id;
   final String? cliente;
   final int? caixa;
+  final int? enviado;
   final DateTime? data;
   final String? classe;
   final String? localconferencia;
@@ -15,8 +17,10 @@ class ConferenciaJMC {
   final String? operacao;
 
   ConferenciaJMC({
+    this.id,
     this.cliente,
     this.caixa,
+    this.enviado,
     this.data,
     this.classe,
     this.localconferencia,
@@ -34,10 +38,14 @@ class ConferenciaJMC {
   /// Converte um Map (SQLite) para um objeto ConferenciaJMC
   factory ConferenciaJMC.fromMap(Map<String, dynamic> map) {
     return ConferenciaJMC(
+      id: map['id'],
       cliente: map['cliente'] as String?,
       caixa: map['caixa'] is int
           ? map['caixa']
           : int.tryParse(map['caixa'].toString()),
+      enviado: map['enviado'] is int
+          ? map['enviado']
+          : int.tryParse(map['enviado']?.toString() ?? ''),
       data: DateTime.tryParse(map['data'] ?? ''),
       classe: map['classe'] as String?,
       localconferencia: map['localconferencia'] as String?,
@@ -58,6 +66,7 @@ class ConferenciaJMC {
     return {
       'cliente': 'JMC',
       'caixa': caixa,
+      'enviado': enviado ?? 0,
       'data': data?.toIso8601String(),
       'classe': classe,
       'localconferencia': localconferencia,
