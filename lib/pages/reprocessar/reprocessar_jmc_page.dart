@@ -217,15 +217,20 @@ class _ReprocessarJmcPageState extends State<ReprocessarJmcPage> {
     }
   }
 
-  Future<void> _carregarInfoAtualFromSQLite(String caixa) async {
+  Future<void> _carregarInfoAtualFromSQLite(String selecao) async {
     setState(() => _loadingInfo = true);
     try {
-      final info = await SQLiteManager.instance.getInfoAtualByCaixa(caixa);
+      final partes = selecao.split(' - ');
+      final caixa = partes[0];
+      final operacao = partes.length > 1 ? partes[1] : null;
+      final classe = partes.length > 2 ? partes[2] : null;
+
+      final info = await SQLiteManager.instance
+          .getInfoAtualByCaixa(caixa, operacao, classe);
       if (!mounted) return;
       setState(() {
         _classeAtualDb = info?['Classe']?.toString();
         _operacaoAtualDb = info?['Operacao']?.toString();
-        //_clienteAtualDb = info?['Cliente']?.toString();
       });
     } catch (e) {
       debugPrint('Erro ao carregar info atual do SQLite: $e');
@@ -284,7 +289,7 @@ class _ReprocessarJmcPageState extends State<ReprocessarJmcPage> {
 
     final payload = <String, dynamic>{
       'cliente': 'JMC',
-      'caixa': _caixaSel,
+      'caixa': _caixaSel?.split(' - ')[0],
       //  NOVOS valores escolhidos
       'classe':
           _novaClasseNome, // NomeClasseProd — o servidor espera o nome, não o código

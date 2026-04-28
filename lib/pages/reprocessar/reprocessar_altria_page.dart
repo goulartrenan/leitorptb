@@ -291,7 +291,7 @@ class _ReprocessarAltriaPageState extends State<ReprocessarAltriaPage> {
 
     final payload = <String, dynamic>{
       'cliente': 'ALTRIA',
-      'caixa': _caixaSel,
+      'caixa': _caixaSel?.split(' - ')[0],
       //  NOVOS valores escolhidos
       'classe':
           _novaClasseNome, // NomeClasseProd — o servidor espera o nome, não o código
