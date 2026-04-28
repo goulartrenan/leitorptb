@@ -289,10 +289,21 @@ class SQLiteManager {
       }
 
       var CaixasLidas = await _database!.rawQuery(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='CaixasLidas'");
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='caixasLidas'");
       if (CaixasLidas.isEmpty) {
         await _database!.execute(
-          "CREATE TABLE IF NOT EXISTS CaixasLidas (id INTEGER PRIMARY KEY AUTOINCREMENT, Caixa TEXT UNIQUE, Classe TEXT, Operacao TEXT, Cliente TEXT)",
+          "CREATE TABLE IF NOT EXISTS caixasLidas ("
+          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+          "Caixa TEXT, "
+          "Classe TEXT, "
+          "Operacao TEXT, "
+          "Cliente TEXT, "
+          "UNIQUE(Caixa, Operacao, Classe)"
+          ")",
+        );
+        await _database!.execute(
+          "CREATE UNIQUE INDEX IF NOT EXISTS idx_caixasLidas_cod "
+          "ON caixasLidas(Caixa, Operacao, Classe)",
         );
         print("Tabela CaixasLidas criada com sucesso!");
       } else {
@@ -523,21 +534,23 @@ class SQLiteManager {
 
   Future<void> inserirCaixasLidas(List<CaixaModel> caixas) async {
     final db = await database();
-
+    await db.execute("DROP TABLE IF EXISTS caixasLidas");
     await db.execute("delete from caixasLidas");
     await db.execute(
       "CREATE TABLE IF NOT EXISTS caixasLidas ("
       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-      "Caixa TEXT UNIQUE, "
+      "Caixa TEXT, " // ← sem UNIQUE
       "Classe TEXT, "
       "Operacao TEXT, "
-      "Cliente TEXT"
+      "Cliente TEXT, "
+      "UNIQUE(Caixa, Operacao, Classe)"
       ")",
     );
 
+    await db.execute("DROP INDEX IF EXISTS idx_caixasLidas_cod");
     await db.execute(
       "CREATE UNIQUE INDEX IF NOT EXISTS idx_caixasLidas_cod "
-      "ON caixasLidas(Caixa)",
+      "ON caixasLidas(Caixa, Operacao, Classe)",
     );
 
     final batch = db.batch();
@@ -881,21 +894,23 @@ class SQLiteManager {
   Future<void> inserirCaixasLidasFromMaps(
       List<Map<String, dynamic>> linhas) async {
     final db = await database();
+    await db.execute("DROP TABLE IF EXISTS caixasLidas");
+    //await db.execute("DELETE FROM caixasLidas");
 
-    await db.execute("DELETE FROM caixasLidas");
-    // Garante tabela e índice
     await db.execute(
       "CREATE TABLE IF NOT EXISTS caixasLidas ("
       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-      "Caixa TEXT UNIQUE, "
+      "Caixa TEXT, " // ← sem UNIQUE
       "Classe TEXT, "
       "Operacao TEXT, "
-      "Cliente TEXT"
+      "Cliente TEXT, "
+      "UNIQUE(Caixa, Operacao, Classe)" // ← unique composto
       ")",
     );
+    await db.execute("DROP INDEX IF EXISTS idx_caixasLidas_cod");
     await db.execute(
       "CREATE UNIQUE INDEX IF NOT EXISTS idx_caixasLidas_cod "
-      "ON caixasLidas(Caixa)",
+      "ON caixasLidas(Caixa, Operacao, Classe)", // ← índice composto
     );
 
     // Estratégia: limpar e repopular (igual ao seu método)
@@ -926,26 +941,48 @@ class SQLiteManager {
     final db = await database();
 
     final rs = await db.rawQuery(
-      "SELECT Caixa FROM caixasLidas WHERE Cliente = ? ORDER BY Caixa ASC",
+      "SELECT Caixa, Operacao, Classe FROM caixasLidas WHERE Cliente = ? ORDER BY Caixa ASC",
       [cliente],
     );
 
     return rs
-        .map((m) => (m['Caixa'] ?? '').toString())
+        .map((m) {
+          final caixa = m['Caixa'] ?? '';
+          final operacao = m['Operacao'] ?? '';
+          final classe = m['Classe'] ?? '';
+          return '$caixa - $operacao - $classe';
+        })
         .where((s) => s.isNotEmpty)
         .toList();
   }
 
   /// Retorna a linha atual da caixa (Classe e Operacao)
-  Future<Map<String, dynamic>?> getInfoAtualByCaixa(String caixa) async {
+  Future<Map<String, dynamic>?> getInfoAtualByCaixa(
+    String caixa, [
+    String? operacao,
+    String? classe,
+  ]) async {
     final db = await database();
+
+    String where = 'Caixa = ?';
+    List<dynamic> args = [caixa];
+
+    if (operacao != null) {
+      where += ' AND Operacao = ?';
+      args.add(operacao);
+    }
+    if (classe != null) {
+      where += ' AND Classe = ?';
+      args.add(classe);
+    }
+
     final rs = await db.query(
       'caixasLidas',
-      columns: ['Classe', 'Operacao', 'Cliente', 'Caixa'],
-      where: 'Caixa = ?',
-      whereArgs: [caixa],
+      where: where,
+      whereArgs: args,
       limit: 1,
     );
+
     return rs.isNotEmpty ? rs.first : null;
   }
 }
